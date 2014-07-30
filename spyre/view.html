@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<style>{{d3css}}</style>
+		<link href='/static/css/style.css' rel='stylesheet'>
+		<script type="text/javascript" src="/static/js/d3.v3.js"></script>
+		<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+		<script type="text/javascript" src='/static/js/jquery-2.0.3.min.js'></script>
+		<script type="text/javascript" src="/static/js/sorttable.js"></script>
+		<script type="text/javascript" src='/static/js/spyre.js'></script>
+		<script type='text/javascript'>
+
+			{{d3js}}
+
+			function updateSharedParameters(){
+				shared_params = "";
+				{% for field in shared_fields %}
+					var {{field['variable_name']}} = $("#{{field['variable_name']}}").val();
+					shared_params = shared_params+"{{field['variable_name']}}="+{{field['variable_name']}}+"&";
+					console.log(shared_params)
+				{% endfor %}
+			}
+			
+			$(document).ready(function() {
+
+				{% for control in controls %}
+
+					{% if control['output_type']=='image' %}
+						$("#{{control['button_id']}}").click(function(e) {
+							$(".plot").empty();
+							updateSharedParameters()
+							var  params = "";
+							{% for field in control['text_fields'] %}
+								var {{field['variable_name']}} = $("#{{field['variable_name']}}").val();
+								params = params+"{{field['variable_name']}}="+{{field['variable_name']}}+"&"
+							{% endfor %}
+							params = params+shared_params;
+							console.log(params);
+							$.ajax({
+								url : "/plot?"+params,
+								success: function(data, textStatus, jqXHR)
+								{var plot = $("<img />").attr('src', data.img_path)
+									.load(function() {
+										console.log(plot)
+									    if (!this.complete || typeof this.naturalWidth == "undefined" || this.naturalWidth == 0) {
+									        alert('broken image!');
+									    } else {
+									        $(".plot").append(plot);
+									    }
+									});
+								}
+							});
+						});
+
+					{% endif %}
+
+
+					{% if control['output_type']=='d3' %}
+						$("#{{control['button_id']}}").click(function(e) {
+							$("#chart").empty();
+							updateSharedParameters()
+							var  params = "";
+							{% for field in control['text_fields'] %}
+								var {{field['variable_name']}} = $("#{{field['variable_name']}}").val();
+								params = params+"{{field['variable_name']}}="+{{field['variable_name']}}+"&"
+							{% endfor %}
+							params = params+shared_params;
+							console.log(params)
+							$.ajax({
+								url : "/data?"+params,
+								success: function(response, textStatus, jqXHR)
+								{
+									var data = response.data;
+									console.log(data);
+									draw(data);
+								}
+							});
+						});
+
+					{% endif %}
+					{% if control['output_type']=='table' %}
+						$("#{{control['button_id']}}").click(function(e) {
+							updateSharedParameters()
+							var  params = "";
+							{% for field in control['text_fields'] %}
+								var {{field['variable_name']}} = $("#{{field['variable_name']}}").val();
+								params = params+"{{field['variable_name']}}="+{{field['variable_name']}}+"&"
+							{% endfor %}
+							params = params+shared_params;
+						sortable = document.getElementById('sortable');
+						$.ajax({
+							url : "/data?"+params,
+							success: function(response, textStatus, jqXHR){
+								$(".sortable").empty();
+								th = document.createElement('thead');
+								tb = document.createElement('tbody');
+								data = response['data'];
+								console.log(data)
+								keys = Object.keys(data[0]);
+								console.log(keys);
+								if (data.length > 0){
+									var tr = document.createElement('tr');
+									for (var i = 0; i<keys.length; i++) {
+										var td = document.createElement('td');
+										var text = document.createTextNode(keys[i]);
+										td.appendChild(text);
+										tr.appendChild(td);
+									}
+									th.appendChild(tr);
+									sortable.appendChild(th);
+
+									for(var j = 0; j < data.length; j++) {
+										var tr = document.createElement('tr');
+										for (var i = 0; i < keys.length; i++) {
+											var td = document.createElement('td');
+											var text = document.createTextNode(data[j][keys[i]]);
+											td.appendChild(text);
+											tr.appendChild(td);
+										}
+										tb.appendChild(tr)
+									}
+								}
+								sortable.appendChild(tb);
+								forEach(document.getElementsByTagName('table'), function(table) {
+							      if (table.className.search(/\bsortable\b/) != -1) {
+							      	console.log("hello");
+							        sorttable.makeSortable(table);
+							      }
+							    });
+							}
+							
+						});
+					});
+					{% endif %}
+				{% endfor %}
+			});
+		</script>
+	</head>
+	<body>
+		<div class="left-panel">
+			{% for field in shared_fields %}
+				{{field['label']}}: <input type="{{field['input_type']}}" value="{{field['value']}}" id="{{field['variable_name']}}" /><br>
+			{% endfor %}
+			{% for control in controls %}
+				{% for field in control['text_fields'] %}
+				{{field['label']}}: <input type="{{field['input_type']}}" value="{{field['value']}}" id="{{field['variable_name']}}" /><br>
+				{% endfor %}
+			<button id="{{control['button_id']}}">{{control['button_label']}}</button><br>
+			{% endfor %}
+		</div>
+		<div class="right-panel">
+			<div class="plot"></div>
+			<div id="chart"></div>
+
+			<script type="text/javascript">
+			
+				
+	        </script>
+
+	        <table class="sortable" id="sortable">
+				<thead></thead>
+				<tbody></tbody>
+			</table>
+		</div>
+		
+	</body>
+</html>
+
