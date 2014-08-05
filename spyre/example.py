@@ -73,5 +73,5 @@ class MyLaunch(server.Launch):
 		return d3
 
 ml = MyLaunch()
-# ml.launch()
+ml.launch()
 # params = {'ex_first':0,'max_incl':15}
