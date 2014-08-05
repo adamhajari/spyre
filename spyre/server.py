@@ -34,7 +34,7 @@ class Root(object):
 
 	def plot(self, **args):
 		p = self.getPlot(args)
-		d = model.Plot(ROOT_DIR)
+		d = model.Plot()
 		img_path = d.getPlotPath(p)
 		cherrypy.response.headers['Content-Type'] = 'application/json'
 		return simplejson.dumps({'img_path':img_path})
