@@ -1,0 +1,19 @@
+Metadata-Version: 1.1
+Name: DataSpyre
+Version: 0.0.1
+Summary: DataSpyre makes it easy to build interactive web applications,  and requires no knowledge of HTML, CSS, or Javascript.
+Home-page: https://github.com/adamhajari/spyre
+Author: Adam Hajari
+Author-email: adam@nextbigsound.com
+License: MIT
+Description: UNKNOWN
+Keywords: web application template data visualization
+Platform: UNKNOWN
+Classifier: Development Status :: 3 - Alpha
+Classifier: Framework :: CherryPy
+Classifier: Intended Audience :: Education
+Classifier: Intended Audience :: Science/Research
+Classifier: Environment :: Web Environment
+Classifier: Topic :: Scientific/Engineering
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 2

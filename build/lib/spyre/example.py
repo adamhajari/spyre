@@ -1,4 +1,4 @@
-from spyre import server
+from server import Launch
 import numpy as np
 import pandas as pd
 import d3py
@@ -7,7 +7,7 @@ import simplejson as json
 import matplotlib.pyplot as plt
 from ggplot import *
 
-class MyLaunch(server.Launch):
+class MyLaunch(Launch):
 	templateVars = {"shared_fields" : [
 								{"label": 'Exclude First', "value": 0, "variable_name": 'ex_first', "input_type":'text'},
 								{"label": 'Max Return', "value": 15, "variable_name": 'max_incl', "input_type":'text'},

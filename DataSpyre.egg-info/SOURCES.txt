@@ -1,0 +1,10 @@
+setup.py
+DataSpyre.egg-info/PKG-INFO
+DataSpyre.egg-info/SOURCES.txt
+DataSpyre.egg-info/dependency_links.txt
+DataSpyre.egg-info/requires.txt
+DataSpyre.egg-info/top_level.txt
+spyre/__init__.py
+spyre/example.py
+spyre/model.py
+spyre/server.py
