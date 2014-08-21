@@ -1,20 +1,14 @@
 import matplotlib.pyplot as plt
 import matplotlib
-import ggplot
-
-from time import sleep
-import string
-import random
-import os 
-import tempfile
+# import ggplot
+import StringIO
 
 class Plot:
 	def getPlotPath(self, plt_obj):
-		temp_file  = tempfile.NamedTemporaryFile()
-		img_path = temp_file.name+'.png'
+		buffer = StringIO.StringIO()
 		if type(plt_obj).__name__ == 'Figure':
-			plt_obj.savefig(img_path)
-		if type(plt_obj).__name__ == 'ggplot':
-			ggplot.ggsave(plt_obj,img_path)
-		return(img_path)
+			plt_obj.savefig(buffer,format='png')
+		# if type(plt_obj).__name__ == 'ggplot':
+		# 	ggplot.ggsave(plt_obj,filename=buffer,format='png')
+		return(buffer)
 

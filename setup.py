@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='DataSpyre',
-    version='0.0.1',
+    version='0.0.4',
     description='DataSpyre makes it easy to build interactive web applications,  and requires no knowledge of HTML, CSS, or Javascript.',
     url='https://github.com/adamhajari/spyre',
     author='Adam Hajari',
@@ -19,16 +19,18 @@ setup(
         'Programming Language :: Python :: 2',
     ],
     keywords='web application template data visualization',
-    packages=['spyre'],
+    include_package_data = True,    # include everything in source control
+    packages = ['spyre'],  # include all packages under src
+    # package_dir = {'':'dataspyre'},   # tell distutils packages are under src
+    package_data = {
+        '': ['*.js','*.css','*.html'],
+        'public': ['js/*.js','css/*.css'],
+    },
     install_requires=[
-        "numpy",
-        "scipy",
         "pandas",
-        "patsy",
         "cherrypy",
         "simplejson",
         "jinja2",
         "matplotlib",
-        "ggplot",
     ]
 )

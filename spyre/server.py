@@ -1,11 +1,12 @@
 import os, os.path
-import random
-import string
-import simplejson
+import json
 import jinja2
+import StringIO
 import matplotlib.pyplot as plt
+import pandas as pd
 
 import model
+import View
 
 import cherrypy
 
@@ -17,64 +18,105 @@ templateEnv = jinja2.Environment( loader=templateLoader )
 
 
 class Root(object):
-	def __init__(self,templateVars=None, getDataFunction=None, getPlotFunction=None, getD3Function=None):
+	def __init__(self,templateVars=None, getJsonDataFunction=None, getPlotFunction=None, getD3Function=None):
 		self.templateVars = templateVars
-		self.getData = getDataFunction
+		self.getJsonData = getJsonDataFunction
 		self.getPlot = getPlotFunction
 		self.getD3 = getD3Function
 		d3 = self.getD3()
 		self.templateVars['d3js'] = d3['js']
 		self.templateVars['d3css'] = d3['css']
+
+		v = View.View()
+		self.templateVars['js'] = v.getJS()
+		self.templateVars['css'] = v.getCSS()
 		print self.templateVars['d3css']
 
 	@cherrypy.expose
 	def index(self):
-		template = templateEnv.get_template( "view.html" )
+		v = View.View()
+		# template = templateEnv.get_template( v.getHTML() )
+		template = jinja2.Template(v.getHTML())
 		return template.render( self.templateVars )
 
 	def plot(self, **args):
 		p = self.getPlot(args)
 		d = model.Plot()
-		img_path = d.getPlotPath(p)
-		cherrypy.response.headers['Content-Type'] = 'application/json'
-		return simplejson.dumps({'img_path':img_path})
+		buffer = d.getPlotPath(p)
+		cherrypy.response.headers['Content-Type'] = 'image/png'
+		return buffer.getvalue()
 	plot.exposed = True
 
 	def data(self, **args):
-		data = self.getData(args)
+		data = self.getJsonData(args)
 		cherrypy.response.headers['Content-Type'] = 'application/json'
-		return simplejson.dumps({'data':data,'args':args})
+		return json.dumps({'data':data,'args':args})
 	data.exposed = True
 
 class Launch:
-	templateVars = {"shared_fields" : [
-								{"label": 'Button 1', "value": 0, "variable_name": 'var1', "input_type":'text'},
+	templateVars = {"title" : "Title",
+					"html" : "",
+					"shared_fields" : [
+								{"label": 'Title', "value": 'Graph Title', "variable_name": 'var1', "input_type":'text'},
 						],
 					"controls" : [
 					{"output_type" : "image",
-						"button_label" : "Make Bar Plot",
+						"control_type" : "button",
+						"output_name" : "image",
+						"button_label" : "Make Line Graph",
 						"button_id" : "submit-plot",
 						"text_fields" : []
 					},
 					{"output_type" : "table",
+						"control_type" : "button",
+						"output_name" : "table",
 						"button_label" : "Load Table",
 						"button_id" : "load-table",
+						"on_page_load" : "true",
 						"text_fields" : []
 					}
 					]
 				}
 				
-	def getData(self, params):
-		var1 = int(params['var1'])
-		x = [{'count': 620716, 'name': 'Musician'},{'count': 71294, 'name': 'Author'},{'count': 50807, 'name': 'Book'},{'count': 7834, 'name': 'Record Label'},{'count': 5237, 'name': 'Actor'}]
-		return x[:var1]
+	def getJsonData(self, input_params):
+		"""turns the DataFrame returned by getData into a dictionary
 
-	def getPlot(self, params):
+		arguments:
+		the input_params passed used for table or d3 outputs are forwarded on to getData
+		"""
+		df = self.getData(input_params)
+		return df.to_dict(outtype='records')
+
+	def getData(self, input_params):
+		"""Override this function
+
+		arguments:
+		input_params (dict)
+
+		returns:
+		DataFrame
+		"""
+		count = [1,4,3]
+		name = ['Red','Green','Blue']
+		df = pd.DataFrame({'name':name, 'count':count})
+		return df
+
+	def getPlot(self, input_params):
+		"""Override this function
+
+		arguments:
+		input_params (dict)
+
+		returns:
+		matplotlib.pyplot figure
+		"""
+		print input_params
+		title = input_params['var1']
 		x = range(0,10)
-		y = x
 		fig = plt.figure()
 		splt = fig.add_subplot(1,1,1)
-		splt.plot(x,y)
+		splt.set_title(title)
+		splt.plot(x,x)
 		return fig
 
 	def getD3(self):
@@ -87,15 +129,15 @@ class Launch:
 		self.conf = { 
 			'/': {
 				'tools.sessions.on':True,
-				'tools.staticdir.root': ROOT_DIR
+				'tools.staticdir.root': '/'
 			},
 			'/static': {
 				'tools.staticdir.on':True,
-				'tools.staticdir.dir':'./public'
+				'tools.staticdir.dir':'/'
 			}
 		}
 		
-		webapp = Root(templateVars=self.templateVars, getDataFunction=self.getData, getPlotFunction=self.getPlot, getD3Function=self.getD3)
+		webapp = Root(templateVars=self.templateVars, getJsonDataFunction=self.getJsonData, getPlotFunction=self.getPlot, getD3Function=self.getD3)
 		cherrypy.quickstart(webapp, '/', self.conf)
 
 if __name__=='__main__':

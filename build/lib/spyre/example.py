@@ -1,62 +1,78 @@
-from server import Launch
+# from spyre import server
+import server
 import numpy as np
 import pandas as pd
 import d3py
-import os
-import simplejson as json
 import matplotlib.pyplot as plt
-from ggplot import *
 
-class MyLaunch(Launch):
-	templateVars = {"shared_fields" : [
+class MyLaunch(server.Launch):
+	templateVars = {"title" : "Spyre Example",
+					"shared_fields" : [
 								{"label": 'Exclude First', "value": 0, "variable_name": 'ex_first', "input_type":'text'},
 								{"label": 'Max Return', "value": 15, "variable_name": 'max_incl', "input_type":'text'},
 						],
 					"controls" : [
-					{"output_type" : "d3",
-						"button_label" : "Make d3 Bar Plot",
-						"button_id" : "submit-d3",
-						"text_fields" : []
-					},
-					{"output_type" : "image",
-						"button_label" : "Make Matplotlib Graph",
-						"button_id" : "submit-plot",
-						"text_fields" : []
-					},
-					{"output_type" : "table",
-						"button_label" : "Load Table",
-						"button_id" : "load-table",
-						"text_fields" : []
-					}
+						{"output_type" : "d3",
+							"control_type" : "button",
+							"button_label" : "Make d3 Bar Plot",
+							"button_id" : "submit-d3",
+							"text_fields" : []
+						},
+						{"output_type" : "image",
+							"control_type" : "button",
+							"output_name" : "image",
+							"button_label" : "Make Matplotlib Graph",
+							"button_id" : "submit-plot",
+							"on_page_load" : "true",
+							"text_fields" : []
+						},
+						{"output_type" : "image",
+							"control_type" : "button",
+							"output_name" : "image2",
+							"button_label" : "Make Second Matplotlib Graph",
+							"button_id" : "submit-plot2",
+							"text_fields" : []
+						},
+						{"output_type" : "table",
+							"control_type" : "button",
+							"button_label" : "Load Table",
+							"button_id" : "load-table",
+							"text_fields" : []
+						}
 					]
 				}
-	def getData(self, params):
-		ex_first = int(params['ex_first'])
-		max_incl = int(params['max_incl'])
-		x = [{'count': 620716, 'name': 'Musician'},{'count': 71294, 'name': 'Author'},{'count': 50807, 'name': 'Book'},{'count': 7834, 'name': 'Record Label'},{'count': 5237, 'name': 'Actor'},{'count': 3278, 'name': 'Public Figure '},{'count': 2533, 'name': 'Comedian'},{'count': 2042, 'name': 'Producer'},{'count': 1266, 'name': 'News/Media'},{'count': 1165, 'name': 'Entertainer'},{'count': 980, 'name': 'Radio Station '},{'count': 962, 'name': 'TV Show'},{'count': 747, 'name': 'Company'},{'count': 712, 'name': 'Local Business'},{'count': 679, 'name': 'Apparel'}]
-		return x[ex_first:max_incl]
 
-	# def getPlot(self, params):
-	# 	data = self.getData(params)
-	# 	fig = plt.figure()
-	# 	splt = fig.add_subplot(1,1,1)
-	# 	x = pd.DataFrame(data)['name'].tolist()
-	# 	y = pd.DataFrame(data)['count'].tolist()
-	# 	ind = np.arange(len(x))
-	# 	width = 0.85  
-	# 	splt.bar(ind,y, width)
-	# 	splt.set_ylabel('Count')
-	# 	splt.set_title('NBS Category Count')
-	# 	xTickMarks = ['Group'+str(i) for i in range(1,6)]
-	# 	splt.set_xticks(ind+width/2)
-	# 	splt.set_xticklabels(x)
-	# 	fig.autofmt_xdate(rotation=45)
-	# 	return fig
+	# cache values within the Launch object to avoid reloading the data each time
+	data_params = None
+	data = pd.DataFrame()
 
-	def getPlot(self, params):
-		data = pd.DataFrame(self.getData(params))
-		fig = ggplot(data, aes(x='name')) + geom_bar(aes(weight='count')) + theme(axis_text_x=element_text(angle=30,hjust=1))
+	def getData(self, input_params):
+		# cache values within the Launch object to avoid reloading the data each time
+		if input_params != self.data_params:
+			ex_first = int(input_params['ex_first'])
+			max_incl = int(input_params['max_incl'])
+			count = [620716,71294,50807,7834,5237,3278,2533,2042,1266,1165,980,962,747,712,679]
+			name = ['Musician','Author','Book','Record Label','Actor','Public Figure ','Comedian','Producer','News/Media','Entertainer','Radio Station ','TV Show','Company','Local Business','Apparel']
+			df = pd.DataFrame({'name':name, 'count':count})
+			self.data = df[ex_first:max_incl]
+			self.data_params = input_params
+		return self.data
+
+	def getPlot(self, input_params):
+		data = self.getData(input_params)  # get data
+		fig = plt.figure()  # make figure object
+		splt = fig.add_subplot(1,1,1)
+		ind = np.arange(len(data['name']))
+		width = 0.85  
+		splt.bar(ind,data['count'], width)
+		splt.set_ylabel('Count')
+		splt.set_title('NBS Category Count')
+		xTickMarks = ['Group'+str(i) for i in range(1,6)]
+		splt.set_xticks(ind+width/2)
+		splt.set_xticklabels(data['name'])
+		fig.autofmt_xdate(rotation=45)
 		return fig
+
 
 	def getD3(self, xlabel="name", ylabel="count"):
 		df = pd.DataFrame({xlabel:[],ylabel:[]})
@@ -73,5 +89,6 @@ class MyLaunch(Launch):
 		return d3
 
 ml = MyLaunch()
-# ml.launch()
-# params = {'ex_first':0,'max_incl':15}
+ml.launch()
+# input_params = {'ex_first':0,'max_incl':15}
+
