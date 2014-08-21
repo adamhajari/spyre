@@ -125,7 +125,7 @@ class Launch:
 		d3['js'] = ""
 		return d3
 
-	def launch(self):
+	def launch(self,host="local",port=8080):
 		self.conf = { 
 			'/': {
 				'tools.sessions.on':True,
@@ -136,8 +136,10 @@ class Launch:
 				'tools.staticdir.dir':'/'
 			}
 		}
-		
 		webapp = Root(templateVars=self.templateVars, getJsonDataFunction=self.getJsonData, getPlotFunction=self.getPlot, getD3Function=self.getD3)
+		if host!="local":
+			cherrypy.server.socket_host = '0.0.0.0'
+		cherrypy.server.socket_port = port
 		cherrypy.quickstart(webapp, '/', self.conf)
 
 if __name__=='__main__':
