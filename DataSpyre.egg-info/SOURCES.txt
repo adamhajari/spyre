@@ -8,10 +8,9 @@ DataSpyre.egg-info/top_level.txt
 spyre/View.py
 spyre/__init__.py
 spyre/example.py
+spyre/gnip.py
 spyre/model.py
 spyre/server.py
-spyre/public/.DS_Store
-spyre/public/__init__.py
 spyre/public/css/style.css
 spyre/public/js/d3.v3.js
 spyre/public/js/jquery-2.0.3.min.js

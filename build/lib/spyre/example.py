@@ -14,12 +14,14 @@ class MyLaunch(server.Launch):
 					"controls" : [
 						{"output_type" : "d3",
 							"control_type" : "button",
+							"control_name" : "button1",
 							"button_label" : "Make d3 Bar Plot",
 							"button_id" : "submit-d3",
 							"text_fields" : []
 						},
 						{"output_type" : "image",
 							"control_type" : "button",
+							"control_name" : "button2",
 							"output_name" : "image",
 							"button_label" : "Make Matplotlib Graph",
 							"button_id" : "submit-plot",
@@ -28,13 +30,15 @@ class MyLaunch(server.Launch):
 						},
 						{"output_type" : "image",
 							"control_type" : "button",
+							"control_name" : "button3",
 							"output_name" : "image2",
-							"button_label" : "Make Second Matplotlib Graph",
+							"button_label" : "Make Matplotlib Graph 2",
 							"button_id" : "submit-plot2",
 							"text_fields" : []
 						},
 						{"output_type" : "table",
 							"control_type" : "button",
+							"control_name" : "button4",
 							"button_label" : "Load Table",
 							"button_id" : "load-table",
 							"text_fields" : []
@@ -89,6 +93,6 @@ class MyLaunch(server.Launch):
 		return d3
 
 ml = MyLaunch()
-ml.launch()
+ml.launch(port=9090)
 # input_params = {'ex_first':0,'max_incl':15}
 

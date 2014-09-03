@@ -18,11 +18,12 @@ templateEnv = jinja2.Environment( loader=templateLoader )
 
 
 class Root(object):
-	def __init__(self,templateVars=None, getJsonDataFunction=None, getPlotFunction=None, getD3Function=None):
+	def __init__(self,templateVars=None, getJsonDataFunction=None, getPlotFunction=None, getD3Function=None, getHTMLFunction=None):
 		self.templateVars = templateVars
 		self.getJsonData = getJsonDataFunction
 		self.getPlot = getPlotFunction
 		self.getD3 = getD3Function
+		self.getHTML = getHTMLFunction
 		d3 = self.getD3()
 		self.templateVars['d3js'] = d3['js']
 		self.templateVars['d3css'] = d3['css']
@@ -53,6 +54,12 @@ class Root(object):
 		return json.dumps({'data':data,'args':args})
 	data.exposed = True
 
+	def html(self, **args):
+		html = self.getHTML(args)
+		cherrypy.response.headers['Content-Type'] = 'text/html'
+		return html
+	html.exposed = True
+
 class Launch:
 	templateVars = {"title" : "Title",
 					"html" : "",
@@ -62,19 +69,26 @@ class Launch:
 					"controls" : [
 					{"output_type" : "image",
 						"control_type" : "button",
-						"output_name" : "image",
+						"text_fields" : [],
+						"control_name" : "load_image",
 						"button_label" : "Make Line Graph",
 						"button_id" : "submit-plot",
-						"text_fields" : []
 					},
 					{"output_type" : "table",
 						"control_type" : "button",
-						"output_name" : "table",
+						"text_fields" : [],
+						"control_name" : "load_table",
 						"button_label" : "Load Table",
 						"button_id" : "load-table",
 						"on_page_load" : "true",
-						"text_fields" : []
-					}
+					},
+					{"output_type" : "html",
+						"control_type" : "button",
+						"text_fields" : [],
+						"control_name" : "load_html",
+						"button_label" : "show html",
+						"button_id" : "show-html",
+					},
 					]
 				}
 				
@@ -125,7 +139,10 @@ class Launch:
 		d3['js'] = ""
 		return d3
 
-	def launch(self):
+	def getHTML(self, input_params):
+		return "<b>hello</b> <i>world</i>"
+
+	def launch(self,host="local",port=8080):
 		self.conf = { 
 			'/': {
 				'tools.sessions.on':True,
@@ -136,8 +153,10 @@ class Launch:
 				'tools.staticdir.dir':'/'
 			}
 		}
-		
 		webapp = Root(templateVars=self.templateVars, getJsonDataFunction=self.getJsonData, getPlotFunction=self.getPlot, getD3Function=self.getD3)
+		if host!="local":
+			cherrypy.server.socket_host = '0.0.0.0'
+		cherrypy.server.socket_port = port
 		cherrypy.quickstart(webapp, '/', self.conf)
 
 if __name__=='__main__':
