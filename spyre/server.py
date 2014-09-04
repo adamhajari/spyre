@@ -18,9 +18,10 @@ templateEnv = jinja2.Environment( loader=templateLoader )
 
 
 class Root(object):
-	def __init__(self,templateVars=None, getJsonDataFunction=None, getPlotFunction=None, getD3Function=None, getHTMLFunction=None):
+	def __init__(self,templateVars=None, getJsonDataFunction=None, getDataFunction=None, getPlotFunction=None, getD3Function=None, getHTMLFunction=None):
 		self.templateVars = templateVars
 		self.getJsonData = getJsonDataFunction
+		self.getData = getDataFunction
 		self.getPlot = getPlotFunction
 		self.getD3 = getD3Function
 		self.getHTML = getHTMLFunction
@@ -52,6 +53,20 @@ class Root(object):
 		cherrypy.response.headers['Content-Type'] = 'application/json'
 		return json.dumps({'data':data,'args':args})
 	data.exposed = True
+
+	def table(self, **args):
+		df = self.getData(args)
+		cherrypy.response.headers['Content-Type'] = 'text/html'
+		html = df.to_html(index=False)
+		html = df.to_html(index=False)
+		i = 0
+		for col in df.columns:
+			html = html.replace('<th>{}'.format(col),'<th><a onclick="sortTable({},"table0");"><b>{}</b></a>'.format(i,col))
+			i += 1
+		html = html.replace('border="1" class="dataframe"','class="sortable" id="sortable"')
+		html = html.replace('style="text-align: right;"','')
+		return html
+	table.exposed = True
 
 	def html(self, **args):
 		html = self.getHTML(args)
@@ -152,7 +167,7 @@ class Launch:
 				'tools.staticdir.dir':'/'
 			}
 		}
-		webapp = Root(templateVars=self.templateVars, getJsonDataFunction=self.getJsonData, getPlotFunction=self.getPlot, getD3Function=self.getD3)
+		webapp = Root(templateVars=self.templateVars, getJsonDataFunction=self.getJsonData, getDataFunction=self.getData, getPlotFunction=self.getPlot, getD3Function=self.getD3, getHTMLFunction=self.getHTML)
 		if host!="local":
 			cherrypy.server.socket_host = '0.0.0.0'
 		cherrypy.server.socket_port = port

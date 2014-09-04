@@ -8,7 +8,6 @@ DataSpyre.egg-info/top_level.txt
 spyre/View.py
 spyre/__init__.py
 spyre/example.py
-spyre/gnip.py
 spyre/model.py
 spyre/server.py
 spyre/public/css/style.css

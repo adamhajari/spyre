@@ -1,5 +1,6 @@
 # from spyre import server
 import server
+
 import numpy as np
 import pandas as pd
 import d3py
@@ -12,36 +13,59 @@ class MyLaunch(server.Launch):
 								{"label": 'Max Return', "value": 15, "variable_name": 'max_incl', "input_type":'text'},
 						],
 					"controls" : [
-						{"output_type" : "d3",
-							"control_type" : "button",
+						{	"control_type" : "button",
 							"control_name" : "button1",
-							"button_label" : "Make d3 Bar Plot",
-							"button_id" : "submit-d3",
+							"button_label" : "Make Matplotlib Graph",
+							"button_id" : "submit_plot",
 							"text_fields" : []
 						},
-						{"output_type" : "image",
+						{	
 							"control_type" : "button",
 							"control_name" : "button2",
-							"output_name" : "image",
-							"button_label" : "Make Matplotlib Graph",
-							"button_id" : "submit-plot",
-							"on_page_load" : "true",
-							"text_fields" : []
-						},
-						{"output_type" : "image",
-							"control_type" : "button",
-							"control_name" : "button3",
-							"output_name" : "image2",
 							"button_label" : "Make Matplotlib Graph 2",
-							"button_id" : "submit-plot2",
+							"button_id" : "submit_plot2",
 							"text_fields" : []
 						},
-						{"output_type" : "table",
-							"control_type" : "button",
-							"control_name" : "button4",
+						{	"control_type" : "button",
+							"control_name" : "table_button",
 							"button_label" : "Load Table",
-							"button_id" : "load-table",
+							"button_id" : "load_table",
 							"text_fields" : []
+						},
+						{	"control_type" : "button",
+							"control_name" : "d3_button",
+							"button_label" : "Make d3 Bar Plot",
+							"button_id" : "submit_d3",
+							"text_fields" : []
+						}
+					],
+					"tabs" : ["Plots", "Table", "html", "d3"],
+					"outputs" : [
+						{	"output_type" : "image",
+							"output_id" : "image1",
+							"control_name" : "button1",
+							"tab" : "Plots",
+							"on_page_load" : "true",
+						},
+						{	"output_type" : "image",
+							"output_id" : "image2",
+							"control_name" : "button2",
+							"tab" : "Plots",
+						},
+						{	"output_type" : "table",
+							"output_id" : "table_id",
+							"control_name" : "table_button",
+							"tab" : "Table",
+						},
+						{	"output_type" : "d3",
+							"control_name" : "d3_button",
+							"tab" : "d3",
+						},
+						{	"output_type" : "html",
+							"output_id" : "custom_html",
+							"control_name" : "button1",
+							"tab" : "html",
+							"on_page_load" : "true",
 						}
 					]
 				}
@@ -58,6 +82,7 @@ class MyLaunch(server.Launch):
 			count = [620716,71294,50807,7834,5237,3278,2533,2042,1266,1165,980,962,747,712,679]
 			name = ['Musician','Author','Book','Record Label','Actor','Public Figure ','Comedian','Producer','News/Media','Entertainer','Radio Station ','TV Show','Company','Local Business','Apparel']
 			df = pd.DataFrame({'name':name, 'count':count})
+			df = df[['name','count']]
 			self.data = df[ex_first:max_incl]
 			self.data_params = input_params
 		return self.data
@@ -73,7 +98,7 @@ class MyLaunch(server.Launch):
 		splt.set_title('NBS Category Count')
 		xTickMarks = ['Group'+str(i) for i in range(1,6)]
 		splt.set_xticks(ind+width/2)
-		splt.set_xticklabels(data['name'])
+		splt.set_xticklabels(data['name'].tolist())
 		fig.autofmt_xdate(rotation=45)
 		return fig
 
@@ -91,6 +116,9 @@ class MyLaunch(server.Launch):
 		d3['js'] = p.js
 		d3['css'] = "%s\n%s"%(p.css, p.css_geoms)
 		return d3
+
+	def getHTML(self, input_params):
+		return "<b>hello</b> <i>world</i>"
 
 ml = MyLaunch()
 ml.launch(port=9091)

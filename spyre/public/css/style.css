@@ -2,6 +2,14 @@ h1{
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 24px;
 	font-color: #333333;  
+	margin: 5px;
+}
+
+hr{
+	background: #333333;
+	padding-top: 4px;
+	border-radius: 5px;
+	width: 95%;
 }
 
 input {
@@ -38,19 +46,20 @@ img {
 }
 .left-panel
 {   
-	font: 18px bold;
+	font: 14px bold;
 	font-family: Arial, Helvetica, sans-serif;
 	font-color: #333333;     
     background: #f4f4f4;
-    padding: 10px 0 0 10px;
-    width:14%;
+    padding: 10px;
+    width:20%;
+    max-width: 230px;
     float:left;  
 }
 .right-panel
 {        
     background-color:white;
-    padding: 1%;
-    width:83%;
+    padding: 0px 5px 5px 15px;
+    width:75%;
     float:left;
 }​
 
@@ -68,13 +77,14 @@ img {
   display: none;
 }
 
+/*----- Table -----*/
 table.sortable
 {
-	font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+	font-family: Arial, Helvetica, sans-serif;;
 	font-size: 12px;
 	background: #fff;
-	margin: 45px;
-	width: 480px;
+	margin: 10px;
+	min-width: 480px;
 	border-collapse: collapse;
 	text-align: left;
 }
@@ -92,7 +102,75 @@ table.sortable td
 	color: #669;
 	padding: 6px 8px;
 }
+table.sortable th
+{
+	border-bottom: 1px solid #ccc;
+	padding: 6px 8px;
+}
 table.sortable tbody tr:hover td
 {
 	color: #009;
 }
+
+
+/*----- Tabs -----*/
+.tabs {
+    width:100%;
+    display:inline-block;
+}
+ 
+    /*----- Tab Links -----*/
+    /* Clearfix */
+    .tab-links:after {
+        display:block;
+        clear:both;
+        content:'';
+    }
+
+    ul {
+        margin:0px;
+    }
+ 
+    .tab-links li {
+        margin:0px 5px;
+        float:left;
+        list-style:none;
+    }
+ 
+        .tab-links a {
+            padding:9px 15px;
+            display:inline-block;
+            border-radius:3px 3px 0px 0px;
+            background:#f4f4f4;
+            font-size:16px;
+            min-width: 50px;
+            text-align: center;
+            font-weight:600;
+            color:#000000;
+            text-decoration: none;
+            transition:all linear 0.15s;
+        }
+ 
+        .tab-links a:hover {
+            background:#DDC4C4;
+            text-decoration:none;
+        }
+ 
+    li.active a, li.active a:hover {
+        background:#fdfdfd;
+        color:#000000;
+    }
+ 
+    /*----- Content of Tabs -----*/
+    .tab-content {
+        padding:15px;
+        background:#fdfdfd;
+    }
+ 
+        .tab {
+            display:none;
+        }
+ 
+        .tab.active {
+            display:block;
+        }
