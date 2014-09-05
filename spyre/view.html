@@ -14,12 +14,13 @@
 			{{d3js}}
 
 			function updateSharedParameters(){
-				shared_params = "";
+				var shared_params = "";
 				{% for field in shared_fields %}
 					var {{field['variable_name']}} = $("#{{field['variable_name']}}").val();
 					shared_params = shared_params+"{{field['variable_name']}}="+{{field['variable_name']}}+"&";
 					console.log(shared_params)
 				{% endfor %}
+				return shared_params;
 			}
 
 			{% for control in controls %}
@@ -29,13 +30,8 @@
 							{% if output['output_type']=='image' %}
 								// load image
 								$("#{{output['output_id']}}").empty();
-								updateSharedParameters()
-								var  params = "";
-								{% for field in control['text_fields'] %}
-									var {{field['variable_name']}} = $("#{{field['variable_name']}}").val();
-									params = params+"{{field['variable_name']}}="+{{field['variable_name']}}+"&"
-								{% endfor %}
-								params = params+shared_params;
+								var params = updateSharedParameters();
+								params = params+"output_id={{output['output_id']}}&";
 								console.log(params);
 								var plot = $("<img />").attr('src', "/plot?"+params)
 								$("#{{output['output_id']}}").append(plot);
@@ -43,13 +39,8 @@
 
 							{% if output['output_type']=='html' %}
 								// load custom html
-								updateSharedParameters()
-								var  params = "";
-								{% for field in control['text_fields'] %}
-									var {{field['variable_name']}} = $("#{{field['variable_name']}}").val();
-									params = params+"{{field['variable_name']}}="+{{field['variable_name']}}+"&"
-								{% endfor %}
-								params = params+shared_params;
+								var params = updateSharedParameters();
+								params = params+"output_id={{output['output_id']}}&";
 								$.ajax({
 									url : "/html?"+params,
 									success: function(response, textStatus, jqXHR){
@@ -60,12 +51,8 @@
 
 							{% if output['output_type']=='table' %}
 									updateSharedParameters()
-									var  params = "";
-									{% for field in control['text_fields'] %}
-										var {{field['variable_name']}} = $("#{{field['variable_name']}}").val();
-										params = params+"{{field['variable_name']}}="+{{field['variable_name']}}+"&"
-									{% endfor %}
-									params = params+shared_params;
+									var params = updateSharedParameters();
+									params = params+"output_id={{output['output_id']}}&";
 									$.ajax({
 										url : "/table?"+params,
 										success: function(response, textStatus, jqXHR){
@@ -81,8 +68,7 @@
 
 			function show_d3_plot(){
 				$("#chart").empty();
-				updateSharedParameters()
-				params = shared_params;
+				var params = updateSharedParameters();
 				$.ajax({
 					url : "/data?"+params,
 					success: function(response, textStatus, jqXHR)
