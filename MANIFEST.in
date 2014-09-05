@@ -1,2 +1,3 @@
 include spyre/public/css/*
 include spyre/public/js/*
+include spyre/*.html
