@@ -39,18 +39,18 @@ class MyLaunch(server.Launch):
 							"text_fields" : []
 						}
 					],
-					"tabs" : ["Plots", "Table", "html", "d3"],
+					"tabs" : ["Plot1", "Plot2", "Table", "html", "d3"],
 					"outputs" : [
 						{	"output_type" : "image",
 							"output_id" : "image1",
 							"control_name" : "button1",
-							"tab" : "Plots",
+							"tab" : "Plot1",
 							"on_page_load" : "true",
 						},
 						{	"output_type" : "image",
 							"output_id" : "image2",
 							"control_name" : "button2",
-							"tab" : "Plots",
+							"tab" : "Plot2",
 						},
 						{	"output_type" : "table",
 							"output_id" : "table_id",
@@ -59,12 +59,14 @@ class MyLaunch(server.Launch):
 						},
 						{	"output_type" : "d3",
 							"control_name" : "d3_button",
+							"output_id" : "d3_output",
 							"tab" : "d3",
 						},
 						{	"output_type" : "html",
 							"output_id" : "custom_html",
-							"control_name" : "button2",
+							"control_name" : "button1",
 							"tab" : "html",
+							"on_page_load" : "true",
 						}
 					]
 				}
@@ -87,19 +89,41 @@ class MyLaunch(server.Launch):
 		return self.data
 
 	def getPlot(self, input_params):
+		output_id = input_params['output_id']
 		data = self.getData(input_params)  # get data
+		if output_id=="image1":
+			return self.getPlot1(data)
+		else:
+			return self.getPlot2(data)
+
+	def getPlot1(self, data):
 		fig = plt.figure()  # make figure object
 		splt = fig.add_subplot(1,1,1)
 		ind = np.arange(len(data['name']))
 		width = 0.85  
 		splt.bar(ind,data['count'], width)
 		splt.set_ylabel('Count')
-		splt.set_title('NBS Category Count')
+		splt.set_title('NBS Category Count Plot 1')
 		xTickMarks = ['Group'+str(i) for i in range(1,6)]
 		splt.set_xticks(ind+width/2)
 		splt.set_xticklabels(data['name'].tolist())
 		fig.autofmt_xdate(rotation=45)
 		return fig
+
+	def getPlot2(self, data):
+		fig = plt.figure()  # make figure object
+		splt = fig.add_subplot(1,1,1)
+		ind = np.arange(len(data['name']))
+		width = 0.85  
+		splt.bar(ind,data['count'], width, color='orange')
+		splt.set_ylabel('Count')
+		splt.set_title('NBS Category Count Plot 2')
+		xTickMarks = ['Group'+str(i) for i in range(1,6)]
+		splt.set_xticks(ind+width/2)
+		splt.set_xticklabels(data['name'].tolist())
+		fig.autofmt_xdate(rotation=45)
+		return fig
+
 
 
 	def getD3(self, xlabel="name", ylabel="count"):
@@ -117,7 +141,7 @@ class MyLaunch(server.Launch):
 		return d3
 
 	def getHTML(self, input_params):
-		return "<b>hello</b> <i>world</i>"
+		return "<b>App Description: </b> <i>This</i> is where you could describe your app."
 
 ml = MyLaunch()
 ml.launch(port=9091)

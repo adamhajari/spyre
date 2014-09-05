@@ -40,20 +40,21 @@ class Root(object):
 		template = jinja2.Template(v.getHTML())
 		return template.render( self.templateVars )
 
+	@cherrypy.expose
 	def plot(self, **args):
 		p = self.getPlot(args)
 		d = model.Plot()
 		buffer = d.getPlotPath(p)
 		cherrypy.response.headers['Content-Type'] = 'image/png'
 		return buffer.getvalue()
-	plot.exposed = True
 
+	@cherrypy.expose
 	def data(self, **args):
 		data = self.getJsonData(args)
 		cherrypy.response.headers['Content-Type'] = 'application/json'
 		return json.dumps({'data':data,'args':args})
-	data.exposed = True
 
+	@cherrypy.expose
 	def table(self, **args):
 		df = self.getData(args)
 		cherrypy.response.headers['Content-Type'] = 'text/html'
@@ -66,13 +67,12 @@ class Root(object):
 		html = html.replace('border="1" class="dataframe"','class="sortable" id="sortable"')
 		html = html.replace('style="text-align: right;"','')
 		return html
-	table.exposed = True
 
+	@cherrypy.expose
 	def html(self, **args):
 		html = self.getHTML(args)
 		cherrypy.response.headers['Content-Type'] = 'text/html'
 		return html
-	html.exposed = True
 
 class Launch:
 	templateVars = {"title" : "Title",
@@ -154,21 +154,11 @@ class Launch:
 		return "<b>hello</b> <i>world</i>"
 
 	def launch(self,host="local",port=8080):
-		self.conf = { 
-			'/': {
-				'tools.sessions.on':True,
-				'tools.staticdir.root': '/'
-			},
-			'/static': {
-				'tools.staticdir.on':True,
-				'tools.staticdir.dir':'/'
-			}
-		}
 		webapp = Root(templateVars=self.templateVars, getJsonDataFunction=self.getJsonData, getDataFunction=self.getData, getPlotFunction=self.getPlot, getD3Function=self.getD3, getHTMLFunction=self.getHTML)
 		if host!="local":
 			cherrypy.server.socket_host = '0.0.0.0'
 		cherrypy.server.socket_port = port
-		cherrypy.quickstart(webapp, '/', self.conf)
+		cherrypy.quickstart(webapp)
 
 if __name__=='__main__':
 	l = Launch()

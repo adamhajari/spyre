@@ -23,58 +23,80 @@
 				return shared_params;
 			}
 
+			// connect controller function to output functions
 			{% for control in controls %}
 				function {{control['control_name']}}(){
 					{% for output in outputs %}
 						{% if output['control_name']==control['control_name'] %}
-							{% if output['output_type']=='image' %}
-								// load image
-								$("#{{output['output_id']}}").empty();
-								var params = updateSharedParameters();
-								params = params+"output_id={{output['output_id']}}&";
-								console.log(params);
-								var plot = $("<img />").attr('src', "/plot?"+params)
-								$("#{{output['output_id']}}").append(plot);
-							{% endif %}
-
-							{% if output['output_type']=='html' %}
-								// load custom html
-								var params = updateSharedParameters();
-								params = params+"output_id={{output['output_id']}}&";
-								$.ajax({
-									url : "/html?"+params,
-									success: function(response, textStatus, jqXHR){
-										$("#{{output['output_id']}}").html(response);
-									}
-								});
-							{% endif %}
-
-							{% if output['output_type']=='table' %}
-									updateSharedParameters()
-									var params = updateSharedParameters();
-									params = params+"output_id={{output['output_id']}}&";
-									$.ajax({
-										url : "/table?"+params,
-										success: function(response, textStatus, jqXHR){
-											$("#{{output['output_id']}}").html(response);
-											initTable("sortable");
-										}
-									});
-							{% endif %}
-					{% endif %}
-				{% endfor %}
+							{{output['output_id']}}()
+						{% endif %}
+					{% endfor %}
 				}
 			{% endfor %}
 
+			// define output functions
+			{% for output in outputs %}
+				{% if output['output_type']=='image' %}
+					// load image function
+					function {{output['output_id']}}(){
+						$("#{{output['output_id']}}").empty();
+						var params = updateSharedParameters();
+						params = params+"output_id={{output['output_id']}}&";
+						console.log(params);
+						var plot = $("<img />").attr('src', "/plot?"+params)
+						$("#{{output['output_id']}}").append(plot);
+					}
+				{% endif %}
+
+				{% if output['output_type']=='html' %}
+					// custom html function
+					function {{output['output_id']}}(){
+						var params = updateSharedParameters();
+						params = params+"output_id={{output['output_id']}}&";
+						$.ajax({
+							url : "/html?"+params,
+							success: function(response, textStatus, jqXHR){
+								$("#{{output['output_id']}}").html(response);
+							}
+						});
+					}
+				{% endif %}
+
+				{% if output['output_type']=='table' %}
+					function {{output['output_id']}}(){
+						updateSharedParameters()
+						var params = updateSharedParameters();
+						params = params+"output_id={{output['output_id']}}&";
+						console.log('function executed')
+						$.ajax({
+							type: 'GET',
+							url : "/table?"+params
+						}).done(function(response){
+								console.log('response')
+								$("#{{output['output_id']}}").html(response);
+								initTable("sortable");
+							});
+						;
+					}
+					
+				{% endif %}
+
+				{% if output['output_type']=='d3' %}
+					function {{output['output_id']}}(){
+						show_d3_plot()					
+					}
+				{% endif %}
+			{% endfor %}
+
+			// custom function for handling d3 plots
 			function show_d3_plot(){
-				$("#chart").empty();
 				var params = updateSharedParameters();
 				$.ajax({
 					url : "/data?"+params,
 					success: function(response, textStatus, jqXHR)
-					{
+					{	
+						$("#chart").empty();
 						var data = response.data;
-						console.log(data);
 						draw(data);
 					}
 				});
@@ -94,33 +116,21 @@
 					e.preventDefault();
     			});
 
-				{% for output in outputs %}
-					{% if output['output_type']!='d3' %}
-						// connect output to button
-						$("#{{output['control_name']}}").click(function(e) {
-							{{output['control_name']}}()
-						});
-
-						// if on_page_load is true, load when page loads
-						{% if output['on_page_load']=='true' %}
-							{{output['control_name']}}()
-						{% endif %}
-					{% endif %}
-
-
-					{% if output['output_type']=='d3' %}
-						// connect output to button
-						$("#{{output['control_name']}}").click(function(e) {
-							show_d3_plot()
-						});
-
-						// if on_page_load is true, load when page loads
-						{% if output['on_page_load']=='true' %}
-							show_d3_plot()
-						{% endif %}
-					{% endif %}
+				// connect controller functions to controllers
+				{% for control in controls %}
+					$("#{{control['control_name']}}").click(function(e) {
+						{{control['control_name']}}()
+					});
 
 				{% endfor %}
+
+				{% for output in outputs %}
+					// if on_page_load is true, load when page loads
+					{% if output['on_page_load']=='true' %}
+						{{output['output_id']}}()
+					{% endif %}
+				{% endfor %}
+
 			});
 		</script>
 	</head>
@@ -143,7 +153,7 @@
 
 				<!-- buttons -->
 				{% if control['control_type']=="button" %}
-					<div class="button" id="{{control['control_name']}}" onclick="{{control['control_name']}}()">{{control['button_label']}}</div><br>
+					<div class="button" id="{{control['control_name']}}" >{{control['button_label']}}</div><br>
 				{% endif %}
 			{% endfor %}
 		</div>

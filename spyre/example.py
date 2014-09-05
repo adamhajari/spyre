@@ -59,6 +59,7 @@ class MyLaunch(server.Launch):
 						},
 						{	"output_type" : "d3",
 							"control_name" : "d3_button",
+							"output_id" : "d3_output",
 							"tab" : "d3",
 						},
 						{	"output_type" : "html",
