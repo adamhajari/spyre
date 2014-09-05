@@ -2,7 +2,6 @@
 import server
 import numpy as np
 import pandas as pd
-import d3py
 import matplotlib.pyplot as plt
 
 class MyLaunch(server.Launch):
@@ -12,12 +11,6 @@ class MyLaunch(server.Launch):
 								{"label": 'Max Return', "value": 15, "variable_name": 'max_incl', "input_type":'text'},
 						],
 					"controls" : [
-						{"output_type" : "d3",
-							"control_type" : "button",
-							"button_label" : "Make d3 Bar Plot",
-							"button_id" : "submit-d3",
-							"text_fields" : []
-						},
 						{"output_type" : "image",
 							"control_type" : "button",
 							"output_name" : "image",
@@ -73,22 +66,7 @@ class MyLaunch(server.Launch):
 		fig.autofmt_xdate(rotation=45)
 		return fig
 
-
-	def getD3(self, xlabel="name", ylabel="count"):
-		df = pd.DataFrame({xlabel:[],ylabel:[]})
-		p = d3py.PandasFigure(df)
-		p += d3py.Bar(x = xlabel, y=ylabel)
-		# p += d3py.Line(x = xlabel, y=ylabel)
-		p += d3py.xAxis(x = xlabel)
-		p += d3py.yAxis(y = ylabel)
-		p.update()
-		p.js.merge(p.js_geoms)
-		d3 = {}
-		d3['js'] = p.js
-		d3['css'] = "%s\n%s"%(p.css, p.css_geoms)
-		return d3
-
 ml = MyLaunch()
-ml.launch()
+ml.launch(host="")
 # input_params = {'ex_first':0,'max_incl':15}
 
