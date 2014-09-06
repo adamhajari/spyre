@@ -3,7 +3,6 @@ import server
 
 import numpy as np
 import pandas as pd
-import d3py
 import matplotlib.pyplot as plt
 
 class MyLaunch(server.Launch):
@@ -110,6 +109,10 @@ class MyLaunch(server.Launch):
 		fig.autofmt_xdate(rotation=45)
 		return fig
 
+<<<<<<< HEAD
+ml = MyLaunch()
+ml.launch(host="")
+=======
 	def getPlot2(self, data):
 		fig = plt.figure()  # make figure object
 		splt = fig.add_subplot(1,1,1)
@@ -145,5 +148,6 @@ class MyLaunch(server.Launch):
 
 ml = MyLaunch()
 ml.launch(port=9091)
+>>>>>>> ba206bfbfdf3e3279c4c6b5ba26968da70d4955f
 # input_params = {'ex_first':0,'max_incl':15}
 
