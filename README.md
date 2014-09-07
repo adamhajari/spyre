@@ -94,6 +94,121 @@ If all goes smoothly your spyre app should look like this:
 
 ![simple sine example screenshot](https://raw.githubusercontent.com/adamhajari/spyre/master/examples/screenshots/simple_sine_screenshot.png)
 
+Example 2: Tabs and Tables
+----
+Let's look at another example to introduce tabs and tables. Many apps will require multiple outputs. In these cases, it's often cleaner to put each output in a separte tab. In the example below we'll show historical stock data in a line graph and a table, each in it's own tab. Here's the code:
+
+```
+from spyre import server
+
+import pandas as pd
+import matplotlib.pyplot as plt
+from matplotlib.dates import DateFormatter
+import urllib2
+import json
+from datetime import datetime
+
+class MyLaunch(server.Launch):
+	templateVars = {"title" : "Historical Stock Prices",
+					"inputs" : [
+						{	"input_type":'dropdown',
+							"label": 'Company', 
+							"options" : [
+								{"label": "Google", "value":"GOOG"},
+								{"label": "Yahoo", "value":"YHOO"},
+								{"label": "Apple", "value":"AAPL"}
+							],
+							"variable_name": 'ticker', 
+						}
+						],
+					"controls" : [
+						{  "control_type" : "button",
+							"label" : "get historical stock prices",
+							"control_id" : "submit_plot",
+							"text_fields" : []
+						}
+					],
+					"tabs" : ["Plot", "Table"],
+					"outputs" : [
+						{  "output_type" : "image",
+							"output_id" : "plot",
+							"control_id" : "submit_plot",
+							"tab" : "Plot",
+							"on_page_load" : "true",
+						},
+						{  "output_type" : "table",
+							"output_id" : "table_id",
+							"control_id" : "submit_plot",
+							"tab" : "Table",
+							"on_page_load" : "true",
+						}
+					]
+				}
+
+	# cache values within the Launch object to avoid reloading the data each time
+	data_params = None
+	data = pd.DataFrame()
+
+	def getData(self, params):
+		if params != self.data_params:
+			ticker = params['ticker']
+			# make call to yahoo finance api to get historical stock data
+			api_url = 'https://chartapi.finance.yahoo.com/instrument/1.0/{}/chartdata;type=quote;range=3m/json'.format(ticker)
+			result = urllib2.urlopen(api_url)
+			r = result.read()
+			data = json.loads(r.replace('finance_charts_json_callback( ','')[:-1])  # strip away the javascript and load json
+			# make call to yahoo finance api to get historical stock data
+			self.company_name = data['meta']['Company-Name']
+			df = pd.DataFrame.from_records(data['series'])
+			df['Date'] = pd.to_datetime(df['Date'],format='%Y%m%d')
+			self.data = df
+			self.data_params = ticker
+		return self.data
+
+	def getPlot(self, params):
+		df = self.getData(params)  # get data
+		dates = pd.DatetimeIndex(df['Date'])
+		fig = plt.figure()
+		splt = fig.add_subplot(1,1,1)
+		splt.plot_date(dates, df['close'], fmt='-', label="close")
+		splt.plot_date(dates, df['high'], fmt='-', label="high")
+		splt.plot_date(dates, df['low'], fmt='-', label="low")
+		splt.set_ylabel('Price')
+		splt.set_xlabel('Date')
+		splt.set_title(self.company_name)
+		splt.legend(loc=2)
+		splt.xaxis.set_major_formatter( DateFormatter('%m-%d-%Y') )
+		fig.autofmt_xdate()
+		return fig
+
+ml = MyLaunch()
+ml.launch(port=9093)
+
+```
+There's a few things to point out here. Let's start by looking at templateVars:
+
+1. There's a new input type: "dropdown. It still has a label and variable_name (that's common to all input types), but now you also need to enumerate all of the options for the dropdown menu. For each of the options, "label" is displayed in the menu and "value" is value of the vairable that gets passed around with the params.
+2. There's a tabs key. the value is a list of tab names. These names are used as labels for the tabs as well as html ids so they can't contain any spaces.
+3. There's a new output type: "table". It requires all of the same parameters as the image output type.
+4. There's a new "tabs parameter for the outputs. This should match the name of one of the items listed in the tabs list.
+
+We're also overriding getData, a method which should fetch or generate the data that will go into the table.  Just like getPlot, it takes a params argument which is a dictionary containing all of our input params. getData should return a pandas DataFrame.
+
+
+> **Note:** getData makes a call to a yahoo finance api. We're also going to plot this same data, so we'll just have getPlot call getData. Since we don't want to have to make two calls to the yahoo api, we cache the data the first time we call getData and use the cached version unless the input params change. 
+
+Launch the app just as you did in the previous example. The app now has two tabs.
+
+### Plot tab ###
+![stocks graph tab example screenshot](https://raw.githubusercontent.com/adamhajari/spyre/master/examples/screenshots/stocks_graph_screenshot.png)
+
+
+### Table tab ###
+![stocks table tab example screenshot](https://raw.githubusercontent.com/adamhajari/spyre/master/examples/screenshots/stocks_table_screenshot.png)
+
+
+
+
 License
 ----
 
@@ -105,4 +220,3 @@ MIT
 [pandas]:http://pandas.pydata.org/pandas-docs/stable/install.html#recommended-dependencies
 [matplotlib]:http://matplotlib.org/users/installing.html
 [simple sine example screenshot]:https://raw.githubusercontent.com/adamhajari/spyre/master/examples/screenshots/simple_sine_screenshot.png
-
