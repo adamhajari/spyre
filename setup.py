@@ -29,7 +29,6 @@ setup(
     install_requires=[
         "pandas",
         "cherrypy",
-        "simplejson",
         "jinja2",
         "matplotlib",
     ]

@@ -12,12 +12,42 @@ hr{
 	width: 95%;
 }
 
+.slider{
+    padding:2px;
+    margin:1px 1px 8px 1px;
+    height:30px;
+    background: #f4f4f4
+}
+
+.slider_value {
+    padding: 4px;
+    margin: 1px 2px;
+    border: 1px 2px;
+    font-size: 12px;
+    float:left;
+    width:13%;
+}
+
+.slider_slider {
+    width:62%;
+}
+
 input {
     padding: 5px;
     margin: 0 0 10px 5px;
     font: 14px bold;
 	font-family: Arial, Helvetica, sans-serif;
 	width: 80%;
+}
+
+select {
+    padding: 5px;
+    margin: 5px 0 11px 5px;
+    font: 14px bold;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f4f4f4;
+    width: 80%;
+    height: 30px;
 }
 
 .button {
@@ -62,7 +92,6 @@ img {
     width:75%;
     float:left;
 }​
-
 
 
 .bar {

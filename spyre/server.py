@@ -18,13 +18,14 @@ templateEnv = jinja2.Environment( loader=templateLoader )
 
 
 class Root(object):
-	def __init__(self,templateVars=None, getJsonDataFunction=None, getDataFunction=None, getPlotFunction=None, getD3Function=None, getHTMLFunction=None):
+	def __init__(self,templateVars=None, getJsonDataFunction=None, getDataFunction=None, getPlotFunction=None, getD3Function=None, getHTMLFunction=None, noOutputFunction=None):
 		self.templateVars = templateVars
 		self.getJsonData = getJsonDataFunction
 		self.getData = getDataFunction
 		self.getPlot = getPlotFunction
 		self.getD3 = getD3Function
 		self.getHTML = getHTMLFunction
+		self.noOutput = noOutputFunction
 		d3 = self.getD3()
 		self.templateVars['d3js'] = d3['js']
 		self.templateVars['d3css'] = d3['css']
@@ -32,7 +33,6 @@ class Root(object):
 		v = View.View()
 		self.templateVars['js'] = v.getJS()
 		self.templateVars['css'] = v.getCSS()
-		print self.templateVars['d3css']
 
 	@cherrypy.expose
 	def index(self):
@@ -59,7 +59,6 @@ class Root(object):
 		df = self.getData(args)
 		cherrypy.response.headers['Content-Type'] = 'text/html'
 		html = df.to_html(index=False)
-		html = df.to_html(index=False)
 		i = 0
 		for col in df.columns:
 			html = html.replace('<th>{}'.format(col),'<th><a onclick="sortTable({},"table0");"><b>{}</b></a>'.format(i,col))
@@ -74,33 +73,27 @@ class Root(object):
 		cherrypy.response.headers['Content-Type'] = 'text/html'
 		return html
 
+	@cherrypy.expose
+	def no_output(self, **args):
+		self.noOutput(args)
+		return ''
+
 class Launch:
-	templateVars = {"title" : "Title",
-					"html" : "",
-					"shared_fields" : [
-								{"label": 'Title', "value": 'Graph Title', "variable_name": 'var1', "input_type":'text'},
-						],
-					"controls" : [
-					{"output_type" : "image",
-						"control_type" : "button",
-						"control_name" : "load_image",
-						"button_label" : "Make Line Graph",
-						"button_id" : "submit-plot",
-					},
-					{"output_type" : "table",
-						"control_type" : "button",
-						"control_name" : "load_table",
-						"button_label" : "Load Table",
-						"button_id" : "load-table",
-						"on_page_load" : "true",
-					},
-					{"output_type" : "html",
-						"control_type" : "button",
-						"control_name" : "load_html",
-						"button_label" : "show html",
-						"button_id" : "show-html",
-					},
-					]
+	templateVars = templateVars = {"title" : "Simple Sine Wave",
+					"inputs" : [{	"input_type":'text',
+									"label": 'Variable', 
+									"value" : 5,
+									"variable_name": 'var1', 
+								}],
+					"controls" : [{	"control_type" : "button",
+									"control_id" : "button1",
+									"label" : "plot",
+								}],
+					"outputs" : [{	"output_type" : "image",
+									"output_id" : "plot",
+									"control_id" : "button1",
+									"on_page_load" : "true",
+								}]
 				}
 				
 	def getJsonData(self, input_params):
@@ -135,7 +128,6 @@ class Launch:
 		returns:
 		matplotlib.pyplot figure
 		"""
-		print input_params
 		title = input_params['var1']
 		x = range(0,10)
 		fig = plt.figure()
@@ -144,17 +136,35 @@ class Launch:
 		splt.plot(x,x)
 		return fig
 
+	def getHTML(self, input_params):
+		"""Override this function
+
+		arguments:
+		input_params (dict)
+
+		returns:
+		html string
+		"""
+		return "<b>hello</b> <i>world</i>"
+
+	def noOutput(self, input_params):
+		"""Override this function
+		A method for doing stuff that doesn't reququire an output (refreshing data,
+			updating variables, etc.)
+
+		arguments:
+		input_params (dict)
+		"""
+		pass
+
 	def getD3(self):
 		d3 = {}
 		d3['css'] = ""
 		d3['js'] = ""
 		return d3
 
-	def getHTML(self, input_params):
-		return "<b>hello</b> <i>world</i>"
-
 	def launch(self,host="local",port=8080):
-		webapp = Root(templateVars=self.templateVars, getJsonDataFunction=self.getJsonData, getDataFunction=self.getData, getPlotFunction=self.getPlot, getD3Function=self.getD3, getHTMLFunction=self.getHTML)
+		webapp = Root(templateVars=self.templateVars, getJsonDataFunction=self.getJsonData, getDataFunction=self.getData, getPlotFunction=self.getPlot, getD3Function=self.getD3, getHTMLFunction=self.getHTML, noOutputFunction=self.noOutput)
 		if host!="local":
 			cherrypy.server.socket_host = '0.0.0.0'
 		cherrypy.server.socket_port = port
