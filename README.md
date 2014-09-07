@@ -90,7 +90,9 @@ Assuming you name this file "simple_sine_example.py" you can launch this app fro
 ```
 The output will indicate where the app is being served (usually something like http://127.0.0.1:9095)
 
+If all goes smoothly your spyre app should look like this:
 
+![simple sine example screenshot](https://raw.githubusercontent.com/adamhajari/spyre/master/examples/screenshots/simple_sine_screenshot.png)
 
 License
 ----
@@ -102,4 +104,5 @@ MIT
 [jinja2]:http://jinja.pocoo.org/docs/dev/intro/#installation
 [pandas]:http://pandas.pydata.org/pandas-docs/stable/install.html#recommended-dependencies
 [matplotlib]:http://matplotlib.org/users/installing.html
+[simple sine example screenshot]:https://raw.githubusercontent.com/adamhajari/spyre/master/examples/screenshots/simple_sine_screenshot.png
 
