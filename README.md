@@ -187,7 +187,7 @@ ml.launch(port=9093)
 ```
 There's a few things to point out here. Let's start by looking at templateVars:
 
-1. There's a new input type: "dropdown. It still has a label and variable_name (that's common to all input types), but now you also need to enumerate all of the options for the dropdown menu. For each of the options, "label" is displayed in the menu and "value" is value of the vairable that gets passed around with the params.
+1. There's a new dropdown input type. It still has a label and variable_name (that's common to all input types), but you now also need to enumerate all of the options for the dropdown menu. For each of the options, "label" is displayed in the menu and "value" is value of the vairable that gets passed around with the params.
 2. There's a tabs key. the value is a list of tab names. These names are used as labels for the tabs as well as html ids so they can't contain any spaces.
 3. There's a new output type: "table". It requires all of the same parameters as the image output type.
 4. There's a new "tabs parameter for the outputs. This should match the name of one of the items listed in the tabs list.
