@@ -1,7 +1,7 @@
 Spyre
 =========
 
-Spyre is Web Application Framework for providing a simple user interface for Python data projects.
+Spyre is a Web Application Framework for providing a simple user interface for Python data projects.
 
 
 Requirements
@@ -86,7 +86,7 @@ That's all there is to it. To launch our app we just need to create an instance 
 
 Assuming you name this file "simple_sine_example.py" you can launch this app from the command line with:
 ```
-> python simple_sine_example.py
+    $ python simple_sine_example.py
 ```
 The output will indicate where the app is being served (usually something like http://127.0.0.1:9095)
 
