@@ -3,43 +3,44 @@ import server
 
 import numpy as np
 import pandas as pd
-import d3py
 import matplotlib.pyplot as plt
 
 class MyLaunch(server.Launch):
 	templateVars = {"title" : "Spyre Example",
-					"shared_fields" : [
-								{"label": 'Exclude First', "value": 0, "variable_name": 'ex_first', "input_type":'text'},
-								{"label": 'Max Return', "value": 15, "variable_name": 'max_incl', "input_type":'text'},
+					"inputs" : [
+						{	'input_type' : 'text',
+							"label": 'Exclude First', 
+							"value": 0, 
+							"variable_name": 'ex_first', 
+						},
+						{	"input_type" :'text',
+							"label": 'Max Categories To Show', 
+							"value": 15, 
+							"variable_name": 'max_incl', 
+						},
 						],
 					"controls" : [
 						{	"control_type" : "button",
 							"control_name" : "button1",
-							"button_label" : "Make Matplotlib Graph",
+							"label" : "Make Matplotlib Graph",
 							"button_id" : "submit_plot",
 							"text_fields" : []
 						},
 						{	
 							"control_type" : "button",
 							"control_name" : "button2",
-							"button_label" : "Make Matplotlib Graph 2",
+							"label" : "Make Matplotlib Graph 2",
 							"button_id" : "submit_plot2",
 							"text_fields" : []
 						},
 						{	"control_type" : "button",
 							"control_name" : "table_button",
-							"button_label" : "Load Table",
+							"label" : "Load Table",
 							"button_id" : "load_table",
-							"text_fields" : []
-						},
-						{	"control_type" : "button",
-							"control_name" : "d3_button",
-							"button_label" : "Make d3 Bar Plot",
-							"button_id" : "submit_d3",
 							"text_fields" : []
 						}
 					],
-					"tabs" : ["Plot1", "Plot2", "Table", "html", "d3"],
+					"tabs" : ["Plot1", "Plot2", "Table", "html"],
 					"outputs" : [
 						{	"output_type" : "image",
 							"output_id" : "image1",
@@ -57,11 +58,6 @@ class MyLaunch(server.Launch):
 							"control_name" : "table_button",
 							"tab" : "Table",
 						},
-						{	"output_type" : "d3",
-							"control_name" : "d3_button",
-							"output_id" : "d3_output",
-							"tab" : "d3",
-						},
 						{	"output_type" : "html",
 							"output_id" : "custom_html",
 							"control_name" : "button1",
@@ -71,7 +67,7 @@ class MyLaunch(server.Launch):
 					]
 				}
 
-	# cache values within the Launch object to avoid reloading the data each time
+	# cache values to avoid reloading the data each time
 	data_params = None
 	data = pd.DataFrame()
 
@@ -124,26 +120,9 @@ class MyLaunch(server.Launch):
 		fig.autofmt_xdate(rotation=45)
 		return fig
 
-
-
-	def getD3(self, xlabel="name", ylabel="count"):
-		df = pd.DataFrame({xlabel:[],ylabel:[]})
-		p = d3py.PandasFigure(df)
-		p += d3py.Bar(x = xlabel, y=ylabel)
-		# p += d3py.Line(x = xlabel, y=ylabel)
-		p += d3py.xAxis(x = xlabel)
-		p += d3py.yAxis(y = ylabel)
-		p.update()
-		p.js.merge(p.js_geoms)
-		d3 = {}
-		d3['js'] = p.js
-		d3['css'] = "%s\n%s"%(p.css, p.css_geoms)
-		return d3
-
 	def getHTML(self, input_params):
 		return "<b>App Description: </b> <i>This</i> is where you could describe your app."
 
 ml = MyLaunch()
 ml.launch(port=9091)
-# input_params = {'ex_first':0,'max_incl':15}
 

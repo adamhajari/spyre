@@ -2,14 +2,14 @@ from setuptools import setup, find_packages
 
 setup(
     name='DataSpyre',
-    version='0.0.2',
-    description='DataSpyre makes it easy to build interactive web applications,  and requires no knowledge of HTML, CSS, or Javascript.',
+    version='0.0.3',
+    description='Spyre makes it easy to build interactive web applications, and requires no knowledge of HTML, CSS, or Javascript.',
     url='https://github.com/adamhajari/spyre',
     author='Adam Hajari',
     author_email='adam@nextbigsound.com',
     license='MIT',
     classifiers=[
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 4 - Beta',
         'Framework :: CherryPy',
         'Intended Audience :: Education',
         'Intended Audience :: Science/Research',
@@ -21,7 +21,6 @@ setup(
     keywords='web application template data visualization',
     include_package_data = True,    # include everything in source control
     packages = ['spyre'],  # include all packages under src
-    # package_dir = {'':'dataspyre'},   # tell distutils packages are under src
     package_data = {
         '': ['*.js','*.css','*.html'],
         'public': ['js/*.js','css/*.css'],

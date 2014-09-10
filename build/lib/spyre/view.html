@@ -15,19 +15,18 @@
 
 			function updateSharedParameters(){
 				var shared_params = "";
-				{% for field in shared_fields %}
-					var {{field['variable_name']}} = $("#{{field['variable_name']}}").val();
-					shared_params = shared_params+"{{field['variable_name']}}="+{{field['variable_name']}}+"&";
-					console.log(shared_params)
+				{% for input in inputs %}
+					var {{input['variable_name']}} = $("#{{input['variable_name']}}").val();
+					shared_params = shared_params+"{{input['variable_name']}}="+{{input['variable_name']}}+"&";
 				{% endfor %}
 				return shared_params;
 			}
 
 			// connect controller function to output functions
 			{% for control in controls %}
-				function {{control['control_name']}}(){
+				function {{control['control_id']}}(){
 					{% for output in outputs %}
-						{% if output['control_name']==control['control_name'] %}
+						{% if output['control_id']==control['control_id'] %}
 							{{output['output_id']}}()
 						{% endif %}
 					{% endfor %}
@@ -39,12 +38,10 @@
 				{% if output['output_type']=='image' %}
 					// load image function
 					function {{output['output_id']}}(){
-						$("#{{output['output_id']}}").empty();
 						var params = updateSharedParameters();
 						params = params+"output_id={{output['output_id']}}&";
-						console.log(params);
 						var plot = $("<img />").attr('src', "/plot?"+params)
-						$("#{{output['output_id']}}").append(plot);
+						$("#{{output['output_id']}}").html(plot);
 					}
 				{% endif %}
 
@@ -67,18 +64,26 @@
 						updateSharedParameters()
 						var params = updateSharedParameters();
 						params = params+"output_id={{output['output_id']}}&";
-						console.log('function executed')
 						$.ajax({
 							type: 'GET',
 							url : "/table?"+params
 						}).done(function(response){
-								console.log('response')
-								$("#{{output['output_id']}}").html(response);
-								initTable("sortable");
-							});
-						;
+							$("#{{output['output_id']}}").html(response);
+							initTable("sortable");
+						});
 					}
-					
+				{% endif %}
+
+				{% if output['output_type']=='no_output' %}
+					function {{output['output_id']}}(){
+						updateSharedParameters()
+						var params = updateSharedParameters();
+						params = params+"output_id={{output['output_id']}}&";
+						$.ajax({
+							type: 'GET',
+							url : "/no_output?"+params
+						});
+					}
 				{% endif %}
 
 				{% if output['output_type']=='d3' %}
@@ -116,10 +121,29 @@
 					e.preventDefault();
     			});
 
+
+				// jquery for sliders
+				{% for input in inputs %}
+					{% if input['input_type']=="slider" %}
+						// update slider text box when slider moves
+						jQuery("#{{input['variable_name']}}").on('change mousemove', function(e)  {
+							$("#{{input['variable_name']}}_value").val($("#{{input['variable_name']}}").val())
+		    			});
+		    			$("#{{input['variable_name']}}_value").val($("#{{input['variable_name']}}").val())
+
+		    			// update slider position when text box changes
+		    			jQuery("#{{input['variable_name']}}_value").on('change keyup', function(e)  {
+							$("#{{input['variable_name']}}").val($("#{{input['variable_name']}}_value").val())
+		    			});
+		    			$("#{{input['variable_name']}}").val($("#{{input['variable_name']}}_value").val())
+		    		{% endif %}
+				{% endfor %}
+
+
 				// connect controller functions to controllers
 				{% for control in controls %}
-					$("#{{control['control_name']}}").click(function(e) {
-						{{control['control_name']}}()
+					$("#{{control['control_id']}}").click(function(e) {
+						{{control['control_id']}}()
 					});
 
 				{% endfor %}
@@ -142,18 +166,33 @@
 		<div class="left-panel">
 			<h1>{{title}}</h1>
 			<hr>
-			{% for field in shared_fields %}
-				{{field['label']}}: <input type="{{field['input_type']}}" value="{{field['value']}}" id="{{field['variable_name']}}" /><br>
+			<!-- inputs -->
+			{% for input in inputs %}
+				<!-- text input -->
+				{% if input['input_type']=="text" %}
+					{{input['label']}}: <input type=text value="{{input['value']}}" id="{{input['variable_name']}}" /><br>
+				<!-- dropdown menu -->
+				{% elif input['input_type']=="dropdown" %}
+					{{input['label']}}:
+					<select id="{{input['variable_name']}}">
+					{% for option in input['options'] %}
+						<option value={{option['value']}}>{{option['label']}}</option>
+					{% endfor %}
+					</select><br>
+				<!-- sliders -->
+				{% elif input['input_type']=="slider" %}
+					{{input['label']}}: 
+					<div class="slider">
+						<input type="text" class="slider_value" id="{{input['variable_name']}}_value" value="{{input['value']}}">
+						<input type="range" class="slider_slider" id="{{input['variable_name']}}" min="{{input['min']}}" max="{{input['max']}}" step="{{input['step']}}"  value="{{input['value']}}" />
+					</div>
+				{% endif %}
 			{% endfor %}
 
+			<!-- buttons -->
 			{% for control in controls %}
-				{% for field in control['text_fields'] %}
-					{{field['label']}}: <input type="{{field['input_type']}}" value="{{field['value']}}" id="{{field['variable_name']}}" /><br>
-				{% endfor %}
-
-				<!-- buttons -->
 				{% if control['control_type']=="button" %}
-					<div class="button" id="{{control['control_name']}}" >{{control['button_label']}}</div><br>
+					<div class="button" id="{{control['control_id']}}" >{{control['label']}}</div><br>
 				{% endif %}
 			{% endfor %}
 		</div>

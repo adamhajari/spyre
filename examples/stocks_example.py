@@ -24,7 +24,6 @@ class MyLaunch(server.Launch):
 						{	"control_type" : "button",
 							"label" : "get historical stock prices",
 							"control_id" : "submit_plot",
-							"text_fields" : []
 						}
 					],
 					"tabs" : ["Plot", "Table"],

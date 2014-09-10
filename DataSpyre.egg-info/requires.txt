@@ -1,5 +1,4 @@
 pandas
 cherrypy
-simplejson
 jinja2
 matplotlib
