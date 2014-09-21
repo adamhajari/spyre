@@ -40,6 +40,18 @@ input {
 	width: 80%;
 }
 
+input[type="radio"] {
+    padding: 5px;
+    margin: 0 0 10px 5px;
+    width: 10%;
+}
+
+input[type="checkbox"] {
+    padding: 5px;
+    margin: 0 0 10px 5px;
+    width: 10%;
+}
+
 select {
     padding: 5px;
     margin: 5px 0 11px 5px;

@@ -8,44 +8,54 @@
 		<!-- load javascript -->
 		<script type='text/javascript'>{{js}}</script>
 
-
 		<script type='text/javascript'>
-
 			{{d3js}}
-
 			function updateSharedParameters(){
 				var shared_params = "";
-				{% for input in inputs %}
-					var {{input['variable_name']}} = $("#{{input['variable_name']}}").val();
+				{% for input in inputs -%}
+					{% if input['input_type']=="radiobuttons" -%}
+						var {{input['variable_name']}} = $('input[name="{{input['variable_name']}}"]:checked').val();
+					{% elif input['input_type']=="checkboxgroup" -%}
+						var {{input['variable_name']}} = new Array();
+						{{input['variable_name']}}.push("__list__");
+						$.each($('input[name="{{input['variable_name']}}"]:checked'), function() {
+							{{input['variable_name']}}.push($(this).val());
+						});
+					{% elif input['input_type']=="slider" -%}
+						var {{input['variable_name']}} = "__float__".concat($("#{{input['variable_name']}}").val());
+					{% else %}
+						var {{input['variable_name']}} = $("#{{input['variable_name']}}").val();
+					{%- endif %}
 					shared_params = shared_params+"{{input['variable_name']}}="+{{input['variable_name']}}+"&";
-				{% endfor %}
+				{%- endfor %}
 				return shared_params;
 			}
 
 			// connect controller function to output functions
-			{% for control in controls %}
+			{%- for control in controls %}
 				function {{control['control_id']}}(){
 					{% for output in outputs %}
-						{% if output['control_id']==control['control_id'] %}
+						{% if output['control_id']==control['control_id'] -%}
 							{{output['output_id']}}()
-						{% endif %}
-					{% endfor %}
+						{%- endif %}
+					{%- endfor %}
 				}
 			{% endfor %}
 
 			// define output functions
-			{% for output in outputs %}
-				{% if output['output_type']=='image' %}
-					// load image function
+			{%- for output in outputs %}
+				{%- if output['output_type']=='plot' %}
+					// load plot function
 					function {{output['output_id']}}(){
+						console.log("hey");
 						var params = updateSharedParameters();
 						params = params+"output_id={{output['output_id']}}&";
 						var plot = $("<img />").attr('src', "/plot?"+params)
 						$("#{{output['output_id']}}").html(plot);
 					}
-				{% endif %}
+				{%- endif %}
 
-				{% if output['output_type']=='html' %}
+				{%- if output['output_type']=='html' %}
 					// custom html function
 					function {{output['output_id']}}(){
 						var params = updateSharedParameters();
@@ -57,9 +67,10 @@
 							}
 						});
 					}
-				{% endif %}
+				{%- endif %}
 
-				{% if output['output_type']=='table' %}
+				{%- if output['output_type']=='table' %}
+					// table output function
 					function {{output['output_id']}}(){
 						updateSharedParameters()
 						var params = updateSharedParameters();
@@ -72,9 +83,10 @@
 							initTable("sortable");
 						});
 					}
-				{% endif %}
+				{%- endif %}
 
-				{% if output['output_type']=='no_output' %}
+				{%- if output['output_type']=='no_output' %}
+					// no_output output function
 					function {{output['output_id']}}(){
 						updateSharedParameters()
 						var params = updateSharedParameters();
@@ -82,16 +94,18 @@
 						$.ajax({
 							type: 'GET',
 							url : "/no_output?"+params
+						}).done(function(){
+							{% if output['alert_message'] is defined %} alert("{{output['alert_message']}}"); {% endif %}
 						});
 					}
-				{% endif %}
+				{%- endif %}
 
-				{% if output['output_type']=='d3' %}
+				{%- if output['output_type']=='d3' %}
 					function {{output['output_id']}}(){
 						show_d3_plot()					
 					}
-				{% endif %}
-			{% endfor %}
+				{%- endif %}
+			{%- endfor %}
 
 			// custom function for handling d3 plots
 			function show_d3_plot(){
@@ -111,20 +125,14 @@
 				// jquery for tabs
 				jQuery('.tabs .tab-links a').on('click', function(e)  {
 					var currentAttrValue = jQuery(this).attr('href');
-
-					// Show/Hide Tabs
-					jQuery('.tabs ' + currentAttrValue).show().siblings().hide();
-
-					// Change/remove current tab to active
-					jQuery(this).parent('li').addClass('active').siblings().removeClass('active');
-
+					jQuery('.tabs ' + currentAttrValue).show().siblings().hide();  // Show/Hide Tabs
+					jQuery(this).parent('li').addClass('active').siblings().removeClass('active');  // Change/remove current tab to active
 					e.preventDefault();
     			});
 
-
-				// jquery for sliders
-				{% for input in inputs %}
-					{% if input['input_type']=="slider" %}
+				{% for input in inputs -%}
+					{% if input['input_type']=="slider" -%}
+					// jquery for sliders
 						// update slider text box when slider moves
 						jQuery("#{{input['variable_name']}}").on('change mousemove', function(e)  {
 							$("#{{input['variable_name']}}_value").val($("#{{input['variable_name']}}").val())
@@ -136,125 +144,144 @@
 							$("#{{input['variable_name']}}").val($("#{{input['variable_name']}}_value").val())
 		    			});
 		    			$("#{{input['variable_name']}}").val($("#{{input['variable_name']}}_value").val())
-		    		{% endif %}
-				{% endfor %}
-
+		    		{%- endif %}
+				{%- endfor %}
 
 				// connect controller functions to controllers
-				{% for control in controls %}
+				{%- for control in controls %}
 					$("#{{control['control_id']}}").click(function(e) {
 						{{control['control_id']}}()
 					});
+				{%- endfor %}
 
-				{% endfor %}
-
-				{% for output in outputs %}
-					// if on_page_load is true, load when page loads
-					{% if output['on_page_load']=='true' %}
-						{{output['output_id']}}()
-					{% endif %}
-				{% endfor %}
+				{% for output in outputs -%}
+					{%- if output['on_page_load'] %}
+					{{output['output_id']}}()  // if on_page_load is true, load when page loads
+					{%- endif %}
+				{%- endfor %}
 
 			});
 		</script>
 	</head>
 
 	<body>
-		<div class="outer">
+	<div class="outer">
 
 		<!-- control panel -->
 		<div class="left-panel">
 			<h1>{{title}}</h1>
 			<hr>
 			<!-- inputs -->
-			{% for input in inputs %}
-				<!-- text input -->
-				{% if input['input_type']=="text" %}
-					{{input['label']}}: <input type=text value="{{input['value']}}" id="{{input['variable_name']}}" /><br>
-				<!-- dropdown menu -->
-				{% elif input['input_type']=="dropdown" %}
-					{{input['label']}}:
-					<select id="{{input['variable_name']}}">
-					{% for option in input['options'] %}
+			{%- for input in inputs %}
+				{% if input['input_type']=="text" -%}
+					<!-- text input -->
+					<form action="javascript:{{input['action_id']}}()">
+					<div class="text_input">{{input['label']}}: <input type=text value="{{input['value']}}" id="{{input['variable_name']}}" />
+					</form>
+					<br></div>
+				
+				<!-- dropdown -->
+				{% elif input['input_type']=="dropdown" -%}
+					<!-- dropdown menu -->
+					<div class="dropdown_input">{{input['label']}}:
+					<select id="{{input['variable_name']}}"  onchange="{{input['action_id']}}();" onfocus="this.selectedIndex = -1;">
+					{% for option in input['options'] -%}
 						<option value={{option['value']}}>{{option['label']}}</option>
-					{% endfor %}
-					</select><br>
-				<!-- sliders -->
-				{% elif input['input_type']=="slider" %}
-					{{input['label']}}: 
-					<div class="slider">
-						<input type="text" class="slider_value" id="{{input['variable_name']}}_value" value="{{input['value']}}">
-						<input type="range" class="slider_slider" id="{{input['variable_name']}}" min="{{input['min']}}" max="{{input['max']}}" step="{{input['step']}}"  value="{{input['value']}}" />
+					{%- endfor %}
+					</select><br></div>
+
+				<!-- radiobuttons -->
+				{% elif input['input_type']=="radiobuttons" -%}
+					<div class="radiobuttons_input" id="{{input['variable_name']}}">{{input['label']}}:
+					{% for option in input['options'] -%}
+						<br><input type="radio" name="{{input['variable_name']}}" value={{option['value']}} {% if option['checked']==True %} checked {% endif %} onclick="{{input['action_id']}}()">{{option['label']}}
+					{%- endfor %}
 					</div>
-				{% endif %}
-			{% endfor %}
+
+				<!-- checkbox group -->
+				{% elif input['input_type']=="checkboxgroup" -%}
+					<div class="checkboxgroup_input" id="{{input['variable_name']}}">{{input['label']}}:
+					{% for option in input['options'] -%}
+						<br><input type="checkbox" name="{{input['variable_name']}}" value={{option['value']}} {% if option['checked']==True %} checked {% endif %} onclick="{{input['action_id']}}()">{{option['label']}}
+					{%- endfor %}
+					</div>
+				
+				<!-- sliders -->
+				{% elif input['input_type']=="slider" -%}
+					<div class="slider_input">{{input['label']}}: 
+					<div class="slider">
+						<input type="text" class="slider_value" id="{{input['variable_name']}}_value" value="{{input['value']}}" onchange="{{input['action_id']}}()">
+						<input type="range" class="slider_slider" id="{{input['variable_name']}}" min="{{input['min']}}" max="{{input['max']}}" step="{{input['step']}}"  value="{{input['value']}}" onchange="{{input['action_id']}}()" />
+					</div>
+					</div>
+				{%- endif %}
+			{%- endfor %}
 
 			<!-- buttons -->
-			{% for control in controls %}
-				{% if control['control_type']=="button" %}
+			{%- for control in controls %}
+				{% if control['control_type']=="button" -%}
 					<div class="button" id="{{control['control_id']}}" >{{control['label']}}</div><br>
-				{% endif %}
-			{% endfor %}
+				{%- endif %}
+			{%- endfor %}
 		</div>
 
 		<!-- output -->
 		<div class="right-panel">
-			{% if tabs is defined %}
+			{% if tabs is defined -%}
 				<div class="tabs">
 					<ul class="tab-links">
-						{% for tab in tabs %}
-							{% if loop.index == 1 %}
+						{% for tab in tabs -%}
+							{% if loop.index == 1 -%}
 								<li class="active"><a href="#{{tab}}">{{tab}}</a></li>
-							{% else %}
+							{% else -%}
 								<li><a href="#{{tab}}">{{tab}}</a></li>
-							{% endif %}
-						{% endfor %}
+							{%- endif %}
+						{%- endfor %}
 					</ul>
 
 					<div class="tab-content">
-						{% for tab in tabs %}
-							{% if loop.index == 1 %}
+						{% for tab in tabs -%}
+							{%- if loop.index == 1 %}
 								<div id="{{tab}}" class="tab active">
-							{% else %}
+							{%- else %}
 								<div id="{{tab}}" class="tab">
-							{% endif %}
-							{% for output in outputs %}
-								{% if output['tab'] == tab %}
-									<!-- images, custom html, tables, anything not d3 -->
-									{% if output['output_type'] != "d3" %}
+							{%- endif %}
+							{%- for output in outputs %}
+								{%- if output['tab'] == tab %}
+									{%- if output['output_type'] != "d3" %}
+										<!-- plots, custom html, or table -->
 										<div id="{{output['output_id']}}"></div>
-									{% endif %}
+									{%- endif %}
 
-									<!-- d3 figs go here -->
-									{% if output['output_type'] == "d3" %}
+									{%- if output['output_type'] == "d3" %}
+										<!-- d3 figs go here -->
 										<div id="chart"></div>
-									{% endif %}
-								{% endif %}
-
-							{% endfor %}
-							</div>
-						{% endfor %}
+									{%- endif %}
+								{%- endif %}
+							{%- endfor %}
+								</div>
+						{%- endfor %}
 
 					</div>
-				</div>
-			{% else %}	
+			</div>
+			{% else -%}	
 
-				{% for output in outputs %}
-					<!-- images, custom html, tables, anything not d3 -->
-					{% if output['output_type'] != "d3" %}
+				{%- for output in outputs %}
+					<!-- plots, custom html, tables, anything not d3 -->
+					{% if output['output_type'] != "d3" -%}
 						<div id="{{output['output_id']}}"></div>
-					{% endif %}
+					{%- endif %}
 
-					<!-- d3 figs go here -->
-					{% if output['output_type'] == "d3" %}
+					{% if output['output_type'] == "d3" -%}
+						<!-- d3 figs go here -->
 						<div id="chart"></div>
-					{% endif %}
-				{% endfor %}
+					{%- endif %}
+				{%- endfor %}
 
-			{% endif %}
+			{%- endif %}
 		</div>
-		</div>
-		
+
+	</div>
 	</body>
 </html>
 

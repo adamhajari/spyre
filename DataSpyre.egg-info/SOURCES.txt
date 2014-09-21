@@ -7,6 +7,7 @@ DataSpyre.egg-info/requires.txt
 DataSpyre.egg-info/top_level.txt
 spyre/View.py
 spyre/__init__.py
+spyre/example_show_all_the_inputs.py
 spyre/example_simple_sine.py
 spyre/model.py
 spyre/server.py

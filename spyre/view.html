@@ -13,7 +13,19 @@
 			function updateSharedParameters(){
 				var shared_params = "";
 				{% for input in inputs -%}
-					var {{input['variable_name']}} = $("#{{input['variable_name']}}").val();
+					{% if input['input_type']=="radiobuttons" -%}
+						var {{input['variable_name']}} = $('input[name="{{input['variable_name']}}"]:checked').val();
+					{% elif input['input_type']=="checkboxgroup" -%}
+						var {{input['variable_name']}} = new Array();
+						{{input['variable_name']}}.push("__list__");
+						$.each($('input[name="{{input['variable_name']}}"]:checked'), function() {
+							{{input['variable_name']}}.push($(this).val());
+						});
+					{% elif input['input_type']=="slider" -%}
+						var {{input['variable_name']}} = "__float__".concat($("#{{input['variable_name']}}").val());
+					{% else %}
+						var {{input['variable_name']}} = $("#{{input['variable_name']}}").val();
+					{%- endif %}
 					shared_params = shared_params+"{{input['variable_name']}}="+{{input['variable_name']}}+"&";
 				{%- endfor %}
 				return shared_params;
@@ -22,7 +34,7 @@
 			// connect controller function to output functions
 			{%- for control in controls %}
 				function {{control['control_id']}}(){
-					{% for output in outputs -%}
+					{% for output in outputs %}
 						{% if output['control_id']==control['control_id'] -%}
 							{{output['output_id']}}()
 						{%- endif %}
@@ -32,9 +44,10 @@
 
 			// define output functions
 			{%- for output in outputs %}
-				{%- if output['output_type']=='image' %}
-					// load image function
+				{%- if output['output_type']=='plot' %}
+					// load plot function
 					function {{output['output_id']}}(){
+						console.log("hey");
 						var params = updateSharedParameters();
 						params = params+"output_id={{output['output_id']}}&";
 						var plot = $("<img />").attr('src', "/plot?"+params)
@@ -57,6 +70,7 @@
 				{%- endif %}
 
 				{%- if output['output_type']=='table' %}
+					// table output function
 					function {{output['output_id']}}(){
 						updateSharedParameters()
 						var params = updateSharedParameters();
@@ -72,6 +86,7 @@
 				{%- endif %}
 
 				{%- if output['output_type']=='no_output' %}
+					// no_output output function
 					function {{output['output_id']}}(){
 						updateSharedParameters()
 						var params = updateSharedParameters();
@@ -79,6 +94,8 @@
 						$.ajax({
 							type: 'GET',
 							url : "/no_output?"+params
+						}).done(function(){
+							{% if output['alert_message'] is defined %} alert("{{output['alert_message']}}"); {% endif %}
 						});
 					}
 				{%- endif %}
@@ -138,7 +155,7 @@
 				{%- endfor %}
 
 				{% for output in outputs -%}
-					{%- if output['on_page_load']=='true' %}
+					{%- if output['on_page_load'] %}
 					{{output['output_id']}}()  // if on_page_load is true, load when page loads
 					{%- endif %}
 				{%- endfor %}
@@ -158,22 +175,43 @@
 			{%- for input in inputs %}
 				{% if input['input_type']=="text" -%}
 					<!-- text input -->
-					<div class-"text_input">{{input['label']}}: <input type=text value="{{input['value']}}" id="{{input['variable_name']}}" /><br></div>
+					<form action="javascript:{{input['action_id']}}()">
+					<div class="text_input">{{input['label']}}: <input type=text value="{{input['value']}}" id="{{input['variable_name']}}" />
+					</form>
+					<br></div>
 				
+				<!-- dropdown -->
 				{% elif input['input_type']=="dropdown" -%}
 					<!-- dropdown menu -->
-					<div class-"dropdown_input">{{input['label']}}:
-					<select id="{{input['variable_name']}}">
+					<div class="dropdown_input">{{input['label']}}:
+					<select id="{{input['variable_name']}}"  onchange="{{input['action_id']}}();" onfocus="this.selectedIndex = -1;">
 					{% for option in input['options'] -%}
 						<option value={{option['value']}}>{{option['label']}}</option>
 					{%- endfor %}
 					</select><br></div>
+
+				<!-- radiobuttons -->
+				{% elif input['input_type']=="radiobuttons" -%}
+					<div class="radiobuttons_input" id="{{input['variable_name']}}">{{input['label']}}:
+					{% for option in input['options'] -%}
+						<br><input type="radio" name="{{input['variable_name']}}" value={{option['value']}} {% if option['checked']==True %} checked {% endif %} onclick="{{input['action_id']}}()">{{option['label']}}
+					{%- endfor %}
+					</div>
+
+				<!-- checkbox group -->
+				{% elif input['input_type']=="checkboxgroup" -%}
+					<div class="checkboxgroup_input" id="{{input['variable_name']}}">{{input['label']}}:
+					{% for option in input['options'] -%}
+						<br><input type="checkbox" name="{{input['variable_name']}}" value={{option['value']}} {% if option['checked']==True %} checked {% endif %} onclick="{{input['action_id']}}()">{{option['label']}}
+					{%- endfor %}
+					</div>
+				
 				<!-- sliders -->
 				{% elif input['input_type']=="slider" -%}
-					<div class-"slider_input">{{input['label']}}: 
+					<div class="slider_input">{{input['label']}}: 
 					<div class="slider">
-						<input type="text" class="slider_value" id="{{input['variable_name']}}_value" value="{{input['value']}}">
-						<input type="range" class="slider_slider" id="{{input['variable_name']}}" min="{{input['min']}}" max="{{input['max']}}" step="{{input['step']}}"  value="{{input['value']}}" />
+						<input type="text" class="slider_value" id="{{input['variable_name']}}_value" value="{{input['value']}}" onchange="{{input['action_id']}}()">
+						<input type="range" class="slider_slider" id="{{input['variable_name']}}" min="{{input['min']}}" max="{{input['max']}}" step="{{input['step']}}"  value="{{input['value']}}" onchange="{{input['action_id']}}()" />
 					</div>
 					</div>
 				{%- endif %}
@@ -211,7 +249,7 @@
 							{%- for output in outputs %}
 								{%- if output['tab'] == tab %}
 									{%- if output['output_type'] != "d3" %}
-										<!-- images, custom html, or table -->
+										<!-- plots, custom html, or table -->
 										<div id="{{output['output_id']}}"></div>
 									{%- endif %}
 
@@ -229,7 +267,7 @@
 			{% else -%}	
 
 				{%- for output in outputs %}
-					<!-- images, custom html, tables, anything not d3 -->
+					<!-- plots, custom html, tables, anything not d3 -->
 					{% if output['output_type'] != "d3" -%}
 						<div id="{{output['output_id']}}"></div>
 					{%- endif %}

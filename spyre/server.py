@@ -42,6 +42,7 @@ class Root(object):
 
 	@cherrypy.expose
 	def plot(self, **args):
+		args = self.clean_args(args)
 		p = self.getPlot(args)
 		d = model.Plot()
 		buffer = d.getPlotPath(p)
@@ -50,12 +51,14 @@ class Root(object):
 
 	@cherrypy.expose
 	def data(self, **args):
+		args = self.clean_args(args)
 		data = self.getJsonData(args)
 		cherrypy.response.headers['Content-Type'] = 'application/json'
 		return json.dumps({'data':data,'args':args})
 
 	@cherrypy.expose
 	def table(self, **args):
+		args = self.clean_args(args)
 		df = self.getData(args)
 		cherrypy.response.headers['Content-Type'] = 'text/html'
 		html = df.to_html(index=False)
@@ -69,27 +72,44 @@ class Root(object):
 
 	@cherrypy.expose
 	def html(self, **args):
+		args = self.clean_args(args)
 		html = self.getHTML(args)
 		cherrypy.response.headers['Content-Type'] = 'text/html'
 		return html
 
 	@cherrypy.expose
 	def no_output(self, **args):
+		args = self.clean_args(args)
 		self.noOutput(args)
 		return ''
 
+	def clean_args(self,args):
+		for k,v in args.iteritems():
+			# turn checkbox group string into a list
+			if v.rfind("__list__") == 0:
+				tmp = v.split(',')
+				if len(tmp)>1:
+					args[k] = tmp[1:]
+				else:
+					args[k] = []
+			# convert to a number
+			if v.rfind("__float__") == 0:
+				args[k] = float(v[9:])
+		return args
+
+
 class Launch:
-	templateVars = templateVars = {"title" : "Simple Sine Wave",
+	templateVars = templateVars = {"title" : "Title Here",
 					"inputs" : [{	"input_type":'text',
 									"label": 'Variable', 
-									"value" : 5,
+									"value" : "Value Here",
 									"variable_name": 'var1', 
 								}],
 					"controls" : [{	"control_type" : "button",
 									"control_id" : "button1",
-									"label" : "plot",
+									"label" : "Button Label Here",
 								}],
-					"outputs" : [{	"output_type" : "image",
+					"outputs" : [{	"output_type" : "plot",
 									"output_id" : "plot",
 									"control_id" : "button1",
 									"on_page_load" : "true",
@@ -128,13 +148,9 @@ class Launch:
 		returns:
 		matplotlib.pyplot figure
 		"""
-		title = input_params['var1']
-		x = range(0,10)
-		fig = plt.figure()
-		splt = fig.add_subplot(1,1,1)
-		splt.set_title(title)
-		splt.plot(x,x)
-		return fig
+		plt.title("Override getPlot() method to generate figures")
+		plt.xlabel(input_params['var1'])
+		return plt.gcf()
 
 	def getHTML(self, input_params):
 		"""Override this function

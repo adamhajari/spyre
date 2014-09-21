@@ -1,4 +1,5 @@
-from spyre import server
+# from spyre import server
+import server
 
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -18,28 +19,29 @@ class MyLaunch(server.Launch):
 								{"label": "Apple", "value":"AAPL"}
 							],
 							"variable_name": 'ticker', 
-							"action_id": "update_data"
 						}
 						],
 					"controls" : [
-						{	"control_type" : "hidden",
-							"label" : "get historical stock prices",
-							"control_id" : "update_data",
+						{	"control_type" : "button",
+							"control_name" : "button1",
+							"button_label" : "get historical stock prices",
+							"control_id" : "submit_plot",
+							"text_fields" : []
 						}
 					],
 					"tabs" : ["Plot", "Table"],
 					"outputs" : [
-						{	"output_type" : "plot",
+						{	"output_type" : "image",
 							"output_id" : "plot",
-							"control_id" : "update_data",
+							"control_name" : "button1",
 							"tab" : "Plot",
-							"on_page_load" : True,
+							"on_page_load" : "true",
 						},
 						{	"output_type" : "table",
 							"output_id" : "table_id",
-							"control_id" : "update_data",
+							"control_name" : "button1",
 							"tab" : "Table",
-							"on_page_load" : True,
+							"on_page_load" : "true",
 						}
 					]
 				}

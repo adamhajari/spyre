@@ -1,4 +1,5 @@
-from spyre import server
+# from spyre import server
+import server
 
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -14,7 +15,6 @@ class MyLaunch(server.Launch):
 							"max" : 5,
 							"value" : 1,
 							"variable_name": 'amp', 
-							"action_id": 'plot'
 						},
 						{	"input_type":'slider',
 							"label": 'Frequency', 
@@ -22,7 +22,6 @@ class MyLaunch(server.Launch):
 							"max" : 100,
 							"value" : 50,
 							"variable_name": 'freq', 
-							"action_id": 'plot'
 						},
 						{	"input_type":'slider',
 							"label": 'Decay Rate', 
@@ -31,14 +30,20 @@ class MyLaunch(server.Launch):
 							"step" : 0.01,
 							"value" : 0.5,
 							"variable_name": 'decay', 
-							"action_id": 'plot'
 						}
 						],
-					"controls" : [],
+					"controls" : [
+						{	"control_type" : "button", 
+							"control_name" : "button1",
+							"label" : "plot",
+							"control_id" : "submit_plot",
+						}
+					],
 					"outputs" : [
-						{	"output_type" : "plot",
+						{	"output_type" : "image",
 							"output_id" : "plot",
-							"on_page_load" : True,
+							"control_id" : "submit_plot",
+							"on_page_load" : "true",
 						}
 					]
 				}

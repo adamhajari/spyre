@@ -32,14 +32,14 @@ class MyLaunch(server.Launch):
 					],
 					"tabs" : ["Plot1", "Plot2", "Table", "text"],
 					"outputs" : [
-						{	"output_type" : "image",
-							"output_id" : "image1",
+						{	"output_type" : "plot",
+							"output_id" : "plot1",
 							"control_id" : "submit_plot",
 							"tab" : "Plot1",
-							"on_page_load" : "true",
+							"on_page_load" : True,
 						},
-						{	"output_type" : "image",
-							"output_id" : "image2",
+						{	"output_type" : "plot",
+							"output_id" : "plot2",
 							"control_id" : "submit_plot2",
 							"tab" : "Plot2",
 						},
@@ -51,7 +51,7 @@ class MyLaunch(server.Launch):
 						{	"output_type" : "html",
 							"output_id" : "custom_html",
 							"tab" : "text",
-							"on_page_load" : "true",
+							"on_page_load" : True,
 						}
 					]
 				}
@@ -75,7 +75,7 @@ class MyLaunch(server.Launch):
 	def getPlot(self, params):
 		output_id = params['output_id']
 		data = self.getData(params)  # get data
-		if output_id=="image1":
+		if output_id=="plot1":
 			return self.getPlot1(data)
 		else:
 			return self.getPlot2(data)

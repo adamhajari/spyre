@@ -10,22 +10,23 @@ class SimpleSineLaunch(server.Launch):
 									"label": 'Frequency', 
 									"value" : 5,
 									"variable_name": 'freq', 
+									"action_id" : "plot",
 								}],
 					"controls" : [{	"control_type" : "button",
 									"control_id" : "button1",
 									"label" : "plot",
 								}],
-					"outputs" : [{	"output_type" : "image",
+					"outputs" : [{	"output_type" : "plot",
 									"output_id" : "plot",
 									"control_id" : "button1",
-									"on_page_load" : "true",
+									"on_page_load" : True,
 								}]
 				}
 
 	def getPlot(self, params):
 		f = float(params['freq'])
 		x = np.arange(0,6*pi,pi/50)
-		y = np.sin(f*x/(2*pi))
+		y = np.sin(f*x)
 		fig = plt.figure()
 		splt1 = fig.add_subplot(1,1,1)
 		splt1.plot(x,y)  # sine wave

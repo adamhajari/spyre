@@ -1,4 +1,5 @@
-from spyre import server
+# from spyre import server
+import server
 
 import numpy as np
 import pandas as pd
@@ -16,28 +17,28 @@ class MyLaunch(server.Launch):
 								{"label": "All", "value":"all"}
 							],
 							"variable_name": 'type', 
-							"action_id":"submit_plot"
 						}
 						],
 					"controls" : [
-						{	"control_type" : "hidden",
-							"label" : "show inventory",
-							"control_id" : "submit_plot",
+						{	"control_type" : "button",
+							"control_name" : "button1",
+							"button_label" : "show inventory",
+							"button_id" : "submit_plot",
+							"text_fields" : []
 						}
 					],
 					"tabs" : ["d3_Plot", "Matplotlib_Plot"],
 					"outputs" : [
-						{	"output_type" : "plot",
-							"output_id" : "plot1",
-							"control_id" : "submit_plot",
+						{	"output_type" : "image",
+							"output_id" : "image1",
+							"control_name" : "button1",
 							"tab" : "Matplotlib_Plot",
-							"on_page_load" : True,
+							"on_page_load" : "true",
 						},
 						{	"output_type" : "d3",
-							"control_id" : "submit_plot",
+							"control_name" : "button1",
 							"output_id" : "d3_output",
 							"tab" : "d3_Plot",
-							"on_page_load" : True,
 						}
 					]
 				}
@@ -46,10 +47,10 @@ class MyLaunch(server.Launch):
 	data_params = None
 	data = pd.DataFrame()
 
-	def getData(self, params):
+	def getData(self, input_params):
 		# cache values within the Launch object to avoid reloading the data each time
-		if params != self.data_params:
-			type_var = params['type']
+		if input_params != self.data_params:
+			type_var = input_params['type']
 			if type_var=="frt":
 				count = [6,7,5,2]
 				item = ['Apples','Oranges','Bananas','Watermelons']
@@ -62,11 +63,11 @@ class MyLaunch(server.Launch):
 			df = pd.DataFrame({'item':item, 'count':count})
 			df = df[['item','count']]
 			self.data = df
-			self.data_params = params
+			self.data_params = input_params
 		return self.data
 
-	def getPlot(self, params):
-		data = self.getData(params)  # get data
+	def getPlot(self, input_params):
+		data = self.getData(input_params)  # get data
 		fig = plt.figure()  # make figure object
 		splt = fig.add_subplot(1,1,1)
 		ind = np.arange(len(data['item']))
