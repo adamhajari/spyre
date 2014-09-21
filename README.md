@@ -77,6 +77,7 @@ output_types can be a "plot", "table", or "html". In addition to output_type, we
 
 ### generating a plot ###
 Let's get back to our getPlot method. Notice that it takes a single argument: params. params is a dictionary containing:
+
 1. all of the input values (with key equal to the variable_name specified in the input dictionary)
 2. the output_id for the output being created.
 
