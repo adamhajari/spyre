@@ -130,6 +130,12 @@
 					e.preventDefault();
     			});
 
+				// Apply the CSS properties in the 'styles' map where the key in the map is 
+				// a JQuery selector and the values are maps of CSS property names to values
+				{% for selector in styles -%}
+					$("{{selector}}").css({{styles[selector]}});
+				{%- endfor %}
+				
 				{% for input in inputs -%}
 					{% if input['input_type']=="slider" -%}
 					// jquery for sliders
@@ -177,8 +183,9 @@
 					<!-- text input -->
 					<form action="javascript:{{input['action_id']}}()">
 					<div class="text_input">{{input['label']}}: <input type=text value="{{input['value']}}" id="{{input['variable_name']}}" />
+					</div>
 					</form>
-					<br></div>
+					<br>
 				
 				<!-- dropdown -->
 				{% elif input['input_type']=="dropdown" -%}
