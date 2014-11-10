@@ -56,6 +56,16 @@
 					}
 				{%- endif %}
 
+				{%- if output['output_type']=='image' %}
+					// load image function
+					function {{output['output_id']}}(){
+						var params = updateSharedParameters();
+						params = params+"output_id={{output['output_id']}}&";
+						var img = $("<img />").attr('src', "/image?"+params)
+						$("#{{output['output_id']}}").html(img);
+					}
+				{%- endif %}
+
 				{%- if output['output_type']=='html' %}
 					// custom html function
 					function {{output['output_id']}}(){
@@ -183,7 +193,11 @@
 				{% if input['input_type']=="text" -%}
 					<!-- text input -->
 					<form action="javascript:{{input['action_id']}}()">
-					<div class="text_input">{{input['label']}}: <input type=text value="{{input['value']}}" id="{{input['variable_name']}}" />
+					<div class="text_input">
+					{% if input['label'] is defined %}
+						{{input['label']}}:
+					{% endif %}
+					<input type=text value="{{input['value']}}" id="{{input['variable_name']}}" />
 					</div>
 					</form>
 					<br>
@@ -191,7 +205,10 @@
 				<!-- dropdown -->
 				{% elif input['input_type']=="dropdown" -%}
 					<!-- dropdown menu -->
-					<div class="dropdown_input">{{input['label']}}:
+					<div class="dropdown_input">
+					{% if input['label'] is defined %}
+						{{input['label']}}:
+					{% endif %}
 					<select id="{{input['variable_name']}}"  onchange="{{input['action_id']}}();" onfocus="this.selectedIndex = -1;">
 					{% for option in input['options'] -%}
 						<option value={{option['value']}}>{{option['label']}}</option>
@@ -200,7 +217,10 @@
 
 				<!-- radiobuttons -->
 				{% elif input['input_type']=="radiobuttons" -%}
-					<div class="radiobuttons_input" id="{{input['variable_name']}}">{{input['label']}}:
+					<div class="radiobuttons_input" id="{{input['variable_name']}}">
+					{% if input['label'] is defined %}
+						{{input['label']}}:
+					{% endif %}
 					{% for option in input['options'] -%}
 						<br><input type="radio" name="{{input['variable_name']}}" value={{option['value']}} {% if option['checked']==True %} checked {% endif %} onclick="{{input['action_id']}}()">{{option['label']}}
 					{%- endfor %}
@@ -208,7 +228,10 @@
 
 				<!-- checkbox group -->
 				{% elif input['input_type']=="checkboxgroup" -%}
-					<div class="checkboxgroup_input" id="{{input['variable_name']}}">{{input['label']}}:
+					<div class="checkboxgroup_input" id="{{input['variable_name']}}">
+					{% if input['label'] is defined %}
+						{{input['label']}}:
+					{% endif %}
 					{% for option in input['options'] -%}
 						<br><input type="checkbox" name="{{input['variable_name']}}" value={{option['value']}} {% if option['checked']==True %} checked {% endif %} onclick="{{input['action_id']}}()">{{option['label']}}
 					{%- endfor %}
@@ -216,7 +239,10 @@
 				
 				<!-- sliders -->
 				{% elif input['input_type']=="slider" -%}
-					<div class="slider_input">{{input['label']}}: 
+					<div class="slider_input">
+					{% if input['label'] is defined %}
+						{{input['label']}}:
+					{% endif %}
 					<div class="slider">
 						<input type="text" class="slider_value" id="{{input['variable_name']}}_value" value="{{input['value']}}" onchange="{{input['action_id']}}()">
 						<input type="range" class="slider_slider" id="{{input['variable_name']}}" min="{{input['min']}}" max="{{input['max']}}" step="{{input['step']}}"  value="{{input['value']}}" onchange="{{input['action_id']}}()" />

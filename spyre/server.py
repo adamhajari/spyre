@@ -18,11 +18,12 @@ templateEnv = jinja2.Environment( loader=templateLoader )
 
 
 class Root(object):
-	def __init__(self,templateVars=None, getJsonDataFunction=None, getDataFunction=None, getPlotFunction=None, getD3Function=None, getCustomCSSFunction=None, getCustomJSFunction=None, getHTMLFunction=None, noOutputFunction=None):
+	def __init__(self,templateVars=None, getJsonDataFunction=None, getDataFunction=None, getPlotFunction=None, getImageFunction=None, getD3Function=None, getCustomCSSFunction=None, getCustomJSFunction=None, getHTMLFunction=None, noOutputFunction=None):
 		self.templateVars = templateVars
 		self.getJsonData = getJsonDataFunction
 		self.getData = getDataFunction
 		self.getPlot = getPlotFunction
+		self.getImage = getImageFunction
 		self.getD3 = getD3Function
 		self.getCustomJS = getCustomJSFunction
 		self.getCustomCSS = getCustomCSSFunction
@@ -31,7 +32,7 @@ class Root(object):
 		d3 = self.getD3()
 		custom_js = self.getCustomJS()
 		custom_css = self.getCustomCSS()
-		
+
 		self.templateVars['d3js'] = d3['js']
 		self.templateVars['d3css'] = d3['css']
 		self.templateVars['custom_js'] = custom_js
@@ -54,6 +55,15 @@ class Root(object):
 		d = model.Plot()
 		buffer = d.getPlotPath(p)
 		cherrypy.response.headers['Content-Type'] = 'image/png'
+		return buffer.getvalue()
+
+	@cherrypy.expose
+	def image(self, **args):
+		args = self.clean_args(args)
+		img = self.getImage(args)
+		d = model.Image()
+		buffer = d.getImagePath(img)
+		cherrypy.response.headers['Content-Type'] = 'image/jpg'
 		return buffer.getvalue()
 
 	@cherrypy.expose
@@ -159,6 +169,17 @@ class Launch:
 		plt.xlabel(input_params['var1'])
 		return plt.gcf()
 
+	def getImage(self, input_params):
+		"""Override this function
+
+		arguments:
+		input_params (dict)
+
+		returns:
+		matplotlib.image figure
+		"""
+		pass
+
 	def getHTML(self, input_params):
 		"""Override this function
 
@@ -203,7 +224,7 @@ class Launch:
 		return ""
 
 	def launch(self,host="local",port=8080):
-		webapp = Root(templateVars=self.templateVars, getJsonDataFunction=self.getJsonData, getDataFunction=self.getData, getPlotFunction=self.getPlot, getD3Function=self.getD3, getCustomJSFunction=self.getCustomJS, getCustomCSSFunction=self.getCustomCSS, getHTMLFunction=self.getHTML, noOutputFunction=self.noOutput)
+		webapp = Root(templateVars=self.templateVars, getJsonDataFunction=self.getJsonData, getDataFunction=self.getData, getPlotFunction=self.getPlot, getImageFunction=self.getImage, getD3Function=self.getD3, getCustomJSFunction=self.getCustomJS, getCustomCSSFunction=self.getCustomCSS, getHTMLFunction=self.getHTML, noOutputFunction=self.noOutput)
 		if host!="local":
 			cherrypy.server.socket_host = '0.0.0.0'
 		cherrypy.server.socket_port = port
