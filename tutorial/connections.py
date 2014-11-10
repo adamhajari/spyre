@@ -3,7 +3,7 @@ import matplotlib.image as mpimg
 
 class InputExample(server.Launch):
 
-	templateVars = {"title" : "Inputs",
+	templateVars = {"title" : "Connections",
 					"inputs" : [{	"input_type":'radiobuttons',
 									"options" : [
 										{"label": "Simple App", "value":1, "checked":True}, 
@@ -12,6 +12,7 @@ class InputExample(server.Launch):
 										{"label":"Inputs with actions 2", "value":4},
 									],
 									"variable_name": 'slide_selector',
+									"action_id": "image_output",
 								}],
 					"controls" : [{	"control_type" : "hidden",
 									"control_id" : "button1",
@@ -25,13 +26,13 @@ class InputExample(server.Launch):
 				}
 
 	def getImage(self, params):
-		slide_selector = params['slide_selector']
-		absolut_path = '/Users/adamhajari/Projects/python/cherrypy/dataspyre/tutorial/'
+		slide_selector = int(params['slide_selector'])
+		absolute_path = ''
 		if slide_selector==2:
 			img = mpimg.imread(absolute_path+'slide2.png')
 		elif slide_selector==3:
 			img = mpimg.imread(absolute_path+'slide3.png')
-		elif slide_selector==3:
+		elif slide_selector==4:
 			img = mpimg.imread(absolute_path+'slide4.png')
 		else:
 			img = mpimg.imread(absolute_path+'slide1.png')

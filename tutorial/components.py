@@ -53,7 +53,7 @@ class InputExample(server.Launch):
 				}
 
 	def getImage(self, params):
-		img = mpimg.imread('/Users/adamhajari/Projects/python/cherrypy/dataspyre/tutorial/spyre_outputs.png')
+		img = mpimg.imread('spyre_outputs.png')
 		return img
 
 	def noOutput(self, input_params):

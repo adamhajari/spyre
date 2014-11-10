@@ -33,20 +33,31 @@ hr{
 }
 
 input {
+    display: block;
     padding: 5px;
-    margin: 0 0 10px 5px;
+    margin: 5px 0 0;
     font: 14px bold;
 	font-family: Arial, Helvetica, sans-serif;
-	width: 80%;
+	width: 100%;
+	box-sizing: border-box;  /* Ensures that the input will not extend past the input panel */
 }
 
+/* 
+input:focus,
+input:hover {
+    width: 250%;
+}
+*/
+
 input[type="radio"] {
+    display: inline-block;
     padding: 5px;
     margin: 0 0 10px 5px;
     width: 10%;
 }
 
 input[type="checkbox"] {
+    display: inline-block;
     padding: 5px;
     margin: 0 0 10px 5px;
     width: 10%;
@@ -63,9 +74,10 @@ select {
 }
 
 .button {
-	font-size: 14px;
+    display: block;
+    font-size: 14px;
 	padding: 8px 5px 8px 5px;
-	margin: 0 0 0 5px;
+	margin: 0 auto;
 	text-align: center;
 	color: #ffffff;
     background-color: #777777;
@@ -94,7 +106,6 @@ img {
     background: #f4f4f4;
     padding: 10px;
     width:20%;
-    max-width: 230px;
     float:left;  
 }
 .right-panel
