@@ -11,6 +11,8 @@ spyre/example_show_all_the_inputs.py
 spyre/example_simple_sine.py
 spyre/model.py
 spyre/server.py
+spyre/test.py
+spyre/test2.py
 spyre/view.html
 spyre/public/css/style.css
 spyre/public/js/d3.v3.js

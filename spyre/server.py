@@ -18,17 +18,24 @@ templateEnv = jinja2.Environment( loader=templateLoader )
 
 
 class Root(object):
-	def __init__(self,templateVars=None, getJsonDataFunction=None, getDataFunction=None, getPlotFunction=None, getD3Function=None, getHTMLFunction=None, noOutputFunction=None):
+	def __init__(self,templateVars=None, getJsonDataFunction=None, getDataFunction=None, getPlotFunction=None, getD3Function=None, getCustomCSSFunction=None, getCustomJSFunction=None, getHTMLFunction=None, noOutputFunction=None):
 		self.templateVars = templateVars
 		self.getJsonData = getJsonDataFunction
 		self.getData = getDataFunction
 		self.getPlot = getPlotFunction
 		self.getD3 = getD3Function
+		self.getCustomJS = getCustomJSFunction
+		self.getCustomCSS = getCustomCSSFunction
 		self.getHTML = getHTMLFunction
 		self.noOutput = noOutputFunction
 		d3 = self.getD3()
+		custom_js = self.getCustomJS()
+		custom_css = self.getCustomCSS()
+		
 		self.templateVars['d3js'] = d3['js']
 		self.templateVars['d3css'] = d3['css']
+		self.templateVars['custom_js'] = custom_js
+		self.templateVars['custom_css'] = custom_css
 
 		v = View.View()
 		self.templateVars['js'] = v.getJS()
@@ -161,7 +168,7 @@ class Launch:
 		returns:
 		html string
 		"""
-		return "<b>hello</b> <i>world</i>"
+		return "<b>Override</b> the getHTML method to insert your own HTML <i>here</i>"
 
 	def noOutput(self, input_params):
 		"""Override this function
@@ -179,8 +186,24 @@ class Launch:
 		d3['js'] = ""
 		return d3
 
+	def getCustomJS(self):
+		"""Override this function
+
+		returns:
+		string of javascript to insert on page load
+		"""
+		return ""
+
+	def getCustomCSS(self):
+		"""Override this function
+
+		returns:
+		string of css to insert on page load
+		"""
+		return ""
+
 	def launch(self,host="local",port=8080):
-		webapp = Root(templateVars=self.templateVars, getJsonDataFunction=self.getJsonData, getDataFunction=self.getData, getPlotFunction=self.getPlot, getD3Function=self.getD3, getHTMLFunction=self.getHTML, noOutputFunction=self.noOutput)
+		webapp = Root(templateVars=self.templateVars, getJsonDataFunction=self.getJsonData, getDataFunction=self.getData, getPlotFunction=self.getPlot, getD3Function=self.getD3, getCustomJSFunction=self.getCustomJS, getCustomCSSFunction=self.getCustomCSS, getHTMLFunction=self.getHTML, noOutputFunction=self.noOutput)
 		if host!="local":
 			cherrypy.server.socket_host = '0.0.0.0'
 		cherrypy.server.socket_port = port
