@@ -209,7 +209,7 @@
 					{% if input['label'] is defined %}
 						{{input['label']}}:
 					{% endif %}
-					<select id="{{input['variable_name']}}"  onchange="{{input['action_id']}}();" onfocus="this.selectedIndex = -1;">
+					<select id="{{input['variable_name']}}"  onchange="{{input['action_id']}}();" >
 					{% for option in input['options'] -%}
 						<option value={{option['value']}}>{{option['label']}}</option>
 					{%- endfor %}
