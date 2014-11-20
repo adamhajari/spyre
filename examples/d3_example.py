@@ -5,65 +5,48 @@ import pandas as pd
 import d3py
 import matplotlib.pyplot as plt
 
-class MyLaunch(server.Launch):
-	templateVars = {"title" : "Spyre Example With d3",
-					"inputs" : [
-						{	"input_type":'dropdown',
-							"label": 'Type', 
-							"options" : [
-								{"label": "Fruits", "value":"frt"},
-								{"label": "Vegetables", "value":"veg"},
-								{"label": "All", "value":"all"}
-							],
-							"variable_name": 'type', 
-							"action_id":"submit_plot"
-						}
-						],
-					"controls" : [
-						{	"control_type" : "hidden",
-							"label" : "show inventory",
-							"control_id" : "submit_plot",
-						}
-					],
-					"tabs" : ["d3_Plot", "Matplotlib_Plot"],
-					"outputs" : [
-						{	"output_type" : "plot",
-							"output_id" : "plot1",
-							"control_id" : "submit_plot",
-							"tab" : "Matplotlib_Plot",
-							"on_page_load" : True,
-						},
-						{	"output_type" : "d3",
-							"control_id" : "submit_plot",
-							"output_id" : "d3_output",
-							"tab" : "d3_Plot",
-							"on_page_load" : True,
-						}
-					]
-				}
+class FruitInventoryApp(server.App):
+	title = "Spyre Example With d3"
 
-	# cache values within the Launch object to avoid reloading the data each time
-	data_params = None
-	data = pd.DataFrame()
+	inputs = [{	"input_type":'dropdown',
+				"label": 'Type', 
+				"options" : [	{"label": "Fruits", "value":"frt"},
+								{"label": "Vegetables", "value":"veg"},
+								{"label": "All", "value":"all"}],
+				"variable_name": 'type', 
+				"action_id":"submit_plot"}]
+
+	controls = [{	"control_type" : "hidden",
+					"label" : "show inventory",
+					"control_id" : "submit_plot"}]
+
+	outputs = [{	"output_type" : "plot",
+					"output_id" : "plot1",
+					"control_id" : "submit_plot",
+					"tab" : "Matplotlib_Plot",
+					"on_page_load" : True},
+				{	"output_type" : "d3",
+					"control_id" : "submit_plot",
+					"output_id" : "d3_output",
+					"tab" : "d3_Plot",
+					"on_page_load" : True}]
+
+	tabs = ["d3_Plot", "Matplotlib_Plot"]
 
 	def getData(self, params):
-		# cache values within the Launch object to avoid reloading the data each time
-		if params != self.data_params:
-			type_var = params['type']
-			if type_var=="frt":
-				count = [6,7,5,2]
-				item = ['Apples','Oranges','Bananas','Watermelons']
-			elif type_var=="veg":
-				count = [3,1,7,8,2]
-				item = ['Carrots','Spinach','Squash','Asparagus','Brocolli']
-			else:
-				count = [3,1,7,8,2,6,7,5,2]
-				item = ['Carrots','Spinach','Squash','Asparagus','Brocolli','Apples','Oranges','Bananas','Watermelons']
-			df = pd.DataFrame({'item':item, 'count':count})
-			df = df[['item','count']]
-			self.data = df
-			self.data_params = params
-		return self.data
+		type_var = params['type']
+		if type_var=="frt":
+			count = [6,7,5,2]
+			item = ['Apples','Oranges','Bananas','Watermelons']
+		elif type_var=="veg":
+			count = [3,1,7,8,2]
+			item = ['Carrots','Spinach','Squash','Asparagus','Brocolli']
+		else:
+			count = [3,1,7,8,2,6,7,5,2]
+			item = ['Carrots','Spinach','Squash','Asparagus','Brocolli','Apples','Oranges','Bananas','Watermelons']
+		df = pd.DataFrame({'item':item, 'count':count})
+		df = df[['item','count']]
+		return df
 
 	def getPlot(self, params):
 		data = self.getData(params)  # get data
@@ -94,5 +77,5 @@ class MyLaunch(server.Launch):
 		d3['css'] = "%s\n%s"%(p.css, p.css_geoms)
 		return d3
 
-ml = MyLaunch()
-ml.launch(port=9092)
+app = FruitInventoryApp()
+app.launch(port=9092)

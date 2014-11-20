@@ -5,52 +5,36 @@ import matplotlib.pyplot as plt
 import numpy as np
 from numpy import pi
 
-class MyLaunch(server.Launch):
-	templateVars = {"title" : "Decaying Sine Wave",
-					"inputs" : [
-						{	"input_type":'slider',
-							"label": 'Amplitude', 
-							"min" : 0,
-							"max" : 5,
-							"value" : 1,
-							"variable_name": 'amp', 
-							"action_id": 'plot'
-						},
-						{	"input_type":'slider',
-							"label": 'Frequency', 
-							"min" : 0,
-							"max" : 100,
-							"value" : 50,
-							"variable_name": 'freq', 
-							"action_id": 'plot'
-						},
-						{	"input_type":'slider',
-							"label": 'Decay Rate', 
-							"min" : 0,
-							"max" : 2,
-							"step" : 0.01,
-							"value" : 0.5,
-							"variable_name": 'decay', 
-							"action_id": 'plot'
-						}
-						],
-					"controls" : [],
-					"outputs" : [
-						{	"output_type" : "plot",
-							"output_id" : "plot",
-							"on_page_load" : True,
-						}
-					]
-				}
+class SlidersApp(server.App):
+	title = "Decaying Sine Wave"
+
+	inputs =[{ "input_type":'slider',
+				"label": 'Frequency', 
+				"min" : 1,
+				"max" : 100,
+				"value" : 50,
+				"variable_name": 'freq', 
+				"action_id": 'plot'},
+			{ "input_type":'slider',
+				"label": 'Decay Rate', 
+				"min" : 0,
+				"max" : 2,
+				"step" : 0.01,
+				"value" : 0.5,
+				"variable_name": 'decay', 
+				"action_id": 'plot'}]
+
+	outputs = [{ "output_type" : "plot",
+					"output_id" : "plot",
+					"on_page_load" : True }]
 
 	def getPlot(self, params):
-		A = float(params['amp'])
 		f = float(params['freq'])
 		d = float(params['decay'])
 		x = np.arange(0,6*pi,pi/50)
-		y1 = A*np.sin(f*x/(2*pi))
+		y1 = np.sin(f*x/(2*pi))
 		y2 = np.exp(-x*d)
-		y3 = A*np.sin(f*x/(2*pi))*np.exp(-x*d)
+		y3 = np.sin(f*x/(2*pi))*np.exp(-x*d)
 		fig = plt.figure()
 		splt1 = fig.add_subplot(3,1,1)
 		splt1.plot(x,y1)  # sine wave
@@ -62,5 +46,5 @@ class MyLaunch(server.Launch):
 		splt3.plot(x,y3)  #sine wave decay
 		return fig
 
-ml = MyLaunch()
-ml.launch(port=9094)
+app = SlidersApp()
+app.launch(port=9094)

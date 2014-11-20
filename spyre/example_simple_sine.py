@@ -21,7 +21,7 @@ class SimpleApp(server.App):
 		x = np.arange(1,6,0.01)
 		y = np.sin(f*x)
 		plt.plot(x,y)
-		return plt.gcf()
+		return plt.gcf()  # Note: if you have more that one plot output, don't use the gcf method.
 
 
 app = SimpleApp()

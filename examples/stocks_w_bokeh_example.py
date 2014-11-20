@@ -13,82 +13,59 @@ from bokeh.embed import components
 from bokeh.plotting import line
 
 class MyLaunch(server.Launch):
-	templateVars = {"title" : "Historical Stock Prices",
-					"inputs" : [
-						{	"input_type":'dropdown',
-							"label": 'Company', 
-							"options" : [
-								{"label": "Google", "value":"GOOG"},
-								{"label": "Yahoo", "value":"YHOO"},
-								{"label": "Apple", "value":"AAPL"}
-							],
-							"variable_name": 'ticker', 
-							"action_id": "update_data"
-						}
-						],
-					"controls" : [
-						{	"control_type" : "hidden",
-							"label" : "get historical stock prices",
-							"control_id" : "update_data",
-						}
-					],
-					"tabs" : ["Plot", "Table", "Bokeh"],
-					"outputs" : [
-						{	"output_type" : "plot",
-							"output_id" : "plot",
-							"control_id" : "update_data",
-							"tab" : "Plot",
-							"on_page_load" : True,
-						},
-						{	"output_type" : "table",
-							"output_id" : "table_id",
-							"control_id" : "update_data",
-							"tab" : "Table",
-							"on_page_load" : True,
-						},
-						{	"output_type" : "html",
-							"output_id" : "html_id",
-							"control_id" : "update_data",
-							"tab" : "Bokeh",
-							"on_page_load" : True,
-						}
-					]
-				}
+	title = "Historical Stock Prices"
 
-	# cache values within the Launch object to avoid reloading the data each time
-	data_params = None
-	data = pd.DataFrame()
+	inputs = [{	"input_type":'dropdown',
+				"label": 'Company', 
+				"options" : [
+					{"label": "Google", "value":"GOOG"},
+					{"label": "Yahoo", "value":"YHOO"},
+					{"label": "Apple", "value":"AAPL"}],
+				"variable_name": 'ticker', 
+				"action_id": "update_data"
+			}]
+
+	controls = [{"control_type" : "hidden",
+					"label" : "get historical stock prices",
+					"control_id" : "update_data" 
+				}]
+
+	outputs = [{"output_type" : "plot",
+					"output_id" : "plot",
+					"control_id" : "update_data",
+					"tab" : "Plot",
+					"on_page_load" : True},
+				{"output_type" : "table",
+					"output_id" : "table_id",
+					"control_id" : "update_data",
+					"tab" : "Table",
+					"on_page_load" : True},
+				{"output_type" : "html",
+					"output_id" : "html_id",
+					"control_id" : "update_data",
+					"tab" : "Bokeh",
+					"on_page_load" : True
+				}]
+
+	tabs = ["Plot", "Table", "Bokeh"]
 
 	def getData(self, params):
-		if params != self.data_params:
-			ticker = params['ticker']
-			# make call to yahoo finance api to get historical stock data
-			api_url = 'https://chartapi.finance.yahoo.com/instrument/1.0/{}/chartdata;type=quote;range=3m/json'.format(ticker)
-			result = urllib2.urlopen(api_url)
-			r = result.read()
-			data = json.loads(r.replace('finance_charts_json_callback( ','')[:-1])  # strip away the javascript and load json
-			# make call to yahoo finance api to get historical stock data
-			self.company_name = data['meta']['Company-Name']
-			df = pd.DataFrame.from_records(data['series'])
-			df['Date'] = pd.to_datetime(df['Date'],format='%Y%m%d')
-			self.data = df
-			self.data_params = params
-		return self.data
+		ticker = params['ticker']
+		# make call to yahoo finance api to get historical stock data
+		api_url = 'https://chartapi.finance.yahoo.com/instrument/1.0/{}/chartdata;type=quote;range=3m/json'.format(ticker)
+		result = urllib2.urlopen(api_url).read()
+		data = json.loads(result.replace('finance_charts_json_callback( ','')[:-1])  # strip away the javascript and load json
+		self.company_name = data['meta']['Company-Name']
+		df = pd.DataFrame.from_records(data['series'])
+		df['Date'] = pd.to_datetime(df['Date'],format='%Y%m%d')
+		return df
 
 	def getPlot(self, params):
-		df = self.getData(params)  # get data
-		dates = pd.DatetimeIndex(df['Date'])
-		fig = plt.figure()
-		splt = fig.add_subplot(1,1,1)
-		splt.plot_date(dates, df['close'], fmt='-', label="close")
-		splt.plot_date(dates, df['high'], fmt='-', label="high")
-		splt.plot_date(dates, df['low'], fmt='-', label="low")
-		splt.set_ylabel('Price')
-		splt.set_xlabel('Date')
-		splt.set_title(self.company_name)
-		splt.legend(loc=2)
-		splt.xaxis.set_major_formatter( DateFormatter('%m-%d-%Y') )
-		fig.autofmt_xdate()
+		df = self.getData(params)
+		plt_obj = df.set_index('Date').drop(['volume'],axis=1).plot()
+		plt_obj.set_ylabel("Price")
+		plt_obj.set_title(self.company_name)
+		fig = plt_obj.get_figure()
 		return fig
 
 	def getHTML(self,params):
@@ -108,4 +85,4 @@ class MyLaunch(server.Launch):
 		return r.INLINE.css_raw[0]
 
 ml = MyLaunch()
-ml.launch(port=9093)
+ml.launch(port=9097)
