@@ -72,7 +72,7 @@ class MyLaunch(server.Launch):
 			df = pd.DataFrame.from_records(data['series'])
 			df['Date'] = pd.to_datetime(df['Date'],format='%Y%m%d')
 			self.data = df
-			self.data_params = ticker
+			self.data_params = params
 		return self.data
 
 	def getPlot(self, params):

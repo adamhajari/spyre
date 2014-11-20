@@ -7,42 +7,33 @@ import urllib2
 import json
 from datetime import datetime
 
-class MyLaunch(server.Launch):
-	templateVars = {"title" : "Historical Stock Prices",
-					"inputs" : [
-						{	"input_type":'dropdown',
-							"label": 'Company', 
-							"options" : [
-								{"label": "Google", "value":"GOOG"},
-								{"label": "Yahoo", "value":"YHOO"},
-								{"label": "Apple", "value":"AAPL"}
-							],
-							"variable_name": 'ticker', 
-							"action_id": "update_data"
-						}
-						],
-					"controls" : [
-						{	"control_type" : "hidden",
-							"label" : "get historical stock prices",
-							"control_id" : "update_data",
-						}
-					],
-					"tabs" : ["Plot", "Table"],
-					"outputs" : [
-						{	"output_type" : "plot",
-							"output_id" : "plot",
-							"control_id" : "update_data",
-							"tab" : "Plot",
-							"on_page_load" : True,
-						},
-						{	"output_type" : "table",
-							"output_id" : "table_id",
-							"control_id" : "update_data",
-							"tab" : "Table",
-							"on_page_load" : True,
-						}
-					]
-				}
+class StockExample(server.App):
+	title = "Historical Stock Prices"
+
+	inputs = [{		"input_type":'dropdown',
+					"label": 'Company', 
+					"options" : [ {"label": "Google", "value":"GOOG"},
+								  {"label": "Yahoo", "value":"YHOO"},
+								  {"label": "Apple", "value":"AAPL"}],
+					"variable_name": 'ticker', 
+					"action_id": "update_data" }]
+
+	controls = [{	"control_type" : "hidden",
+					"label" : "get historical stock prices",
+					"control_id" : "update_data"}]
+
+	tabs = ["Plot", "Table"]
+
+	outputs = [{	"output_type" : "plot",
+					"output_id" : "plot",
+					"control_id" : "update_data",
+					"tab" : "Plot",
+					"on_page_load" : True },
+				{	"output_type" : "table",
+					"output_id" : "table_id",
+					"control_id" : "update_data",
+					"tab" : "Table",
+					"on_page_load" : True }]
 
 	# cache values within the Launch object to avoid reloading the data each time
 	data_params = None
@@ -66,19 +57,8 @@ class MyLaunch(server.Launch):
 
 	def getPlot(self, params):
 		df = self.getData(params)  # get data
-		dates = pd.DatetimeIndex(df['Date'])
-		fig = plt.figure()
-		splt = fig.add_subplot(1,1,1)
-		splt.plot_date(dates, df['close'], fmt='-', label="close")
-		splt.plot_date(dates, df['high'], fmt='-', label="high")
-		splt.plot_date(dates, df['low'], fmt='-', label="low")
-		splt.set_ylabel('Price')
-		splt.set_xlabel('Date')
-		splt.set_title(self.company_name)
-		splt.legend(loc=2)
-		splt.xaxis.set_major_formatter( DateFormatter('%m-%d-%Y') )
-		fig.autofmt_xdate()
+		fig = df.set_index('Date').drop(['volume'],axis=1).plot().get_figure()
 		return fig
 
-ml = MyLaunch()
-ml.launch(port=9093)
+app = StockExample()
+app.launch(port=9093)

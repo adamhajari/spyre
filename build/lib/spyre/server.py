@@ -4,6 +4,7 @@ import jinja2
 import StringIO
 import matplotlib.pyplot as plt
 import pandas as pd
+import numpy as np
 
 import model
 import View
@@ -18,8 +19,23 @@ templateEnv = jinja2.Environment( loader=templateLoader )
 
 
 class Root(object):
-	def __init__(self,templateVars=None, getJsonDataFunction=None, getDataFunction=None, getPlotFunction=None, getImageFunction=None, getD3Function=None, getCustomCSSFunction=None, getCustomJSFunction=None, getHTMLFunction=None, noOutputFunction=None):
-		self.templateVars = templateVars
+	def __init__(self,templateVars=None, title=None, inputs=None, outputs=None, controls=None, tabs=None, getJsonDataFunction=None, getDataFunction=None, getPlotFunction=None, getImageFunction=None, getD3Function=None, getCustomCSSFunction=None, getCustomJSFunction=None, getHTMLFunction=None, noOutputFunction=None):
+		# populate template dictionary for creating input,controler, and output HTML and javascript
+		if templateVars is not None:
+			self.templateVars = templateVars
+		else:
+			self.templateVars = {}
+			if title is not None:
+				self.templateVars['title'] = title
+			if inputs is not None:
+				self.templateVars['inputs'] = inputs
+			if controls is not None:
+				self.templateVars['controls'] = controls
+			if outputs is not None:
+				self.templateVars['outputs'] = outputs
+			if tabs is not None:
+				self.templateVars['tabs'] = tabs
+
 		self.getJsonData = getJsonDataFunction
 		self.getData = getDataFunction
 		self.getPlot = getPlotFunction
@@ -115,23 +131,22 @@ class Root(object):
 		return args
 
 
-class Launch:
-	templateVars = templateVars = {"title" : "Title Here",
-					"inputs" : [{	"input_type":'text',
-									"label": 'Variable', 
-									"value" : "Value Here",
-									"variable_name": 'var1', 
-								}],
-					"controls" : [{	"control_type" : "button",
-									"control_id" : "button1",
-									"label" : "Button Label Here",
-								}],
-					"outputs" : [{	"output_type" : "plot",
-									"output_id" : "plot",
-									"control_id" : "button1",
-									"on_page_load" : "true",
-								}]
-				}
+class App:
+
+	title = "Title Here"
+	inputs = [{		"input_type":'text',
+					"label": 'Variable', 
+					"value" : "Value Here",
+					"variable_name": 'var1'}]
+
+	controls = None
+
+	outputs = [{	"output_type" : "plot",
+					"output_id" : "plot",
+					"control_id" : "button1",
+					"on_page_load" : "true"}]
+	tabs = None
+	templateVars = None
 				
 	def getJsonData(self, input_params):
 		"""turns the DataFrame returned by getData into a dictionary
@@ -166,7 +181,6 @@ class Launch:
 		matplotlib.pyplot figure
 		"""
 		plt.title("Override getPlot() method to generate figures")
-		plt.xlabel(input_params['var1'])
 		return plt.gcf()
 
 	def getImage(self, input_params):
@@ -178,7 +192,7 @@ class Launch:
 		returns:
 		matplotlib.image figure
 		"""
-		pass
+		return np.array([[0,0,0]])
 
 	def getHTML(self, input_params):
 		"""Override this function
@@ -224,11 +238,14 @@ class Launch:
 		return ""
 
 	def launch(self,host="local",port=8080):
-		webapp = Root(templateVars=self.templateVars, getJsonDataFunction=self.getJsonData, getDataFunction=self.getData, getPlotFunction=self.getPlot, getImageFunction=self.getImage, getD3Function=self.getD3, getCustomJSFunction=self.getCustomJS, getCustomCSSFunction=self.getCustomCSS, getHTMLFunction=self.getHTML, noOutputFunction=self.noOutput)
+		webapp = Root(templateVars=self.templateVars, title=self.title, inputs=self.inputs, outputs=self.outputs, controls=self.controls, tabs=self.tabs, getJsonDataFunction=self.getJsonData, getDataFunction=self.getData, getPlotFunction=self.getPlot, getImageFunction=self.getImage, getD3Function=self.getD3, getCustomJSFunction=self.getCustomJS, getCustomCSSFunction=self.getCustomCSS, getHTMLFunction=self.getHTML, noOutputFunction=self.noOutput)
 		if host!="local":
 			cherrypy.server.socket_host = '0.0.0.0'
 		cherrypy.server.socket_port = port
 		cherrypy.quickstart(webapp)
+
+class Launch(App):
+	"""Warning: This class is depricated. Use App instead"""
 
 if __name__=='__main__':
 	l = Launch()

@@ -1,37 +1,28 @@
 # from spyre import server
 import server
 
-import matplotlib.pyplot as plt
 import numpy as np
-from numpy import pi
+from matplotlib import pyplot as plt
 
-class SimpleSineLaunch(server.Launch):
-	templateVars = {"title" : "Simple Sine Wave",
-					"inputs" : [{	"input_type":'text',
-									"label": 'Frequency', 
-									"value" : 5,
-									"variable_name": 'freq', 
-									"action_id" : "plot",
-								}],
-					"controls" : [{	"control_type" : "button",
-									"control_id" : "button1",
-									"label" : "plot",
-								}],
-					"outputs" : [{	"output_type" : "plot",
-									"output_id" : "plot",
-									"control_id" : "button1",
-									"on_page_load" : True,
-								}]
-				}
+class SimpleApp(server.App):
+	title = "Simple App"
+	inputs = [{	"input_type":"text",
+				"variable_name":"freq",
+				"value":5,
+				"acion_id":"sine_wave_plot"}]
 
-	def getPlot(self, params):
-		f = float(params['freq'])
-		x = np.arange(0,6*pi,pi/50)
+	outputs = [{"output_type":"plot",
+				"output_id":"sine_wave_plot",
+				"control_id"
+				"on_page_load":True }]
+
+	def getPlot(self,params):
+		f = int(params['freq'])
+		x = np.arange(1,6,0.01)
 		y = np.sin(f*x)
-		fig = plt.figure()
-		splt1 = fig.add_subplot(1,1,1)
-		splt1.plot(x,y)  # sine wave
-		return fig
+		plt.plot(x,y)
+		return plt.gcf()
 
-l = SimpleSineLaunch()
-l.launch(port=9096)
+
+app = SimpleApp()
+app.launch()
