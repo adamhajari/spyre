@@ -133,7 +133,7 @@ class Root(object):
 
 class App:
 
-	title = "Title Here"
+	title = None
 	inputs = [{		"input_type":'text',
 					"label": 'Variable', 
 					"value" : "Value Here",
@@ -145,6 +145,8 @@ class App:
 					"output_id" : "plot",
 					"control_id" : "button1",
 					"on_page_load" : "true"}]
+	outputs = None
+	inputs = None
 	tabs = None
 	templateVars = None
 				
