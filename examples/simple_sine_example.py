@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 class SimpleSineApp(server.App):
-	title = "Simple App"
+	title = "Simple Sine App"
 	inputs = [{ "input_type":"text",
 				"variable_name":"freq",
 				"value":5,
