@@ -246,6 +246,15 @@ class App:
 		cherrypy.server.socket_port = port
 		cherrypy.quickstart(webapp)
 
+	def launch_in_notebook(self, port=9095, width=900, height=600):
+		"""launch the app within an iframe in ipython notebook"""
+		from IPython.lib import backgroundjobs as bg
+		from IPython.display import HTML
+
+		jobs = bg.BackgroundJobManager()
+		jobs.new(self.launch, kw=dict(port=port))
+		return HTML('<iframe src=http://localhost:{} width={} height={}></iframe>'.format(port,width,height))
+
 class Launch(App):
 	"""Warning: This class is depricated. Use App instead"""
 
