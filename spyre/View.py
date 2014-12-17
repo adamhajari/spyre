@@ -1,6 +1,8 @@
 import os
 import codecs
+import StringIO
 import sys
+import matplotlib.image as mpimg
 reload(sys)
 sys.setdefaultencoding('utf-8')
 class View:
@@ -37,3 +39,10 @@ class View:
 				self.CSS += f.read()
 				self.CSS += "\n"
 		return self.CSS
+
+	def getSpinningWheel(self):
+		buffer = StringIO.StringIO()
+		f = open(self.ROOT_DIR+'/public/images/loading_wheel.gif')
+		buffer.write(f.read())
+		f.close()
+		return(buffer)

@@ -7,7 +7,8 @@ import pandas as pd
 import numpy as np
 
 import model
-import View
+import view
+import spyre
 
 import cherrypy
 
@@ -54,13 +55,13 @@ class Root(object):
 		self.templateVars['custom_js'] = custom_js
 		self.templateVars['custom_css'] = custom_css
 
-		v = View.View()
+		v = view.View()
 		self.templateVars['js'] = v.getJS()
 		self.templateVars['css'] = v.getCSS()
 
 	@cherrypy.expose
 	def index(self):
-		v = View.View()
+		v = view.View()
 		template = jinja2.Template(v.getHTML())
 		return template.render( self.templateVars )
 
@@ -116,6 +117,13 @@ class Root(object):
 		self.noOutput(args)
 		return ''
 
+	@cherrypy.expose
+	def spinning_wheel(self, **args):
+		v = view.View()
+		buffer = v.getSpinningWheel()
+		cherrypy.response.headers['Content-Type'] = 'image/gif'
+		return buffer.getvalue()
+
 	def clean_args(self,args):
 		for k,v in args.iteritems():
 			# turn checkbox group string into a list
@@ -150,34 +158,34 @@ class App:
 	tabs = None
 	templateVars = None
 				
-	def getJsonData(self, input_params):
+	def getJsonData(self, params):
 		"""turns the DataFrame returned by getData into a dictionary
 
 		arguments:
-		the input_params passed used for table or d3 outputs are forwarded on to getData
+		the params passed used for table or d3 outputs are forwarded on to getData
 		"""
-		df = self.getData(input_params)
+		df = self.getData(params)
 		return df.to_dict(outtype='records')
 
-	def getData(self, input_params):
+	def getData(self, params):
 		"""Override this function
 
 		arguments:
-		input_params (dict)
+		params (dict)
 
 		returns:
 		DataFrame
 		"""
 		count = [1,4,3]
-		name = ['Red','Green','Blue']
+		name = ['Override','getData() method','to generate tables']
 		df = pd.DataFrame({'name':name, 'count':count})
 		return df
 
-	def getPlot(self, input_params):
+	def getPlot(self, params):
 		"""Override this function
 
 		arguments:
-		input_params (dict)
+		params (dict)
 
 		returns:
 		matplotlib.pyplot figure
@@ -185,35 +193,35 @@ class App:
 		plt.title("Override getPlot() method to generate figures")
 		return plt.gcf()
 
-	def getImage(self, input_params):
+	def getImage(self, params):
 		"""Override this function
 
 		arguments:
-		input_params (dict)
+		params (dict)
 
 		returns:
 		matplotlib.image figure
 		"""
 		return np.array([[0,0,0]])
 
-	def getHTML(self, input_params):
+	def getHTML(self, params):
 		"""Override this function
 
 		arguments:
-		input_params (dict)
+		params (dict)
 
 		returns:
 		html string
 		"""
 		return "<b>Override</b> the getHTML method to insert your own HTML <i>here</i>"
 
-	def noOutput(self, input_params):
+	def noOutput(self, params):
 		"""Override this function
 		A method for doing stuff that doesn't reququire an output (refreshing data,
 			updating variables, etc.)
 
 		arguments:
-		input_params (dict)
+		params (dict)
 		"""
 		pass
 
@@ -259,5 +267,5 @@ class Launch(App):
 	"""Warning: This class is depricated. Use App instead"""
 
 if __name__=='__main__':
-	l = Launch()
-	l.launch()
+	app = App()
+	app.launch()
