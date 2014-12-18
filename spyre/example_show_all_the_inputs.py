@@ -58,6 +58,10 @@ class SimpleSineApp(server.App):
 	controls = [{	"control_type" : "button",
 					"control_id" : "button1",
 					"label" : "plot",
+				},
+				{	"control_type" : "button",
+					"control_id" : "button2",
+					"label" : "download",
 				}]
 	outputs = [{	"output_type" : "html",
 					"output_id" : "html_id",
@@ -73,6 +77,10 @@ class SimpleSineApp(server.App):
 					"output_id" : "table_id",
 					"control_id" : "button1",
 					"on_page_load" : True,
+				},
+				{	"output_type" : "download",
+					"output_id" : "download_id",
+					"control_id" : "button2",
 				}]
 
 	def getPlot(self, params):
@@ -108,7 +116,6 @@ class SimpleSineApp(server.App):
 		df = pd.DataFrame({'name':name, 'count':count})
 		time.sleep(2)
 		return df
-
 
 	def noOutput(self, input_params):
 		return 0

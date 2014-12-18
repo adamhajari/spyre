@@ -108,6 +108,16 @@
 					}
 				{%- endif %}
 
+				{%- if output['output_type']=='download' %}
+					// custom html function
+					function {{output['output_id']}}(){
+						var params = updateSharedParameters();
+						params = params+"output_id={{output['output_id']}}&";
+						window.location = "/download?"+params;
+					}
+				{%- endif %}
+
+
 				{%- if output['output_type']=='no_output' %}
 					// no_output output function
 					function {{output['output_id']}}(){

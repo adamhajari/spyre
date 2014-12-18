@@ -8,14 +8,14 @@ DataSpyre.egg-info/top_level.txt
 spyre/View.py
 spyre/__init__.py
 spyre/example_show_all_the_inputs.py
-spyre/example_simple_sine.py
 spyre/model.py
 spyre/server.py
+spyre/spyre.py
 spyre/spyre_example.py
-spyre/test.py
-spyre/test2.py
 spyre/view.html
+spyre/view.py
 spyre/public/css/style.css
+spyre/public/images/loading_wheel.gif
 spyre/public/js/d3.v3.js
 spyre/public/js/jquery-2.0.3.min.js
 spyre/public/js/sorttable.js
