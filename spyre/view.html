@@ -12,6 +12,7 @@
 		<script type='text/javascript'>
 			{{d3js}}
 			{{custom_js}}
+
 			function updateSharedParameters(){
 				var shared_params = "";
 				{% for input in inputs -%}
@@ -49,10 +50,16 @@
 				{%- if output['output_type']=='plot' %}
 					// load plot function
 					function {{output['output_id']}}(){
+						var spinning_wheel = $("<img />").attr('src', "/spinning_wheel");
+						$("#{{output['output_id']}}").html(spinning_wheel);
+
 						var params = updateSharedParameters();
 						params = params+"output_id={{output['output_id']}}&";
-						var plot = $("<img />").attr('src', "/plot?"+params)
-						$("#{{output['output_id']}}").html(plot);
+						
+						var plot = $("<img />").attr('src', "/plot?"+params).load(function(){
+							$("#{{output['output_id']}}").html("");
+							$("#{{output['output_id']}}").append(plot)
+						});
 					}
 				{%- endif %}
 
@@ -61,7 +68,7 @@
 					function {{output['output_id']}}(){
 						var params = updateSharedParameters();
 						params = params+"output_id={{output['output_id']}}&";
-						var img = $("<img />").attr('src', "/image?"+params)
+						var img = $("<img />").attr('src', "/image?"+params);
 						$("#{{output['output_id']}}").html(img);
 					}
 				{%- endif %}
@@ -69,6 +76,9 @@
 				{%- if output['output_type']=='html' %}
 					// custom html function
 					function {{output['output_id']}}(){
+						var spinning_wheel = $("<img />").attr('src', "/spinning_wheel");
+						$("#{{output['output_id']}}").html(spinning_wheel);
+
 						var params = updateSharedParameters();
 						params = params+"output_id={{output['output_id']}}&";
 						$.ajax({
@@ -83,6 +93,8 @@
 				{%- if output['output_type']=='table' %}
 					// table output function
 					function {{output['output_id']}}(){
+						var spinning_wheel = $("<img />").attr('src', "/spinning_wheel");
+						$("#{{output['output_id']}}").html(spinning_wheel);
 						updateSharedParameters()
 						var params = updateSharedParameters();
 						params = params+"output_id={{output['output_id']}}&";
@@ -95,6 +107,16 @@
 						});
 					}
 				{%- endif %}
+
+				{%- if output['output_type']=='download' %}
+					// custom html function
+					function {{output['output_id']}}(){
+						var params = updateSharedParameters();
+						params = params+"output_id={{output['output_id']}}&";
+						window.location = "/download?"+params;
+					}
+				{%- endif %}
+
 
 				{%- if output['output_type']=='no_output' %}
 					// no_output output function
@@ -261,6 +283,7 @@
 
 		<!-- output -->
 		<div class="right-panel">
+			<img scr="">
 			{% if tabs is defined -%}
 				<div class="tabs">
 					<ul class="tab-links">
@@ -304,6 +327,7 @@
 					<!-- plots, custom html, tables, anything not d3 -->
 					{% if output['output_type'] != "d3" -%}
 						<div id="{{output['output_id']}}"></div>
+						<div id="{{output['output_id']}}_spinner"></div>
 					{%- endif %}
 
 					{% if output['output_type'] == "d3" -%}

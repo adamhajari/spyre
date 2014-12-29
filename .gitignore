@@ -2,3 +2,9 @@
 *.whl
 *.egg
 *.tar.gz
+build/*
+PKG-INFO
+SOURCES.txt
+.DS_Store
+.ipynb_checkpoints/
+.ipynb_checkpoints/*
