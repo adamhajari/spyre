@@ -8,7 +8,6 @@ import numpy as np
 
 import model
 import View
-import spyre
 
 import cherrypy
 from cherrypy.lib.static import serve_file
