@@ -76,6 +76,7 @@ class SimpleSineApp(server.App):
 				{	"output_type" : "table",
 					"output_id" : "table_id",
 					"control_id" : "button1",
+					"sortable" : True,
 					"on_page_load" : True,
 				},
 				{	"output_type" : "download",
@@ -112,7 +113,7 @@ class SimpleSineApp(server.App):
 
 	def getData(self,params):
 		count = [1,4,3]
-		name = ['A','B','C']
+		name = ['<a href="http://adamhajari.com">A</a>','B','C']
 		df = pd.DataFrame({'name':name, 'count':count})
 		time.sleep(2)
 		return df

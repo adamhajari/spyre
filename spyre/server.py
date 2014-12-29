@@ -8,7 +8,6 @@ import numpy as np
 
 import model
 import View
-import spyre
 
 import cherrypy
 from cherrypy.lib.static import serve_file
@@ -22,7 +21,7 @@ templateEnv = jinja2.Environment( loader=templateLoader )
 
 
 class Root(object):
-	def __init__(self,templateVars=None, title=None, inputs=None, outputs=None, controls=None, tabs=None, getJsonDataFunction=None, getDataFunction=None, getPlotFunction=None, getImageFunction=None, getD3Function=None, getCustomCSSFunction=None, getCustomJSFunction=None, getHTMLFunction=None,  getDownloadFunction=None, noOutputFunction=None):
+	def __init__(self,templateVars=None, title=None, inputs=None, outputs=None, controls=None, tabs=None, getJsonDataFunction=None, getDataFunction=None, getTableFunction=None, getPlotFunction=None, getImageFunction=None, getD3Function=None, getCustomCSSFunction=None, getCustomJSFunction=None, getHTMLFunction=None,  getDownloadFunction=None, noOutputFunction=None):
 		# populate template dictionary for creating input,controler, and output HTML and javascript
 		if templateVars is not None:
 			self.templateVars = templateVars
@@ -41,6 +40,7 @@ class Root(object):
 
 		self.getJsonData = getJsonDataFunction
 		self.getData = getDataFunction
+		self.getTable = getTableFunction
 		self.getPlot = getPlotFunction
 		self.getImage = getImageFunction
 		self.getD3 = getD3Function
@@ -96,15 +96,15 @@ class Root(object):
 	@cherrypy.expose
 	def table(self, **args):
 		args = self.clean_args(args)
-		df = self.getData(args)
-		cherrypy.response.headers['Content-Type'] = 'text/html'
-		html = df.to_html(index=False)
+		df = self.getTable(args)
+		html = df.to_html(index=False, escape=False)
 		i = 0
 		for col in df.columns:
 			html = html.replace('<th>{}'.format(col),'<th><a onclick="sortTable({},"table0");"><b>{}</b></a>'.format(i,col))
 			i += 1
 		html = html.replace('border="1" class="dataframe"','class="sortable" id="sortable"')
 		html = html.replace('style="text-align: right;"','')
+		cherrypy.response.headers['Content-Type'] = 'text/html'
 		return html
 
 	@cherrypy.expose
@@ -116,6 +116,7 @@ class Root(object):
 
 	@cherrypy.expose
 	def download(self, **args):
+		args = self.clean_args(args)
 		filepath = self.getDownload(args)
 		print type(filepath).__name__
 		if type(filepath).__name__=="str":
@@ -195,6 +196,27 @@ class App:
 		df = pd.DataFrame({'name':name, 'count':count})
 		return df
 
+	def getTable(self, params):
+		"""Used to create html table. Uses dataframe returned by getData by default
+		override to return a different dataframe.
+
+		arguments: params (dict)
+		returns: html table
+		"""
+		return self.getData(params)
+
+	def getDownload(self, params):
+		"""Override this function
+
+		arguments: params (dict)
+		returns: path to file or buffer to be downloaded (string or buffer)
+		"""
+		df = self.getData(params)
+		buffer = StringIO.StringIO()
+		df.to_csv(buffer, index=False)
+		filepath = buffer
+		return filepath
+
 	def getPlot(self, params):
 		"""Override this function
 
@@ -222,18 +244,6 @@ class App:
 		returns: html (string)
 		"""
 		return "<b>Override</b> the getHTML method to insert your own HTML <i>here</i>"
-
-	def getDownload(self, params):
-		"""Override this function
-
-		arguments: params (dict)
-		returns: path to file or buffer to be downloaded (string or buffer)
-		"""
-		df = self.getData(params)
-		buffer = StringIO.StringIO()
-		df.to_csv(buffer, index=False)
-		filepath = buffer
-		return filepath
 
 	def noOutput(self, params):
 		"""Override this function
@@ -268,7 +278,7 @@ class App:
 		return ""
 
 	def launch(self,host="local",port=8080):
-		webapp = Root(templateVars=self.templateVars, title=self.title, inputs=self.inputs, outputs=self.outputs, controls=self.controls, tabs=self.tabs, getJsonDataFunction=self.getJsonData, getDataFunction=self.getData, getPlotFunction=self.getPlot, getImageFunction=self.getImage, getD3Function=self.getD3, getCustomJSFunction=self.getCustomJS, getCustomCSSFunction=self.getCustomCSS, getHTMLFunction=self.getHTML, getDownloadFunction=self.getDownload, noOutputFunction=self.noOutput)
+		webapp = Root(templateVars=self.templateVars, title=self.title, inputs=self.inputs, outputs=self.outputs, controls=self.controls, tabs=self.tabs, getJsonDataFunction=self.getJsonData, getDataFunction=self.getData, getTableFunction=self.getTable, getPlotFunction=self.getPlot, getImageFunction=self.getImage, getD3Function=self.getD3, getCustomJSFunction=self.getCustomJS, getCustomCSSFunction=self.getCustomCSS, getHTMLFunction=self.getHTML, getDownloadFunction=self.getDownload, noOutputFunction=self.noOutput)
 		if host!="local":
 			cherrypy.server.socket_host = '0.0.0.0'
 		cherrypy.server.socket_port = port

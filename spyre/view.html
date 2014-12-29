@@ -103,7 +103,11 @@
 							url : "/table?"+params
 						}).done(function(response){
 							$("#{{output['output_id']}}").html(response);
-							initTable("sortable");
+							{%- if output['sortable'] is defined %}
+								{%- if output['sortable'] %}
+									initTable("sortable");
+								{%- endif %}
+							{%- endif %}
 						});
 					}
 				{%- endif %}
