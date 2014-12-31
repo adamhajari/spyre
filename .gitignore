@@ -8,3 +8,5 @@ SOURCES.txt
 .DS_Store
 .ipynb_checkpoints/
 .ipynb_checkpoints/*
+DataSpyre.egg-info/
+*.ipynb

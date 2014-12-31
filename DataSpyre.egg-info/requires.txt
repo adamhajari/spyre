@@ -1,4 +1,0 @@
-pandas
-cherrypy
-jinja2
-matplotlib
