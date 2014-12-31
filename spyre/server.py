@@ -118,7 +118,6 @@ class Root(object):
 	def download(self, **args):
 		args = self.clean_args(args)
 		filepath = self.getDownload(args)
-		print type(filepath).__name__
 		if type(filepath).__name__=="str":
 			return serve_file(filepath, "application/x-download", "attachment", name='data.csv')
 		if type(filepath).__name__=="instance":
@@ -278,7 +277,7 @@ class App:
 		return ""
 
 	def launch(self,host="local",port=8080):
-		webapp = Root(templateVars=self.templateVars, title=self.title, inputs=self.inputs, outputs=self.outputs, controls=self.controls, tabs=self.tabs, getJsonDataFunction=self.getJsonData, getDataFunction=self.getData, getTableFunction=self.getTable, getPlotFunction=self.getPlot, getImageFunction=self.getImage, getD3Function=self.getD3, getCustomJSFunction=self.getCustomJS, getCustomCSSFunction=self.getCustomCSS, getHTMLFunction=self.getHTML, getDownloadFunction=self.getDownload, noOutputFunction=self.noOutput)
+		webapp = self.getRoot()
 		if host!="local":
 			cherrypy.server.socket_host = '0.0.0.0'
 		cherrypy.server.socket_port = port
@@ -293,9 +292,13 @@ class App:
 		jobs.new(self.launch, kw=dict(port=port))
 		return HTML('<iframe src=http://localhost:{} width={} height={}></iframe>'.format(port,width,height))
 
+	def getRoot(self):
+		webapp = Root(templateVars=self.templateVars, title=self.title, inputs=self.inputs, outputs=self.outputs, controls=self.controls, tabs=self.tabs, getJsonDataFunction=self.getJsonData, getDataFunction=self.getData, getTableFunction=self.getTable, getPlotFunction=self.getPlot, getImageFunction=self.getImage, getD3Function=self.getD3, getCustomJSFunction=self.getCustomJS, getCustomCSSFunction=self.getCustomCSS, getHTMLFunction=self.getHTML, getDownloadFunction=self.getDownload, noOutputFunction=self.noOutput)
+		return webapp
+
 class Launch(App):
 	"""Warning: This class is depricated. Use App instead"""
-
+ 
 if __name__=='__main__':
 	app = App()
 	app.launch()
