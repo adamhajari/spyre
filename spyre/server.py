@@ -7,7 +7,7 @@ import pandas as pd
 import numpy as np
 
 import model
-import View
+import view
 
 import cherrypy
 from cherrypy.lib.static import serve_file
@@ -58,13 +58,13 @@ class Root(object):
 		self.templateVars['custom_js'] = custom_js
 		self.templateVars['custom_css'] = custom_css
 
-		v = View.View()
+		v = view.View()
 		self.templateVars['js'] = v.getJS()
 		self.templateVars['css'] = v.getCSS()
 
 	@cherrypy.expose
 	def index(self):
-		v = View.View()
+		v = view.View()
 		template = jinja2.Template(v.getHTML())
 		return template.render( self.templateVars )
 
@@ -133,7 +133,7 @@ class Root(object):
 
 	@cherrypy.expose
 	def spinning_wheel(self, **args):
-		v = View.View()
+		v = view.View()
 		buffer = v.getSpinningWheel()
 		cherrypy.response.headers['Content-Type'] = 'image/gif'
 		return buffer.getvalue()
