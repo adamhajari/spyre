@@ -21,34 +21,49 @@ templateEnv = jinja2.Environment( loader=templateLoader )
 
 
 class Root(object):
-	def __init__(self,templateVars=None, title=None, inputs=None, outputs=None, controls=None, tabs=None, getJsonDataFunction=None, getDataFunction=None, getTableFunction=None, getPlotFunction=None, getImageFunction=None, getD3Function=None, getCustomCSSFunction=None, getCustomJSFunction=None, getHTMLFunction=None,  getDownloadFunction=None, noOutputFunction=None):
+	def __init__(
+					self,
+					templateVars=None,
+					title=None,
+					inputs=None,
+					outputs=None,
+					controls=None,
+					tabs=None,
+					getJsonDataFunction=None,
+					getDataFunction=None,
+					getTableFunction=None,
+					getPlotFunction=None,
+					getImageFunction=None,
+					getD3Function=None,
+					getCustomCSSFunction=None,
+					getCustomJSFunction=None,
+					getHTMLFunction=None,
+					getDownloadFunction=None,
+					noOutputFunction=None,
+				):
 		# populate template dictionary for creating input,controler, and output HTML and javascript
 		if templateVars is not None:
 			self.templateVars = templateVars
 		else:
 			self.templateVars = {}
-			if title is not None:
-				self.templateVars['title'] = title
-			if inputs is not None:
-				self.templateVars['inputs'] = inputs
-			if controls is not None:
-				self.templateVars['controls'] = controls
-			if outputs is not None:
-				self.templateVars['outputs'] = outputs
-			if tabs is not None:
-				self.templateVars['tabs'] = tabs
+			# Include any class arguments that should be added to the templateVars dictionary
+			templateVarsArgs = (
+							'title',
+							'inputs',
+							'controls',
+							'outputs',
+							'tabs'
+								)
+			for arg in templateVarsArgs:
+				if locals()[arg] is not None:
+					self.templateVars[arg] = locals()[arg]
 
-		self.getJsonData = getJsonDataFunction
-		self.getData = getDataFunction
-		self.getTable = getTableFunction
-		self.getPlot = getPlotFunction
-		self.getImage = getImageFunction
-		self.getD3 = getD3Function
-		self.getCustomJS = getCustomJSFunction
-		self.getCustomCSS = getCustomCSSFunction
-		self.getHTML = getHTMLFunction
-		self.noOutput = noOutputFunction
-		self.getDownload = getDownloadFunction
+		# Adds any class arguments that have 'Function' to the object, with an attribute name omitting 'Function'
+		for key in locals().keys():
+			if 'Function' in key:
+				objAttributeName = key.replace('Function','')
+				setattr(self,objAttributeName,locals()[key])
+
 		d3 = self.getD3()
 		custom_js = self.getCustomJS()
 		custom_css = self.getCustomCSS()
@@ -293,7 +308,25 @@ class App:
 		return HTML('<iframe src=http://localhost:{} width={} height={}></iframe>'.format(port,width,height))
 
 	def getRoot(self):
-		webapp = Root(templateVars=self.templateVars, title=self.title, inputs=self.inputs, outputs=self.outputs, controls=self.controls, tabs=self.tabs, getJsonDataFunction=self.getJsonData, getDataFunction=self.getData, getTableFunction=self.getTable, getPlotFunction=self.getPlot, getImageFunction=self.getImage, getD3Function=self.getD3, getCustomJSFunction=self.getCustomJS, getCustomCSSFunction=self.getCustomCSS, getHTMLFunction=self.getHTML, getDownloadFunction=self.getDownload, noOutputFunction=self.noOutput)
+		webapp = Root(
+						templateVars=self.templateVars,
+						title=self.title,
+						inputs=self.inputs,
+						outputs=self.outputs,
+						controls=self.controls,
+						tabs=self.tabs,
+						getJsonDataFunction=self.getJsonData,
+						getDataFunction=self.getData,
+						getTableFunction=self.getTable,
+						getPlotFunction=self.getPlot,
+						getImageFunction=self.getImage,
+						getD3Function=self.getD3,
+						getCustomJSFunction=self.getCustomJS,
+						getCustomCSSFunction=self.getCustomCSS,
+						getHTMLFunction=self.getHTML,
+						getDownloadFunction=self.getDownload,
+						noOutputFunction=self.noOutput,
+					 )
 		return webapp
 
 class Launch(App):
