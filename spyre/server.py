@@ -18,29 +18,27 @@ ROOT_DIR = os.path.dirname(os.path.realpath(__file__))
 templateLoader = jinja2.FileSystemLoader( searchpath=ROOT_DIR )
 templateEnv = jinja2.Environment( loader=templateLoader )
 
-
-
 class Root(object):
 	def __init__(
-					self,
-					templateVars=None,
-					title=None,
-					inputs=None,
-					outputs=None,
-					controls=None,
-					tabs=None,
-					getJsonDataFunction=None,
-					getDataFunction=None,
-					getTableFunction=None,
-					getPlotFunction=None,
-					getImageFunction=None,
-					getD3Function=None,
-					getCustomCSSFunction=None,
-					getCustomJSFunction=None,
-					getHTMLFunction=None,
-					getDownloadFunction=None,
-					noOutputFunction=None,
-				):
+			self,
+			templateVars=None,
+			title=None,
+			inputs=None,
+			outputs=None,
+			controls=None,
+			tabs=None,
+			getJsonDataFunction=None,
+			getDataFunction=None,
+			getTableFunction=None,
+			getPlotFunction=None,
+			getImageFunction=None,
+			getD3Function=None,
+			getCustomCSSFunction=None,
+			getCustomJSFunction=None,
+			getHTMLFunction=None,
+			getDownloadFunction=None,
+			noOutputFunction=None,
+			):
 		# populate template dictionary for creating input,controler, and output HTML and javascript
 		if templateVars is not None:
 			self.templateVars = templateVars
@@ -48,12 +46,12 @@ class Root(object):
 			self.templateVars = {}
 			# Include any class arguments that should be added to the templateVars dictionary
 			templateVarsArgs = (
-							'title',
-							'inputs',
-							'controls',
-							'outputs',
-							'tabs'
-								)
+					'title',
+					'inputs',
+					'controls',
+					'outputs',
+					'tabs'
+					)
 			for arg in templateVarsArgs:
 				if locals()[arg] is not None:
 					self.templateVars[arg] = locals()[arg]
@@ -309,24 +307,24 @@ class App:
 
 	def getRoot(self):
 		webapp = Root(
-						templateVars=self.templateVars,
-						title=self.title,
-						inputs=self.inputs,
-						outputs=self.outputs,
-						controls=self.controls,
-						tabs=self.tabs,
-						getJsonDataFunction=self.getJsonData,
-						getDataFunction=self.getData,
-						getTableFunction=self.getTable,
-						getPlotFunction=self.getPlot,
-						getImageFunction=self.getImage,
-						getD3Function=self.getD3,
-						getCustomJSFunction=self.getCustomJS,
-						getCustomCSSFunction=self.getCustomCSS,
-						getHTMLFunction=self.getHTML,
-						getDownloadFunction=self.getDownload,
-						noOutputFunction=self.noOutput,
-					 )
+				templateVars=self.templateVars,
+				title=self.title,
+				inputs=self.inputs,
+				outputs=self.outputs,
+				controls=self.controls,
+				tabs=self.tabs,
+				getJsonDataFunction=self.getJsonData,
+				getDataFunction=self.getData,
+				getTableFunction=self.getTable,
+				getPlotFunction=self.getPlot,
+				getImageFunction=self.getImage,
+				getD3Function=self.getD3,
+				getCustomJSFunction=self.getCustomJS,
+				getCustomCSSFunction=self.getCustomCSS,
+				getHTMLFunction=self.getHTML,
+				getDownloadFunction=self.getDownload,
+				noOutputFunction=self.noOutput,
+				)
 		return webapp
 
 class Launch(App):
