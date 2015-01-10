@@ -190,10 +190,10 @@ class App:
 		returns:
 		DataFrame
 		"""
-		count = [1,4,3]
-		name = ['Override','getData() method','to generate tables']
-		df = pd.DataFrame({'name':name, 'count':count})
-		return df
+		try:
+			return eval("self."+str(params['output_id'])+"()")
+		except:
+			return pd.DataFrame({'name':['Override','getData() method','to generate tables'], 'count':[1,4,3]})
 
 	def getTable(self, params):
 		"""Used to create html table. Uses dataframe returned by getData by default
@@ -225,8 +225,11 @@ class App:
 		returns:
 		matplotlib.pyplot figure
 		"""
-		plt.title("Override getPlot() method to generate figures")
-		return plt.gcf()
+		try:
+			return eval("self."+str(params['output_id'])+"()")
+		except:
+			plt.title("Override getPlot() method to generate figures")
+			return plt.gcf()
 
 	def getImage(self, params):
 		"""Override this function
@@ -234,7 +237,10 @@ class App:
 		arguments: params (dict)
 		returns: matplotlib.image (figure)
 		"""
-		return np.array([[0,0,0]])
+		try:
+			return eval("self."+str(params['output_id'])+"()")
+		except:
+			return np.array([[0,0,0]])
 
 	def getHTML(self, params):
 		"""Override this function
@@ -242,7 +248,10 @@ class App:
 		arguments: params (dict)
 		returns: html (string)
 		"""
-		return "<b>Override</b> the getHTML method to insert your own HTML <i>here</i>"
+		try:
+			return eval("self."+str(params['output_id'])+"()")
+		except:
+			return "<b>Override</b> the getHTML method to insert your own HTML <i>here</i>"
 
 	def noOutput(self, params):
 		"""Override this function
@@ -252,7 +261,10 @@ class App:
 		arguments:
 		params (dict)
 		"""
-		pass
+		try:
+			return eval("self."+str(params['output_id'])+"()")
+		except:
+			pass
 
 	def getD3(self):
 		d3 = {}

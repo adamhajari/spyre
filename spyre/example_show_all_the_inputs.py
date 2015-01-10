@@ -73,6 +73,11 @@ class SimpleSineApp(server.App):
 					"control_id" : "button1",
 					"on_page_load" : True,
 				},
+				{	"output_type" : "plot",
+					"output_id" : "plot2",
+					"control_id" : "button1",
+					"on_page_load" : True,
+				},
 				{	"output_type" : "table",
 					"output_id" : "table_id",
 					"control_id" : "button1",
@@ -85,30 +90,67 @@ class SimpleSineApp(server.App):
 				}]
 
 	def getPlot(self, params):
+		fig = plt.figure()  # make figure object
+		splt = fig.add_subplot(1,1,1)
+
 		f = float(params['freq'])
-		time.sleep(f/2)
 		title = params['title']
 		axis_label = map( int, params['axis_label'] )
 		color = params['color']
 		func_type = params['func_type']
 
 		x = np.arange(0,6*pi,pi/50)
-		plt.title(title)
+		splt.set_title(title)
 		for axis in axis_label:
 			if axis==1:
-				plt.xlabel('x axis')
+				splt.set_xlabel('x axis')
 			if axis==2:
-				plt.ylabel('y axis')
+				splt.set_ylabel('y axis')
 		if func_type=='cos':
 			y = np.cos(f*x)
 		else:
 			y = np.sin(f*x)
-		plt.plot(x,y,color=color)  # sine wave
-		return plt.gcf()
+		splt.plot(x,y,color=color)  # sine wave
+		return fig
 
-	def getHTML(self,params):
-		f = int(params['freq'])
-		time.sleep(f)
+	# def getHTML(self,params):
+	# 	f = int(params['freq'])
+	# 	time.sleep(f)
+	# 	return "hello world"
+	
+	def plot(self):
+		fig = plt.figure()  # make figure object
+		splt = fig.add_subplot(1,1,1)
+
+		f = float(params['freq'])
+		title = params['title']
+		axis_label = map( int, params['axis_label'] )
+		color = params['color']
+		func_type = params['func_type']
+
+		x = np.arange(0,6*pi,pi/50)
+		splt.set_title(title)
+		for axis in axis_label:
+			if axis==1:
+				splt.set_xlabel('x axis')
+			if axis==2:
+				splt.set_ylabel('y axis')
+		if func_type=='cos':
+			y = np.cos(f*x)
+		else:
+			y = np.sin(f*x)
+		splt.plot(x,y,color=color)  # sine wave
+		return fig
+
+	def plot2(self):
+		fig = plt.figure()  # make figure object
+		splt = fig.add_subplot(1,1,1)
+		x = np.arange(0,6*pi,pi/50)
+		y = np.sin(f*x)
+		splt.plot(x,y)  # sine wave
+		return fig
+
+	def html_id(self):
 		return "hello world"
 
 	def getData(self,params):
