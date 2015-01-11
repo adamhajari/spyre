@@ -7,7 +7,10 @@ import pandas as pd
 import numpy as np
 
 import model
-import View
+try:
+	import View
+except:
+	import view as View
 
 import cherrypy
 from cherrypy.lib.static import serve_file
