@@ -42,7 +42,7 @@ class View:
 
 	def getSpinningWheel(self):
 		buffer = StringIO.StringIO()
-		f = open(self.ROOT_DIR+'/public/images/loading_wheel.gif')
+		f = open(self.ROOT_DIR+'/public/images/loading_wheel.gif','rb')
 		buffer.write(f.read())
 		f.close()
 		return(buffer)
