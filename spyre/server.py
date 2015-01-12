@@ -1,3 +1,6 @@
+import matplotlib
+matplotlib.use('Agg')
+
 import os, os.path
 import json
 import jinja2
