@@ -59,7 +59,7 @@
 						var params = updateSharedParameters();
 						params = params+"output_id={{output['output_id']}}&";
 						
-						var plot = $("<img />").attr('src', "/plot?"+params).load(function(){
+						var plot = $("<img />").attr('src', "plot?"+params).load(function(){
 							$("#{{output['output_id']}}").html("");
 							$("#{{output['output_id']}}").append(plot)
 						});
@@ -71,7 +71,7 @@
 					function {{output['output_id']}}(){
 						var params = updateSharedParameters();
 						params = params+"output_id={{output['output_id']}}&";
-						var img = $("<img />").attr('src', "/image?"+params);
+						var img = $("<img />").attr('src', "image?"+params);
 						$("#{{output['output_id']}}").html(img);
 					}
 				{%- endif %}
@@ -85,7 +85,7 @@
 						var params = updateSharedParameters();
 						params = params+"output_id={{output['output_id']}}&";
 						$.ajax({
-							url : "/html?"+params,
+							url : "html?"+params,
 							success: function(response, textStatus, jqXHR){
 								$("#{{output['output_id']}}").html(response);
 							}
@@ -103,7 +103,7 @@
 						params = params+"output_id={{output['output_id']}}&";
 						$.ajax({
 							type: 'GET',
-							url : "/table?"+params
+							url : "table?"+params
 						}).done(function(response){
 							$("#{{output['output_id']}}").html(response);
 							{%- if output['sortable'] is defined %}
@@ -120,7 +120,7 @@
 					function {{output['output_id']}}(){
 						var params = updateSharedParameters();
 						params = params+"output_id={{output['output_id']}}&";
-						window.location = "/download?"+params;
+						window.location = "download?"+params;
 					}
 				{%- endif %}
 
@@ -133,7 +133,7 @@
 						params = params+"output_id={{output['output_id']}}&";
 						$.ajax({
 							type: 'GET',
-							url : "/no_output?"+params
+							url : "no_output?"+params
 						}).done(function(){
 							{% if output['alert_message'] is defined %} alert("{{output['alert_message']}}"); {% endif %}
 						});
@@ -349,4 +349,3 @@
 	</div>
 	</body>
 </html>
-
