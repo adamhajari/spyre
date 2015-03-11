@@ -159,9 +159,13 @@ class Root(object):
         return args
 
 
-class App:
+class App(object):
 
     title = None
+
+    #Will be used when there are more than one app in a site
+    app_bar_html = None
+
     inputs = [{     "input_type":'text',
                     "label": 'Variable', 
                     "value" : "Value Here",
@@ -311,6 +315,7 @@ class App:
         return HTML('<iframe src=http://localhost:{} width={} height={}></iframe>'.format(port,width,height))
 
     def getRoot(self):
+
         webapp = Root(templateVars=self.templateVars, title=self.title, inputs=self.inputs, outputs=self.outputs, controls=self.controls, tabs=self.tabs, getJsonDataFunction=self.getJsonData, getDataFunction=self.getData, getTableFunction=self.getTable, getPlotFunction=self.getPlot, getImageFunction=self.getImage, getD3Function=self.getD3, getCustomJSFunction=self.getCustomJS, getCustomCSSFunction=self.getCustomCSS, getHTMLFunction=self.getHTML, getDownloadFunction=self.getDownload, noOutputFunction=self.noOutput)
         return webapp
 
@@ -325,18 +330,33 @@ class Site(object):
     """
 
     def __init__(self, appobj):
-        self.addRoot(appobj)
+        self.site_app_bar = list()        
+        self.addIndex(appobj)
 
-    def addRoot(self, appobj):
+    def addIndex(self, appobj):
+        self.site_app_bar.append(("/",
+                            appobj.app_bar_html or appobj.title or "/"))
         self.root = appobj().getRoot()
 
-    def addApp(self, appobj, fullRoute):
+
+
+    def get_route(self, fullRoute):
+
         routeSplit = fullRoute.split('/')
         routeSplit.remove('')
         parent = self.root
         for route in routeSplit[:-1]:
-            parent = getattr(parent,route)
-        setattr(parent, routeSplit[-1], appobj().getRoot())
+            parent = getattr(parent, route)
+        return parent, routeSplit[-1]
+
+    def addApp(self, appobj, fullRoute):
+
+        parent, route = self.get_route(fullRoute)
+
+        self.site_app_bar.append((fullRoute,
+                        appobj.app_bar_html or appobj.title or route))
+
+        setattr(parent, route, appobj().getRoot())
 
     def getRoot(self):
         """A convenience method to make the site API similar to the app API,
@@ -346,7 +366,15 @@ class Site(object):
     def launch(self, host="local", port=8080):
         """Calling the Launch method on a Site object will serve the top
             node of the cherrypy Root object tree"""
-        if host!="local":
+
+        #Need to add in the appbar if many apps
+        self.root.templateVars['app_bar'] = self.site_app_bar
+        for fullRoute, _ in self.site_app_bar[1:]:
+            parent, route = self.get_route(fullRoute)
+            parent.__dict__[route].templateVars['app_bar'] = self.site_app_bar
+
+
+        if host != "local":
             cherrypy.server.socket_host = '0.0.0.0'
         cherrypy.server.socket_port = port
         cherrypy.quickstart(self.root)

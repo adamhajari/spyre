@@ -212,6 +212,17 @@
 
 	<body>
 	<div class="outer">
+		{% if app_bar %}
+			<div class="app-bar">
+				<ul class="tab-links">
+					{% for route, text in app_bar %}
+						<li><a href="{{route}}">{{text}}</a></li>
+					{% endfor %}
+				</ul>
+			</div>
+		{% endif %}
+
+
 
 		<!-- control panel -->
 		<div class="left-panel">
