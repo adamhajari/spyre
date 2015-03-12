@@ -11,7 +11,7 @@ Spyre runs on the minimalist python web framework, **[cherrypy]**, with **[jinja
 
 Installation
 ----
-```
+```bash
     $ pip install dataspyre
 ```
 
@@ -19,7 +19,7 @@ Installation
 The Simplest of Examples
 ----
 Here's a very simple spyre example to showcase the primary components of a spyre app
-```
+```python
 from spyre import server
 
 import matplotlib.pyplot as plt
@@ -75,7 +75,7 @@ For this simple example you can ignore the output_id (it will be useful when def
 To launch our app we just need to create an instance of our SimpleSineApp class and call the launch method. The launch method takes to optional parameters: host and port. By default, apps are served locally on port 8080. Set host='0.0.0.0' to serve your app to external traffic.
 
 Assuming you name this file "simple_sine_example.py" you can launch this app from the command line with:
-```
+```bash
     $ python simple_sine_example.py
 ```
 The output will indicate where the app is being served (usually something like http://127.0.0.1:8080)
@@ -91,7 +91,7 @@ Let's look at another example to introduce controls, tabs, and a second output t
 In the example below we'll show historical stock data in a line graph and a table, each in it's own tab.  Since inputs can only have a single action_id (and we have two outputs), we'll need to introduce a button control in order to update both outputs.
 
 
-```
+```python
 from spyre import server
 
 import pandas as pd
