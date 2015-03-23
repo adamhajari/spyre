@@ -10,8 +10,8 @@ from NBS_category_example import NBSCategoriesApp
 
 
 class Index(App):
-	def getHTML(self, params):
-		return "Title Page Here"
+    def getHTML(self, params):
+        return "Title Page Here"
 
 
 #site = Site(Index)

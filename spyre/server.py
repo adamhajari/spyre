@@ -27,7 +27,7 @@ templateEnv = jinja2.Environment( loader=templateLoader )
 
 
 class Root(object):
-    def __init__(self,templateVars=None, title=None, inputs=None, outputs=None, controls=None, tabs=None, getJsonDataFunction=None, getDataFunction=None, getTableFunction=None, getPlotFunction=None, getImageFunction=None, getD3Function=None, getCustomCSSFunction=None, getCustomJSFunction=None, getHTMLFunction=None,  getDownloadFunction=None, noOutputFunction=None):
+    def __init__(self, getDataFrameFunction=None, templateVars=None, title=None, inputs=None, outputs=None, controls=None, tabs=None, getJsonDataFunction=None, getDataFunction=None, getTableFunction=None, getPlotFunction=None, getImageFunction=None, getD3Function=None, getCustomCSSFunction=None, getCustomJSFunction=None, getHTMLFunction=None,  getDownloadFunction=None, noOutputFunction=None):
         # populate template dictionary for creating input,controler, and output HTML and javascript
         if templateVars is not None:
             self.templateVars = templateVars
@@ -43,6 +43,9 @@ class Root(object):
                 self.templateVars['outputs'] = outputs
             if tabs is not None:
                 self.templateVars['tabs'] = tabs
+
+
+        self.getDataFrame = getDataFrameFunction
 
         self.getJsonData = getJsonDataFunction
         self.getData = getDataFunction
@@ -181,7 +184,11 @@ class App(object):
     inputs = None
     tabs = None
     templateVars = None
-                
+
+
+    def getDataFrame(self, params):
+        pass
+
     def getJsonData(self, params):
         """turns the DataFrame returned by getData into a dictionary
 
@@ -316,7 +323,7 @@ class App(object):
 
     def getRoot(self):
 
-        webapp = Root(templateVars=self.templateVars, title=self.title, inputs=self.inputs, outputs=self.outputs, controls=self.controls, tabs=self.tabs, getJsonDataFunction=self.getJsonData, getDataFunction=self.getData, getTableFunction=self.getTable, getPlotFunction=self.getPlot, getImageFunction=self.getImage, getD3Function=self.getD3, getCustomJSFunction=self.getCustomJS, getCustomCSSFunction=self.getCustomCSS, getHTMLFunction=self.getHTML, getDownloadFunction=self.getDownload, noOutputFunction=self.noOutput)
+        webapp = Root(getDataFrameFunction=self.getDataFrame, templateVars=self.templateVars, title=self.title, inputs=self.inputs, outputs=self.outputs, controls=self.controls, tabs=self.tabs, getJsonDataFunction=self.getJsonData, getDataFunction=self.getData, getTableFunction=self.getTable, getPlotFunction=self.getPlot, getImageFunction=self.getImage, getD3Function=self.getD3, getCustomJSFunction=self.getCustomJS, getCustomCSSFunction=self.getCustomCSS, getHTMLFunction=self.getHTML, getDownloadFunction=self.getDownload, noOutputFunction=self.noOutput)
         return webapp
 
 class Launch(App):
