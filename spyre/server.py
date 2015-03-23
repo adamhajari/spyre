@@ -11,9 +11,9 @@ import numpy as np
 
 import model
 try:
-	import View
+    import View
 except:
-	import view as View
+    import view as View
 
 import cherrypy
 from cherrypy.lib.static import serve_file
@@ -27,296 +27,366 @@ templateEnv = jinja2.Environment( loader=templateLoader )
 
 
 class Root(object):
-	def __init__(self,templateVars=None, title=None, inputs=None, outputs=None, controls=None, tabs=None, getJsonDataFunction=None, getDataFunction=None, getTableFunction=None, getPlotFunction=None, getImageFunction=None, getD3Function=None, getCustomCSSFunction=None, getCustomJSFunction=None, getHTMLFunction=None,  getDownloadFunction=None, noOutputFunction=None):
-		# populate template dictionary for creating input,controler, and output HTML and javascript
-		if templateVars is not None:
-			self.templateVars = templateVars
-		else:
-			self.templateVars = {}
-			if title is not None:
-				self.templateVars['title'] = title
-			if inputs is not None:
-				self.templateVars['inputs'] = inputs
-			if controls is not None:
-				self.templateVars['controls'] = controls
-			if outputs is not None:
-				self.templateVars['outputs'] = outputs
-			if tabs is not None:
-				self.templateVars['tabs'] = tabs
-
-		self.getJsonData = getJsonDataFunction
-		self.getData = getDataFunction
-		self.getTable = getTableFunction
-		self.getPlot = getPlotFunction
-		self.getImage = getImageFunction
-		self.getD3 = getD3Function
-		self.getCustomJS = getCustomJSFunction
-		self.getCustomCSS = getCustomCSSFunction
-		self.getHTML = getHTMLFunction
-		self.noOutput = noOutputFunction
-		self.getDownload = getDownloadFunction
-		d3 = self.getD3()
-		custom_js = self.getCustomJS()
-		custom_css = self.getCustomCSS()
-
-		self.templateVars['d3js'] = d3['js']
-		self.templateVars['d3css'] = d3['css']
-		self.templateVars['custom_js'] = custom_js
-		self.templateVars['custom_css'] = custom_css
-
-		v = View.View()
-		self.templateVars['js'] = v.getJS()
-		self.templateVars['css'] = v.getCSS()
-
-	@cherrypy.expose
-	def index(self):
-		v = View.View()
-		template = jinja2.Template(v.getHTML())
-		return template.render( self.templateVars )
-
-	@cherrypy.expose
-	def plot(self, **args):
-		args = self.clean_args(args)
-		p = self.getPlot(args)
-		d = model.Plot()
-		buffer = d.getPlotPath(p)
-		cherrypy.response.headers['Content-Type'] = 'image/png'
-		return buffer.getvalue()
-
-	@cherrypy.expose
-	def image(self, **args):
-		args = self.clean_args(args)
-		img = self.getImage(args)
-		d = model.Image()
-		buffer = d.getImagePath(img)
-		cherrypy.response.headers['Content-Type'] = 'image/jpg'
-		return buffer.getvalue()
-
-	@cherrypy.expose
-	def data(self, **args):
-		args = self.clean_args(args)
-		data = self.getJsonData(args)
-		cherrypy.response.headers['Content-Type'] = 'application/json'
-		return json.dumps({'data':data,'args':args})
-
-	@cherrypy.expose
-	def table(self, **args):
-		args = self.clean_args(args)
-		df = self.getTable(args)
-		html = df.to_html(index=False, escape=False)
-		i = 0
-		for col in df.columns:
-			html = html.replace('<th>{}'.format(col),'<th><a onclick="sortTable({},"table0");"><b>{}</b></a>'.format(i,col))
-			i += 1
-		html = html.replace('border="1" class="dataframe"','class="sortable" id="sortable"')
-		html = html.replace('style="text-align: right;"','')
-		cherrypy.response.headers['Content-Type'] = 'text/html'
-		return html
-
-	@cherrypy.expose
-	def html(self, **args):
-		args = self.clean_args(args)
-		html = self.getHTML(args)
-		cherrypy.response.headers['Content-Type'] = 'text/html'
-		return html
-
-	@cherrypy.expose
-	def download(self, **args):
-		args = self.clean_args(args)
-		filepath = self.getDownload(args)
-		if type(filepath).__name__=="str":
-			return serve_file(filepath, "application/x-download", "attachment", name='data.csv')
-		if type(filepath).__name__=="instance":
-			return serve_fileobj(filepath.getvalue(), "application/x-download", "attachment", name='data.csv')
-		else:
-			return "error downloading file. filepath must be string of buffer"
-
-	@cherrypy.expose
-	def no_output(self, **args):
-		args = self.clean_args(args)
-		self.noOutput(args)
-		return ''
-
-	@cherrypy.expose
-	def spinning_wheel(self, **args):
-		v = View.View()
-		buffer = v.getSpinningWheel()
-		cherrypy.response.headers['Content-Type'] = 'image/gif'
-		return buffer.getvalue()
-
-	def clean_args(self,args):
-		for k,v in args.iteritems():
-			# turn checkbox group string into a list
-			if v.rfind("__list__") == 0:
-				tmp = v.split(',')
-				if len(tmp)>1:
-					args[k] = tmp[1:]
-				else:
-					args[k] = []
-			# convert to a number
-			if v.rfind("__float__") == 0:
-				args[k] = float(v[9:])
-		return args
+    def __init__(self, getDataFrameFunction=None, templateVars=None, title=None, inputs=None, outputs=None, controls=None, tabs=None, getJsonDataFunction=None, getDataFunction=None, getTableFunction=None, getPlotFunction=None, getImageFunction=None, getD3Function=None, getCustomCSSFunction=None, getCustomJSFunction=None, getHTMLFunction=None,  getDownloadFunction=None, noOutputFunction=None):
+        # populate template dictionary for creating input,controler, and output HTML and javascript
+        if templateVars is not None:
+            self.templateVars = templateVars
+        else:
+            self.templateVars = {}
+            if title is not None:
+                self.templateVars['title'] = title
+            if inputs is not None:
+                self.templateVars['inputs'] = inputs
+            if controls is not None:
+                self.templateVars['controls'] = controls
+            if outputs is not None:
+                self.templateVars['outputs'] = outputs
+            if tabs is not None:
+                self.templateVars['tabs'] = tabs
 
 
-class App:
+        self.getDataFrame = getDataFrameFunction
 
-	title = None
-	inputs = [{		"input_type":'text',
-					"label": 'Variable', 
-					"value" : "Value Here",
-					"variable_name": 'var1'}]
+        self.getJsonData = getJsonDataFunction
+        self.getData = getDataFunction
+        self.getTable = getTableFunction
+        self.getPlot = getPlotFunction
+        self.getImage = getImageFunction
+        self.getD3 = getD3Function
+        self.getCustomJS = getCustomJSFunction
+        self.getCustomCSS = getCustomCSSFunction
+        self.getHTML = getHTMLFunction
+        self.noOutput = noOutputFunction
+        self.getDownload = getDownloadFunction
+        d3 = self.getD3()
+        custom_js = self.getCustomJS()
+        custom_css = self.getCustomCSS()
 
-	controls = None
+        self.templateVars['d3js'] = d3['js']
+        self.templateVars['d3css'] = d3['css']
+        self.templateVars['custom_js'] = custom_js
+        self.templateVars['custom_css'] = custom_css
 
-	outputs = [{	"output_type" : "plot",
-					"output_id" : "plot",
-					"control_id" : "button1",
-					"on_page_load" : "true"}]
-	outputs = None
-	inputs = None
-	tabs = None
-	templateVars = None
-				
-	def getJsonData(self, params):
-		"""turns the DataFrame returned by getData into a dictionary
+        v = View.View()
+        self.templateVars['js'] = v.getJS()
+        self.templateVars['css'] = v.getCSS()
 
-		arguments:
-		the params passed used for table or d3 outputs are forwarded on to getData
-		"""
-		df = self.getData(params)
-		return df.to_dict(outtype='records')
+    @cherrypy.expose
+    def index(self):
+        v = View.View()
+        template = jinja2.Template(v.getHTML())
+        return template.render( self.templateVars )
 
-	def getData(self, params):
-		"""Override this function
+    @cherrypy.expose
+    def plot(self, **args):
+        args = self.clean_args(args)
+        p = self.getPlot(args)
+        d = model.Plot()
+        buffer = d.getPlotPath(p)
+        cherrypy.response.headers['Content-Type'] = 'image/png'
+        return buffer.getvalue()
 
-		arguments:
-		params (dict)
+    @cherrypy.expose
+    def image(self, **args):
+        args = self.clean_args(args)
+        img = self.getImage(args)
+        d = model.Image()
+        buffer = d.getImagePath(img)
+        cherrypy.response.headers['Content-Type'] = 'image/jpg'
+        return buffer.getvalue()
 
-		returns:
-		DataFrame
-		"""
-		try:
-			return eval("self."+str(params['output_id'])+"()")
-		except:
-			return pd.DataFrame({'name':['Override','getData() method','to generate tables'], 'count':[1,4,3]})
+    @cherrypy.expose
+    def data(self, **args):
+        args = self.clean_args(args)
+        data = self.getJsonData(args)
+        cherrypy.response.headers['Content-Type'] = 'application/json'
+        return json.dumps({'data':data,'args':args})
 
-	def getTable(self, params):
-		"""Used to create html table. Uses dataframe returned by getData by default
-		override to return a different dataframe.
+    @cherrypy.expose
+    def table(self, **args):
+        args = self.clean_args(args)
+        df = self.getTable(args)
+        html = df.to_html(index=False, escape=False)
+        i = 0
+        for col in df.columns:
+            html = html.replace('<th>{}'.format(col),'<th><a onclick="sortTable({},"table0");"><b>{}</b></a>'.format(i,col))
+            i += 1
+        html = html.replace('border="1" class="dataframe"','class="sortable" id="sortable"')
+        html = html.replace('style="text-align: right;"','')
+        cherrypy.response.headers['Content-Type'] = 'text/html'
+        return html
 
-		arguments: params (dict)
-		returns: html table
-		"""
-		return self.getData(params)
+    @cherrypy.expose
+    def html(self, **args):
+        args = self.clean_args(args)
+        html = self.getHTML(args)
+        cherrypy.response.headers['Content-Type'] = 'text/html'
+        return html
 
-	def getDownload(self, params):
-		"""Override this function
+    @cherrypy.expose
+    def download(self, **args):
+        args = self.clean_args(args)
+        filepath = self.getDownload(args)
+        if type(filepath).__name__=="str":
+            return serve_file(filepath, "application/x-download", "attachment", name='data.csv')
+        if type(filepath).__name__=="instance":
+            return serve_fileobj(filepath.getvalue(), "application/x-download", "attachment", name='data.csv')
+        else:
+            return "error downloading file. filepath must be string of buffer"
 
-		arguments: params (dict)
-		returns: path to file or buffer to be downloaded (string or buffer)
-		"""
-		df = self.getData(params)
-		buffer = StringIO.StringIO()
-		df.to_csv(buffer, index=False)
-		filepath = buffer
-		return filepath
+    @cherrypy.expose
+    def no_output(self, **args):
+        args = self.clean_args(args)
+        self.noOutput(args)
+        return ''
 
-	def getPlot(self, params):
-		"""Override this function
+    @cherrypy.expose
+    def spinning_wheel(self, **args):
+        v = View.View()
+        buffer = v.getSpinningWheel()
+        cherrypy.response.headers['Content-Type'] = 'image/gif'
+        return buffer.getvalue()
 
-		arguments:
-		params (dict)
+    def clean_args(self,args):
+        for k,v in args.iteritems():
+            # turn checkbox group string into a list
+            if v.rfind("__list__") == 0:
+                tmp = v.split(',')
+                if len(tmp)>1:
+                    args[k] = tmp[1:]
+                else:
+                    args[k] = []
+            # convert to a number
+            if v.rfind("__float__") == 0:
+                args[k] = float(v[9:])
+        return args
 
-		returns:
-		matplotlib.pyplot figure
-		"""
-		try:
-			return eval("self."+str(params['output_id'])+"()")
-		except:
-			plt.title("Override getPlot() method to generate figures")
-			return plt.gcf()
 
-	def getImage(self, params):
-		"""Override this function
+class App(object):
 
-		arguments: params (dict)
-		returns: matplotlib.image (figure)
-		"""
-		try:
-			return eval("self."+str(params['output_id'])+"()")
-		except:
-			return np.array([[0,0,0]])
+    title = None
 
-	def getHTML(self, params):
-		"""Override this function
+    #Will be used when there are more than one app in a site
+    app_bar_html = None
 
-		arguments: params (dict)
-		returns: html (string)
-		"""
-		try:
-			return eval("self."+str(params['output_id'])+"()")
-		except:
-			return "<b>Override</b> the getHTML method to insert your own HTML <i>here</i>"
+    inputs = [{     "input_type":'text',
+                    "label": 'Variable', 
+                    "value" : "Value Here",
+                    "variable_name": 'var1'}]
 
-	def noOutput(self, params):
-		"""Override this function
-		A method for doing stuff that doesn't reququire an output (refreshing data,
-			updating variables, etc.)
+    controls = None
 
-		arguments:
-		params (dict)
-		"""
-		try:
-			return eval("self."+str(params['output_id'])+"()")
-		except:
-			pass
+    outputs = [{    "output_type" : "plot",
+                    "output_id" : "plot",
+                    "control_id" : "button1",
+                    "on_page_load" : "true"}]
+    outputs = None
+    inputs = None
+    tabs = None
+    templateVars = None
 
-	def getD3(self):
-		d3 = {}
-		d3['css'] = ""
-		d3['js'] = ""
-		return d3
 
-	def getCustomJS(self):
-		"""Override this function
+    def getDataFrame(self, params):
+        pass
 
-		returns:
-		string of javascript to insert on page load
-		"""
-		return ""
+    def getJsonData(self, params):
+        """turns the DataFrame returned by getData into a dictionary
 
-	def getCustomCSS(self):
-		"""Override this function
+        arguments:
+        the params passed used for table or d3 outputs are forwarded on to getData
+        """
+        df = self.getData(params)
+        return df.to_dict(outtype='records')
 
-		returns:
-		string of css to insert on page load
-		"""
-		return ""
+    def getData(self, params):
+        """Override this function
 
-	def launch(self,host="local",port=8080):
-		webapp = self.getRoot()
-		if host!="local":
-			cherrypy.server.socket_host = '0.0.0.0'
-		cherrypy.server.socket_port = port
-		cherrypy.quickstart(webapp)
+        arguments:
+        params (dict)
 
-	def launch_in_notebook(self, port=9095, width=900, height=600):
-		"""launch the app within an iframe in ipython notebook"""
-		from IPython.lib import backgroundjobs as bg
-		from IPython.display import HTML
+        returns:
+        DataFrame
+        """
+        try:
+            return eval("self."+str(params['output_id'])+"()")
+        except:
+            return pd.DataFrame({'name':['Override','getData() method','to generate tables'], 'count':[1,4,3]})
 
-		jobs = bg.BackgroundJobManager()
-		jobs.new(self.launch, kw=dict(port=port))
-		return HTML('<iframe src=http://localhost:{} width={} height={}></iframe>'.format(port,width,height))
+    def getTable(self, params):
+        """Used to create html table. Uses dataframe returned by getData by default
+        override to return a different dataframe.
 
-	def getRoot(self):
-		webapp = Root(templateVars=self.templateVars, title=self.title, inputs=self.inputs, outputs=self.outputs, controls=self.controls, tabs=self.tabs, getJsonDataFunction=self.getJsonData, getDataFunction=self.getData, getTableFunction=self.getTable, getPlotFunction=self.getPlot, getImageFunction=self.getImage, getD3Function=self.getD3, getCustomJSFunction=self.getCustomJS, getCustomCSSFunction=self.getCustomCSS, getHTMLFunction=self.getHTML, getDownloadFunction=self.getDownload, noOutputFunction=self.noOutput)
-		return webapp
+        arguments: params (dict)
+        returns: html table
+        """
+        return self.getData(params)
+
+    def getDownload(self, params):
+        """Override this function
+
+        arguments: params (dict)
+        returns: path to file or buffer to be downloaded (string or buffer)
+        """
+        df = self.getData(params)
+        buffer = StringIO.StringIO()
+        df.to_csv(buffer, index=False)
+        filepath = buffer
+        return filepath
+
+    def getPlot(self, params):
+        """Override this function
+
+        arguments:
+        params (dict)
+
+        returns:
+        matplotlib.pyplot figure
+        """
+        try:
+            return eval("self."+str(params['output_id'])+"()")
+        except:
+            plt.title("Override getPlot() method to generate figures")
+            return plt.gcf()
+
+    def getImage(self, params):
+        """Override this function
+
+        arguments: params (dict)
+        returns: matplotlib.image (figure)
+        """
+        try:
+            return eval("self."+str(params['output_id'])+"()")
+        except:
+            return np.array([[0,0,0]])
+
+    def getHTML(self, params):
+        """Override this function
+
+        arguments: params (dict)
+        returns: html (string)
+        """
+        try:
+            return eval("self."+str(params['output_id'])+"()")
+        except:
+            return "<b>Override</b> the getHTML method to insert your own HTML <i>here</i>"
+
+    def noOutput(self, params):
+        """Override this function
+        A method for doing stuff that doesn't reququire an output (refreshing data,
+            updating variables, etc.)
+
+        arguments:
+        params (dict)
+        """
+        try:
+            return eval("self."+str(params['output_id'])+"()")
+        except:
+            pass
+
+    def getD3(self):
+        d3 = {}
+        d3['css'] = ""
+        d3['js'] = ""
+        return d3
+
+    def getCustomJS(self):
+        """Override this function
+
+        returns:
+        string of javascript to insert on page load
+        """
+        return ""
+
+    def getCustomCSS(self):
+        """Override this function
+
+        returns:
+        string of css to insert on page load
+        """
+        return ""
+
+    def launch(self,host="local",port=8080):
+        webapp = self.getRoot()
+        if host!="local":
+            cherrypy.server.socket_host = '0.0.0.0'
+        cherrypy.server.socket_port = port
+        cherrypy.quickstart(webapp)
+
+    def launch_in_notebook(self, port=9095, width=900, height=600):
+        """launch the app within an iframe in ipython notebook"""
+        from IPython.lib import backgroundjobs as bg
+        from IPython.display import HTML
+
+        jobs = bg.BackgroundJobManager()
+        jobs.new(self.launch, kw=dict(port=port))
+        return HTML('<iframe src=http://localhost:{} width={} height={}></iframe>'.format(port,width,height))
+
+    def getRoot(self):
+
+        webapp = Root(getDataFrameFunction=self.getDataFrame, templateVars=self.templateVars, title=self.title, inputs=self.inputs, outputs=self.outputs, controls=self.controls, tabs=self.tabs, getJsonDataFunction=self.getJsonData, getDataFunction=self.getData, getTableFunction=self.getTable, getPlotFunction=self.getPlot, getImageFunction=self.getImage, getD3Function=self.getD3, getCustomJSFunction=self.getCustomJS, getCustomCSSFunction=self.getCustomCSS, getHTMLFunction=self.getHTML, getDownloadFunction=self.getDownload, noOutputFunction=self.noOutput)
+        return webapp
 
 class Launch(App):
-	"""Warning: This class is depricated. Use App instead"""
- 
+    """Warning: This class is depricated. Use App instead"""
+
+
+class Site(object):
+    """Creates a 'tree' of cherrypy 'Root' objects that allow for the
+        creation of multiple apps with routes to different 'apps.'
+    Calling the launch method will return
+    """
+
+    def __init__(self, appobj):
+        self.site_app_bar = list()        
+        self.addIndex(appobj)
+
+    def addIndex(self, appobj):
+        self.site_app_bar.append(("/",
+                            appobj.app_bar_html or appobj.title or "/"))
+        self.root = appobj().getRoot()
+
+
+
+    def get_route(self, fullRoute):
+
+        routeSplit = fullRoute.split('/')
+        routeSplit.remove('')
+        parent = self.root
+        for route in routeSplit[:-1]:
+            parent = getattr(parent, route)
+        return parent, routeSplit[-1]
+
+    def addApp(self, appobj, fullRoute):
+
+        parent, route = self.get_route(fullRoute)
+
+        self.site_app_bar.append((fullRoute,
+                        appobj.app_bar_html or appobj.title or route))
+
+        setattr(parent, route, appobj().getRoot())
+
+    def getRoot(self):
+        """A convenience method to make the site API similar to the app API,
+            in terms of how the cherrypy Root object is retrieved"""
+        return self.root
+
+    def launch(self, host="local", port=8080):
+        """Calling the Launch method on a Site object will serve the top
+            node of the cherrypy Root object tree"""
+
+        #Need to add in the appbar if many apps
+        self.root.templateVars['app_bar'] = self.site_app_bar
+        for fullRoute, _ in self.site_app_bar[1:]:
+            parent, route = self.get_route(fullRoute)
+            parent.__dict__[route].templateVars['app_bar'] = self.site_app_bar
+
+
+        if host != "local":
+            cherrypy.server.socket_host = '0.0.0.0'
+        cherrypy.server.socket_port = port
+        cherrypy.quickstart(self.root)
+
+
 if __name__=='__main__':
-	app = App()
-	app.launch()
+    app = App()
+    app.launch()
