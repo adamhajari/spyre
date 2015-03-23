@@ -211,10 +211,17 @@
 	</head>
 
 	<body>
+
+
+
+
 	<div class="outer">
+
+		{% block banner %}<!-- banner -->{% endblock %}
+		
 		{% if app_bar %}
-			<div class="app-bar">
-				<ul class="tab-links">
+			<div class="apptabs">
+				<ul class="apptab-links">
 					{% for route, text in app_bar %}
 						<li><a href="{{route}}">{{text}}</a></li>
 					{% endfor %}
