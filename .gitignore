@@ -2,6 +2,11 @@
 *.whl
 *.egg
 *.tar.gz
+*.bak
+dist/*
+.metadata/*
+.project
+.pydevproject
 build/*
 PKG-INFO
 SOURCES.txt
@@ -9,4 +14,6 @@ SOURCES.txt
 .ipynb_checkpoints/
 .ipynb_checkpoints/*
 DataSpyre.egg-info/
+/notebooks*
 *.ipynb
+.tox/*
