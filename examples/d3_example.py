@@ -1,3 +1,5 @@
+# requires d3py
+# only tested with python 2.7
 from spyre import server
 
 import numpy as np

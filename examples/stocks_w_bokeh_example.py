@@ -1,16 +1,20 @@
+# tested with python2.7 and 3.4
 from spyre import server
 
 import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.dates import DateFormatter
-import urllib2
 import json
 from datetime import datetime
+try:
+	import urllib2
+except ImportError:
+	import urllib.request as urllib2
 
-from bokeh import resources as r
+from bokeh.resources import INLINE
 from bokeh.resources import CDN
 from bokeh.embed import components
-from bokeh.plotting import line
+from bokeh import plotting
 
 class MyLaunch(server.Launch):
 	title = "Historical Stock Prices"
@@ -54,7 +58,7 @@ class MyLaunch(server.Launch):
 		# make call to yahoo finance api to get historical stock data
 		api_url = 'https://chartapi.finance.yahoo.com/instrument/1.0/{}/chartdata;type=quote;range=3m/json'.format(ticker)
 		result = urllib2.urlopen(api_url).read()
-		data = json.loads(result.replace('finance_charts_json_callback( ','')[:-1])  # strip away the javascript and load json
+		data = json.loads(result.decode('utf-8').replace('finance_charts_json_callback( ','')[:-1])  # strip away the javascript and load json
 		self.company_name = data['meta']['Company-Name']
 		df = pd.DataFrame.from_records(data['series'])
 		df['Date'] = pd.to_datetime(df['Date'],format='%Y%m%d')
@@ -70,7 +74,11 @@ class MyLaunch(server.Launch):
 
 	def getHTML(self,params):
 		df = self.getData(params)  # get data
-		bokeh_plot = line(df['Date'],df['close'], color='#1c2980', legend="close", x_axis_type = "datetime", title=self.company_name)
+		try:
+			bokeh_plot = plotting.line(df['Date'],df['close'], color='#1c2980', legend="close", x_axis_type = "datetime", title=self.company_name)
+		except AttributeError:
+			bokeh_plot = plotting.figure(x_axis_type='datetime', title=self.company_name)
+			bokeh_plot.line(df['Date'],df['close'], color='#1c2980', legend="close")
 		bokeh_plot.line(df['Date'],df['high'], color='#80641c', legend="high")
 		bokeh_plot.line(df['Date'],df['low'], color='#80321c', legend="low")
 
@@ -79,10 +87,10 @@ class MyLaunch(server.Launch):
 		return html
 
 	def getCustomJS(self):
-		return r.INLINE.js_raw[0]
+		return INLINE.js_raw[0]
 
 	def getCustomCSS(self):
-		return r.INLINE.css_raw[0]
+		return INLINE.css_raw[0]
 
 ml = MyLaunch()
 ml.launch(port=9097)

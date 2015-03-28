@@ -1,3 +1,4 @@
+# tested with python2.7 and 3.4
 from spyre import server
 
 import skimage

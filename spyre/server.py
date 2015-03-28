@@ -4,16 +4,27 @@ matplotlib.use('Agg')
 import os, os.path
 import json
 import jinja2
-import StringIO
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 
-import model
 try:
-	import View
+	import StringIO as io  	# python2
 except:
-	import view as View
+	import io 				# python3
+
+try:
+	from . import model
+except:
+	import model
+
+try:
+	from . import View
+except:
+	try:
+		import View
+	except:
+		from . import view as View
 
 import cherrypy
 from cherrypy.lib.static import serve_file
@@ -97,7 +108,7 @@ class Root(object):
 		args = self.clean_args(args)
 		data = self.getJsonData(args)
 		cherrypy.response.headers['Content-Type'] = 'application/json'
-		return json.dumps({'data':data,'args':args})
+		return json.dumps({'data':data,'args':args}).encode('utf8')
 
 	@cherrypy.expose
 	def table(self, **args):
@@ -145,7 +156,7 @@ class Root(object):
 		return buffer.getvalue()
 
 	def clean_args(self,args):
-		for k,v in args.iteritems():
+		for k,v in args.items():
 			# turn checkbox group string into a list
 			if v.rfind("__list__") == 0:
 				tmp = v.split(',')
@@ -185,7 +196,7 @@ class App:
 		the params passed used for table or d3 outputs are forwarded on to getData
 		"""
 		df = self.getData(params)
-		return df.to_dict(outtype='records')
+		return df.to_dict(orient='records')
 
 	def getData(self, params):
 		"""Override this function
@@ -217,8 +228,8 @@ class App:
 		returns: path to file or buffer to be downloaded (string or buffer)
 		"""
 		df = self.getData(params)
-		buffer = StringIO.StringIO()
-		df.to_csv(buffer, index=False)
+		buffer = io.StringIO()
+		df.to_csv(buffer, index=False, encoding='utf-8')
 		filepath = buffer
 		return filepath
 
@@ -300,6 +311,8 @@ class App:
 			cherrypy.server.socket_host = '0.0.0.0'
 		cherrypy.server.socket_port = port
 		cherrypy.quickstart(webapp)
+
+
 
 	def launch_in_notebook(self, port=9095, width=900, height=600):
 		"""launch the app within an iframe in ipython notebook"""

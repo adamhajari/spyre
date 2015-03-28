@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='DataSpyre',
-    version='0.1.7',
+    version='0.1.8',
     description='Spyre makes it easy to build interactive web applications, and requires no knowledge of HTML, CSS, or Javascript.',
     url='https://github.com/adamhajari/spyre',
     author='Adam Hajari',
@@ -16,7 +16,8 @@ setup(
         'Environment :: Web Environment',
         'Topic :: Scientific/Engineering',
         'License :: OSI Approved :: MIT License',
-        'Programming Language :: Python :: 2',
+        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3.4',
     ],
     keywords='web application template data visualization',
     include_package_data = True,    # include everything in source control
