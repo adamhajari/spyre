@@ -44,8 +44,8 @@ class StockExample(server.App):
 					"on_page_load" : True }]
 
 	def getData(self, params):
-		params.pop("output_id",None)
-		if self.params_cache!=params:
+		params.pop("output_id",None)	# caching layer
+		if self.params_cache!=params:	# caching layer
 			ticker = params['ticker']
 			# make call to yahoo finance api to get historical stock data
 			api_url = 'https://chartapi.finance.yahoo.com/instrument/1.0/{}/chartdata;type=quote;range=3m/json'.format(ticker)
@@ -54,8 +54,8 @@ class StockExample(server.App):
 			self.company_name = data['meta']['Company-Name']
 			df = pd.DataFrame.from_records(data['series'])
 			df['Date'] = pd.to_datetime(df['Date'],format='%Y%m%d')
-			self.data_cache = df
-			self.params_cache = params
+			self.data_cache = df 		# caching layer
+			self.params_cache = params 	# caching layer
 		return self.data_cache
 
 	def getPlot(self, params):
