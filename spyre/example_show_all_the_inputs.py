@@ -14,7 +14,6 @@ class SimpleSineApp(server.App):
     {"label": "Red", "value":'r'}, 
     {"label": "Blue", "value":'b'}, 
     {"label": "Yellow", "value":'y'},
-    {"label": "Yellow", "value":'hello world'},
     ]
 
 	title = "Simple Sine Wave"
@@ -27,7 +26,7 @@ class SimpleSineApp(server.App):
 			{	"input_type":'radiobuttons',
 				"label": 'Function', 
 				"options" : [
-					{"label": "Sine", "value":"sin wave", "checked":True}, 
+					{"label": "Sine", "value":"sin", "checked":True}, 
 					{"label":"Cosine", "value":"cos"}
 				],
 				"variable_name": 'func_type', 
@@ -37,8 +36,7 @@ class SimpleSineApp(server.App):
 				"label": 'Axis Labels', 
 				"options" : [
 					{"label": "x-axis", "value":1, "checked":True}, 
-					{"label":"y-axis", "value":2},
-					{"label":"z-axis", "value":"hello world"}
+					{"label":"y-axis", "value":2}
 				],
 				"variable_name": 'axis_label', 
 				"action_id" : "plot",
