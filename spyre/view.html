@@ -211,7 +211,25 @@
 	</head>
 
 	<body>
+
+
+
+
 	<div class="outer">
+
+		{% block banner %}<!-- banner -->{% endblock %}
+		
+		{% if app_bar %}
+			<div class="apptabs">
+				<ul class="apptab-links">
+					{% for route, text in app_bar %}
+						<li><a href="{{route}}">{{text}}</a></li>
+					{% endfor %}
+				</ul>
+			</div>
+		{% endif %}
+
+
 
 		<!-- control panel -->
 		<div class="left-panel">
@@ -348,4 +366,8 @@
 
 	</div>
 	</body>
+<<<<<<< HEAD
 </html>
+=======
+</html>
+>>>>>>> 9c02b0f8c244980b6ae5fd1c6e5fac7d583f7349
