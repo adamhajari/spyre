@@ -30,7 +30,8 @@
 					{% elif input['input_type']=="slider" -%}
 						var {{input['variable_name']}} = "__float__".concat($("#{{input['variable_name']}}").val());
 					{% else %}
-						var {{input['variable_name']}} = $("#{{input['variable_name']}}").val();
+						var selected_val = {{input}}.options[$("#".concat({{input}}.variable_name)).prop("selectedIndex")]['value'];
+						var {{input['variable_name']}} = selected_val;
 					{%- endif %}
 					shared_params = shared_params+"{{input['variable_name']}}="+{{input['variable_name']}}+"&";
 				{%- endfor %}
