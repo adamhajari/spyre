@@ -170,9 +170,13 @@ class Root(object):
 		return args
 
 
-class App:
+class App(object):
 
 	title = None
+
+	#Will be used when there are more than one app in a site
+	app_bar_html = None
+
 	inputs = [{		"input_type":'text',
 					"label": 'Variable', 
 					"value" : "Value Here",
@@ -328,6 +332,61 @@ class App:
 	def getRoot(self):
 		webapp = Root(templateVars=self.templateVars, title=self.title, inputs=self.inputs, outputs=self.outputs, controls=self.controls, tabs=self.tabs, getJsonDataFunction=self.getJsonData, getDataFunction=self.getData, getTableFunction=self.getTable, getPlotFunction=self.getPlot, getImageFunction=self.getImage, getD3Function=self.getD3, getCustomJSFunction=self.getCustomJS, getCustomCSSFunction=self.getCustomCSS, getHTMLFunction=self.getHTML, getDownloadFunction=self.getDownload, noOutputFunction=self.noOutput)
 		return webapp
+class Site(object):
+	"""Creates a 'tree' of cherrypy 'Root' objects that allow for the
+		creation of multiple apps with routes to different 'apps.'
+	Calling the launch method will return
+	"""
+
+	def __init__(self, appobj):
+		self.site_app_bar = list()		
+		self.addIndex(appobj)
+
+	def addIndex(self, appobj):
+		self.site_app_bar.append(("/",
+							appobj.app_bar_html or appobj.title or "/"))
+		self.root = appobj().getRoot()
+
+
+
+	def get_route(self, fullRoute):
+
+		routeSplit = fullRoute.split('/')
+		routeSplit.remove('')
+		parent = self.root
+		for route in routeSplit[:-1]:
+			parent = getattr(parent, route)
+		return parent, routeSplit[-1]
+
+	def addApp(self, appobj, fullRoute):
+
+		parent, route = self.get_route(fullRoute)
+
+		self.site_app_bar.append((fullRoute,
+						appobj.app_bar_html or appobj.title or route))
+
+		setattr(parent, route, appobj().getRoot())
+
+	def getRoot(self):
+		"""A convenience method to make the site API similar to the app API,
+			in terms of how the cherrypy Root object is retrieved"""
+		return self.root
+
+	def launch(self, host="local", port=8080):
+		"""Calling the Launch method on a Site object will serve the top
+			node of the cherrypy Root object tree"""
+
+		#Need to add in the appbar if many apps
+		self.root.templateVars['app_bar'] = self.site_app_bar
+		for fullRoute, _ in self.site_app_bar[1:]:
+			parent, route = self.get_route(fullRoute)
+			parent.__dict__[route].templateVars['app_bar'] = self.site_app_bar
+
+
+		if host != "local":
+			cherrypy.server.socket_host = '0.0.0.0'
+		cherrypy.server.socket_port = port
+		cherrypy.quickstart(self.root)
 
 class Launch(App):
 	"""Warning: This class is depricated. Use App instead"""

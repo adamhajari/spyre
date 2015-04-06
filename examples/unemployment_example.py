@@ -78,18 +78,19 @@ class UnemploymentApp(server.App):
 	def getCustomCSS(self):
 		return INLINE.css_raw[0]
 
-app = UnemploymentApp()
+if __name__ == '__main__':
+	app = UnemploymentApp()
 
-states = pd.unique(app.data['state'].dropna())
-states.sort()
-options = [{"label": "all", "value":"all"}]
-states_opts = [{"label": x.upper(), "value":x} for x in states.tolist()]
-options.extend( states_opts )
-app.inputs = [{	"input_type":'dropdown',
-				"label": 'State', 
-				"options" : options,
-				"variable_name": 'state', 
-				"action_id": "update_data"
-			}]
-app.launch(port=9097)
+	states = pd.unique(app.data['state'].dropna())
+	states.sort()
+	options = [{"label": "all", "value":"all"}]
+	states_opts = [{"label": x.upper(), "value":x} for x in states.tolist()]
+	options.extend( states_opts )
+	app.inputs = [{	"input_type":'dropdown',
+					"label": 'State', 
+					"options" : options,
+					"variable_name": 'state', 
+					"action_id": "update_data"
+				}]
+	app.launch(port=9097)
 

@@ -16,7 +16,7 @@ from bokeh.resources import CDN
 from bokeh.embed import components
 from bokeh import plotting
 
-class MyLaunch(server.Launch):
+class StocksWithBokeh(server.Launch):
 	title = "Historical Stock Prices"
 
 	inputs = [{	"input_type":'dropdown',
@@ -92,5 +92,6 @@ class MyLaunch(server.Launch):
 	def getCustomCSS(self):
 		return INLINE.css_raw[0]
 
-ml = MyLaunch()
-ml.launch(port=9097)
+if __name__ == '__main__':
+	ml = StocksWithBokeh()
+	ml.launch(port=9097)

@@ -170,5 +170,6 @@ class SimpleSineApp(server.App):
 	def noOutput(self, input_params):
 		return 0
 
-app = SimpleSineApp()
-app.launch(port=9096)
+if __name__ == '__main__':
+	app = SimpleSineApp()
+	app.launch(port=9096)

@@ -23,5 +23,6 @@ class SimpleSineApp(server.App):
 		splt1.plot(x,y)
 		return fig
 
-app = SimpleSineApp()
-app.launch()
+if __name__ == '__main__':
+	app = SimpleSineApp()
+	app.launch()

@@ -55,6 +55,6 @@ class StockExample(server.App):
 		plt_obj.set_title(self.company_name)
 		fig = plt_obj.get_figure()
 		return fig
-
-app = StockExample()
-app.launch(port=9093)
+if __name__ == '__main__':
+	app = StockExample()
+	app.launch(port=9093)

@@ -93,6 +93,7 @@ class NBSCategoriesApp(server.App):
 	def getHTML(self, params):
 		return "<b>App Description: </b> <i>This</i> is where you could describe your app."
 
-app = NBSCategoriesApp()
-app.launch(port=9091)
+if __name__ == '__main__':
+	app = NBSCategoriesApp()
+	app.launch(port=9091)
 

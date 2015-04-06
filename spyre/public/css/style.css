@@ -13,31 +13,31 @@ hr{
 }
 
 .slider{
-    padding:2px;
-    margin:1px 1px 8px 1px;
-    height:30px;
-    background: #f4f4f4
+	padding:2px;
+	margin:1px 1px 8px 1px;
+	height:30px;
+	background: #f4f4f4
 }
 
 .slider_value {
-    padding: 3px 1px;
-    margin: 2px 2px;
-    border: 1px 2px;
-    text-align: center;
-    font-size: 12px;
-    float:left;
-    width:14%;
+	padding: 3px 1px;
+	margin: 2px 2px;
+	border: 1px 2px;
+	text-align: center;
+	font-size: 12px;
+	float:left;
+	width:14%;
 }
 
 .slider_slider {
-    width:62%;
+	width:62%;
 }
 
 input {
-    display: block;
-    padding: 5px;
-    margin: 5px 0 0;
-    font: 14px bold;
+	display: block;
+	padding: 5px;
+	margin: 5px 0 0;
+	font: 14px bold;
 	font-family: Arial, Helvetica, sans-serif;
 	width: 100%;
 	box-sizing: border-box;  /* Ensures that the input will not extend past the input panel */
@@ -46,45 +46,45 @@ input {
 /* 
 input:focus,
 input:hover {
-    width: 250%;
+	width: 250%;
 }
 */
 
 input[type="radio"] {
-    display: inline-block;
-    padding: 5px;
-    margin: 0 0 10px 5px;
-    width: 10%;
+	display: inline-block;
+	padding: 5px;
+	margin: 0 0 10px 5px;
+	width: 10%;
 }
 
 input[type="checkbox"] {
-    display: inline-block;
-    padding: 5px;
-    margin: 0 0 10px 5px;
-    width: 10%;
+	display: inline-block;
+	padding: 5px;
+	margin: 0 0 10px 5px;
+	width: 10%;
 }
 
 select {
-    padding: 5px;
-    margin: 5px 0 11px 5px;
-    font: 14px bold;
-    font-family: Arial, Helvetica, sans-serif;
-    background: #f4f4f4;
-    width: 80%;
-    height: 30px;
+	padding: 5px;
+	margin: 5px 0 11px 5px;
+	font: 14px bold;
+	font-family: Arial, Helvetica, sans-serif;
+	background: #f4f4f4;
+	width: 80%;
+	height: 30px;
 }
 
 .button {
-    display: block;
-    font-size: 14px;
+	display: block;
+	font-size: 14px;
 	padding: 8px 5px 8px 5px;
 	margin: 0 auto;
 	text-align: center;
 	color: #ffffff;
-    background-color: #777777;
+	background-color: #777777;
   	width:80%;
   	border: 1px solid;
-    border-radius: 8px;
+	border-radius: 8px;
 }
 
 .button:hover {
@@ -93,7 +93,7 @@ select {
 }
 
 img {
-     max-width: 100%;
+	 max-width: 100%;
 }
 
 .outer{
@@ -103,18 +103,18 @@ img {
 {   
 	font: 14px bold;
 	font-family: Arial, Helvetica, sans-serif;
-	font-color: #333333;     
-    background: #f4f4f4;
-    padding: 10px;
-    width:20%;
-    float:left;  
+	font-color: #333333;	 
+	background: #f4f4f4;
+	padding: 10px;
+	width:20%;
+	float:left;  
 }
 .right-panel
-{        
-    background-color:white;
-    padding: 0px 5px 5px 15px;
-    width:75%;
-    float:left;
+{		
+	background-color:white;
+	padding: 0px 5px 5px 15px;
+	width:75%;
+	float:left;
 }​
 
 
@@ -168,127 +168,127 @@ table.sortable tbody tr:hover td
 
 /*----- APP Tabs -----*/
 .apptabs {
-    width:100%;
-    display:inline-block;
+	width:100%;
+	display:inline-block;
 }
  
-    /*----- Tab Links -----*/
-    /* Clearfix */
-    .apptab-links:after {
-        display:block;
-        clear:both;
-        content:'';
-    }
+	/*----- Tab Links -----*/
+	/* Clearfix */
+	.apptab-links:after {
+		display:block;
+		clear:both;
+		content:'';
+	}
 
-    ul {
-        margin:0px;
-    }
+	ul {
+		margin:0px;
+	}
  
-    .apptab-links li {
-        margin:5px 5px;
-        float:left;
-        list-style:none;
-    }
+	.apptab-links li {
+		margin:5px 5px;
+		float:left;
+		list-style:none;
+	}
  
-        .apptab-links a {
-            padding:6px 6px;
-            display:inline-block;
-            border-radius:3px 3px 3px 3px;
-            background:CornflowerBlue;
-            font-size:16px;
-            min-width: 50px;
-            text-align: center;
-            font-weight:600;
-            color:#000000;
-            text-decoration: none;
-            transition:all linear 0.15s;
-        }
+		.apptab-links a {
+			padding:6px 6px;
+			display:inline-block;
+			border-radius:3px 3px 3px 3px;
+			background:CornflowerBlue;
+			font-size:16px;
+			min-width: 50px;
+			text-align: center;
+			font-weight:600;
+			color:#000000;
+			text-decoration: none;
+			transition:all linear 0.15s;
+		}
  
-        .apptab-links a:hover {
-            background:#DDC4C4;
-            text-decoration:none;
-        }
+		.apptab-links a:hover {
+			background:#DDC4C4;
+			text-decoration:none;
+		}
  
-    li.active a, li.active a:hover {
-        background:#fdfdfd;
-        color:#000000;
-    }
+	li.active a, li.active a:hover {
+		background:#fdfdfd;
+		color:#000000;
+	}
  
-    /*----- Content of Tabs -----*/
-    .apptab-content {
-        padding:10px;
-        background:#fdfdfd;
-    }
+	/*----- Content of Tabs -----*/
+	.apptab-content {
+		padding:10px;
+		background:#fdfdfd;
+	}
  
-        .apptab {
-            display:none;
-        }
+		.apptab {
+			display:none;
+		}
  
-        .apptab.active {
-            display:block;
-        }
+		.apptab.active {
+			display:block;
+		}
 
 
 
 
 /*----- Tabs -----*/
 .tabs {
-    width:100%;
-    display:inline-block;
+	width:100%;
+	display:inline-block;
 }
  
-    /*----- Tab Links -----*/
-    /* Clearfix */
-    .tab-links:after {
-        display:block;
-        clear:both;
-        content:'';
-    }
+	/*----- Tab Links -----*/
+	/* Clearfix */
+	.tab-links:after {
+		display:block;
+		clear:both;
+		content:'';
+	}
 
-    ul {
-        margin:0px;
-    }
+	ul {
+		margin:0px;
+	}
  
-    .tab-links li {
-        margin:0px 5px;
-        float:left;
-        list-style:none;
-    }
+	.tab-links li {
+		margin:0px 5px;
+		float:left;
+		list-style:none;
+	}
  
-        .tab-links a {
-            padding:9px 15px;
-            display:inline-block;
-            border-radius:3px 3px 0px 0px;
-            background:#f4f4f4;
-            font-size:16px;
-            min-width: 50px;
-            text-align: center;
-            font-weight:600;
-            color:#000000;
-            text-decoration: none;
-            transition:all linear 0.15s;
-        }
+		.tab-links a {
+			padding:9px 15px;
+			display:inline-block;
+			border-radius:3px 3px 0px 0px;
+			background:#f4f4f4;
+			font-size:16px;
+			min-width: 50px;
+			text-align: center;
+			font-weight:600;
+			color:#000000;
+			text-decoration: none;
+			transition:all linear 0.15s;
+		}
  
-        .tab-links a:hover {
-            background:#DDC4C4;
-            text-decoration:none;
-        }
+		.tab-links a:hover {
+			background:#DDC4C4;
+			text-decoration:none;
+		}
  
-    li.active a, li.active a:hover {
-        background:#fdfdfd;
-        color:#000000;
-    }
+	li.active a, li.active a:hover {
+		background:#fdfdfd;
+		color:#000000;
+	}
  
-    /*----- Content of Tabs -----*/
-    .tab-content {
-        padding:15px;
-        background:#fdfdfd;
-    }
+	/*----- Content of Tabs -----*/
+	.tab-content {
+		padding:15px;
+		background:#fdfdfd;
+	}
  
-        .tab {
-            display:none;
-        }
+		.tab {
+			display:none;
+		}
  
-        .tab.active {
-            display:block;
-        }
+		.tab.active {
+			display:block;
+		}

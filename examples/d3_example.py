@@ -79,5 +79,6 @@ class FruitInventoryApp(server.App):
 		d3['css'] = "%s\n%s"%(p.css, p.css_geoms)
 		return d3
 
-app = FruitInventoryApp()
-app.launch(port=9092)
+if __name__ == '__main__':
+	app = FruitInventoryApp()
+	app.launch(port=9092)

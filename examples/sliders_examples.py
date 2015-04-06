@@ -47,5 +47,6 @@ class SlidersApp(server.App):
 		splt3.plot(x,y3)  #sine wave decay
 		return fig
 
-app = SlidersApp()
-app.launch(port=9094)
+if __name__ == '__main__':
+	app = SlidersApp()
+	app.launch(port=9094)

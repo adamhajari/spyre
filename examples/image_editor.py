@@ -56,6 +56,6 @@ class ImageEditor(server.App):
 		new_image[:,:,2] = b*new_image[:,:,2]
 		return new_image
 
-
-app = ImageEditor()
-app.launch(port=9096)
+if __name__ == '__main__':
+	app = ImageEditor()
+	app.launch(port=9096)
