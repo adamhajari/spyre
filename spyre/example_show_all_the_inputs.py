@@ -144,12 +144,15 @@ class SimpleSineApp(server.App):
 		return fig
 
 	def plot2(self,params):
-		f = float(params['freq'])
+		data = self.getData(params)
 		fig = plt.figure()  # make figure object
 		splt = fig.add_subplot(1,1,1)
-		x = np.arange(0,6*pi,pi/50)
-		y = np.sin(f*x)
-		splt.plot(x,y)  # sine wave
+		ind = np.arange(len(data['name']))
+		width = 0.85  
+		splt.bar(ind,data['count'], width)
+		xTickMarks = ['Group'+str(i) for i in range(1,6)]
+		splt.set_xticks(ind+width/2)
+		splt.set_xticklabels(["A","B","C"])
 		return fig
 
 	def html_id(self,params):
@@ -160,11 +163,14 @@ class SimpleSineApp(server.App):
 		html = "function type: {} <br>axis label: {}<br>color: {}<br>frequency: {}".format(func_type, axis_label, color, freq)
 		return html
 
-	def getData(self,params):
+	def getJsonData(self,params):
 		count = [1,4,3]
 		name = ['<a href="http://adamhajari.com">A</a>','B','C']
-		df = pd.DataFrame({'name':name, 'count':count})
-		time.sleep(2)
+		return {'name':name, 'count':count}
+
+	def getData(self,params):
+		data = self.getJsonData(params)
+		df = pd.DataFrame(data)
 		return df
 
 	def noOutput(self, input_params):
