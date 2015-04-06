@@ -273,7 +273,7 @@ class App(object):
 		"""
 		try:
 			return eval("self."+str(params['output_id'])+"(params)")
-		except:
+		except AttributeError:
 			return "<b>Override</b> the getHTML method to insert your own HTML <i>here</i>"
 
 	def noOutput(self, params):

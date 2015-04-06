@@ -87,7 +87,7 @@ class TestApp(server.App):
 					"control_id" : "button2",
 				}]
 
-	def getPlot(self, params):
+	def plot1(self,params):
 		fig = plt.figure()  # make figure object
 		splt = fig.add_subplot(1,1,1)
 
@@ -111,45 +111,37 @@ class TestApp(server.App):
 		splt.plot(x,y,color=color)  # sine wave
 		return fig
 
-	def plot(self):
+	def plot2(self,params):
+		data = self.getData(params)
 		fig = plt.figure()  # make figure object
 		splt = fig.add_subplot(1,1,1)
-
-		f = float(params['freq'])
-		title = params['title']
-		axis_label = map( int, params['axis_label'] )
-		color = params['color']
-		func_type = params['func_type']
-
-		x = np.arange(0,6*pi,pi/50)
-		splt.set_title(title)
-		for axis in axis_label:
-			if axis==1:
-				splt.set_xlabel('x axis')
-			if axis==2:
-				splt.set_ylabel('y axis')
-		if func_type=='cos':
-			y = np.cos(f*x)
-		else:
-			y = np.sin(f*x)
-		splt.plot(x,y,color=color)  # sine wave
+		ind = np.arange(len(data['name']))
+		width = 0.85  
+		splt.bar(ind,data['count'], width)
+		xTickMarks = ['Group'+str(i) for i in range(1,6)]
+		splt.set_xticks(ind+width/2)
+		splt.set_xticklabels(["A","B","C"])
 		return fig
 
-	def plot2(self):
-		fig = plt.figure()  # make figure object
-		splt = fig.add_subplot(1,1,1)
-		x = np.arange(0,6*pi,pi/50)
-		y = np.sin(f*x)
-		splt.plot(x,y)  # sine wave
-		return fig
-
-	def html_id(self):
+	def html1(self,params):
 		return "hello world"
 
-	def getData(self,params):
+	def html2(self,params):
+		func_type = params['func_type']
+		axis_label = params['axis_label']
+		color = params['color']
+		freq = params['freq']
+		html = "function type: {} <br>axis label: {}<br>color: {}<br>frequency: {}".format(func_type, axis_label, color, freq)
+		return html
+
+	def getJsonData(self,params):
 		count = [1,4,3]
 		name = ['<a href="http://adamhajari.com">A</a>','B','C']
-		df = pd.DataFrame({'name':name, 'count':count})
+		return {'name':name, 'count':count}
+
+	def getData(self,params):
+		data = self.getJsonData(params)
+		df = pd.DataFrame(data)
 		return df
 
 	def noOutput(self, input_params):

@@ -64,7 +64,7 @@ class SimpleSineApp(server.App):
 					"label" : "download",
 				}]
 	outputs = [{	"output_type" : "html",
-					"output_id" : "html_id",
+					"output_id" : "html1",
 					"control_id" : "button1",
 					"on_page_load" : True,
 				},
@@ -88,7 +88,12 @@ class SimpleSineApp(server.App):
 					"output_id" : "download_id",
 					"control_id" : "button2",
 					"on_page_load" : False,
-				}]
+				},
+				{	"output_type" : "html",
+					"output_id" : "html2",
+					"control_id" : "button1",
+					"on_page_load" : True,
+				},]
 
 	# def getPlot(self, params):
 	# 	fig = plt.figure()  # make figure object
@@ -155,7 +160,10 @@ class SimpleSineApp(server.App):
 		splt.set_xticklabels(["A","B","C"])
 		return fig
 
-	def html_id(self,params):
+	def html1(self,params):
+		return "hello world"
+
+	def html2(self,params):
 		func_type = params['func_type']
 		axis_label = params['axis_label']
 		color = params['color']

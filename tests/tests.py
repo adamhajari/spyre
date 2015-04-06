@@ -23,7 +23,9 @@ class TestCherryPyApp(BaseCherryPyTestCase):
         # self.assertEqual(response.body, ['hello world'])
 
     def test_html(self):
-        response = self.request('/html', output_id='html_id')
+        response = self.request('/html', output_id='html1')
+        print("hello")
+        print(response.body[0].decode('utf8'))
         self.assertEqual(response.output_status.decode('utf8'), '200 OK')
         self.assertEqual(response.body[0].decode('utf8'), "hello world")
 
@@ -36,10 +38,11 @@ class TestCherryPyApp(BaseCherryPyTestCase):
         response = self.request('/data', ex_first='__float__0', output_id='table_id')
         self.assertEqual(response.output_status.decode('utf8'), '200 OK')
         resp_dict = json.loads(response.body[0].decode('utf8'))
-        self.assertTrue(len(resp_dict['data'])==3)
+        print(resp_dict['data'])
+        self.assertTrue(len(resp_dict['data']['count'])==3)
 
     def test_plot(self):
-        response = self.request('/plot', title='t', func_type='sin', axis_label='__list__,1', color='g', freq='__float__2',  output_id='plot')
+        response = self.request('/plot', title='t', func_type='sin', axis_label='__list__,1', color='g', freq='__float__2',  output_id='plot1')
         self.assertEqual(response.output_status.decode('utf8'), '200 OK')
 
     def test_image(self):
