@@ -59,7 +59,7 @@
 						var params = updateSharedParameters();
 						params = params+"output_id={{output['output_id']}}&";
 						
-						var plot = $("<img />").attr('src', "/plot?"+params).load(function(){
+						var plot = $("<img />").attr('src', "plot?"+params).load(function(){
 							$("#{{output['output_id']}}").html("");
 							$("#{{output['output_id']}}").append(plot)
 						});
@@ -71,7 +71,7 @@
 					function {{output['output_id']}}(){
 						var params = updateSharedParameters();
 						params = params+"output_id={{output['output_id']}}&";
-						var img = $("<img />").attr('src', "/image?"+params);
+						var img = $("<img />").attr('src', "image?"+params);
 						$("#{{output['output_id']}}").html(img);
 					}
 				{%- endif %}
@@ -85,7 +85,7 @@
 						var params = updateSharedParameters();
 						params = params+"output_id={{output['output_id']}}&";
 						$.ajax({
-							url : "/html?"+params,
+							url : "html?"+params,
 							success: function(response, textStatus, jqXHR){
 								$("#{{output['output_id']}}").html(response);
 							}
@@ -103,7 +103,7 @@
 						params = params+"output_id={{output['output_id']}}&";
 						$.ajax({
 							type: 'GET',
-							url : "/table?"+params
+							url : "table?"+params
 						}).done(function(response){
 							$("#{{output['output_id']}}").html(response);
 							{%- if output['sortable'] is defined %}
@@ -120,7 +120,7 @@
 					function {{output['output_id']}}(){
 						var params = updateSharedParameters();
 						params = params+"output_id={{output['output_id']}}&";
-						window.location = "/download?"+params;
+						window.location = "download?"+params;
 					}
 				{%- endif %}
 
@@ -133,7 +133,7 @@
 						params = params+"output_id={{output['output_id']}}&";
 						$.ajax({
 							type: 'GET',
-							url : "/no_output?"+params
+							url : "no_output?"+params
 						}).done(function(){
 							{% if output['alert_message'] is defined %} alert("{{output['alert_message']}}"); {% endif %}
 						});
@@ -201,7 +201,7 @@
 				{%- endfor %}
 
 				{% for output in outputs -%}
-					{%- if output['on_page_load'] %}
+					{%- if output['on_page_load'] or output['on_page_load'] is not defined %}
 					{{output['output_id']}}()  // if on_page_load is true, load when page loads
 					{%- endif %}
 				{%- endfor %}
@@ -240,7 +240,7 @@
 					{% endif %}
 					<select id="{{input['variable_name']}}"  onchange="{{input['action_id']}}();" >
 					{% for option in input['options'] -%}
-						<option value={{option['value']}}>{{option['label']}}</option>
+						<option value="{{option['value']}}">{{option['label']}}</option>
 					{%- endfor %}
 					</select><br></div>
 
@@ -251,7 +251,7 @@
 						{{input['label']}}:
 					{% endif %}
 					{% for option in input['options'] -%}
-						<br><input type="radio" name="{{input['variable_name']}}" value={{option['value']}} {% if option['checked']==True %} checked {% endif %} onclick="{{input['action_id']}}()">{{option['label']}}
+						<br><input type="radio" name="{{input['variable_name']}}" value="{{option['value']}}" {% if option['checked']==True %} checked {% endif %} onclick="{{input['action_id']}}()">{{option['label']}}
 					{%- endfor %}
 					</div>
 
@@ -262,7 +262,7 @@
 						{{input['label']}}:
 					{% endif %}
 					{% for option in input['options'] -%}
-						<br><input type="checkbox" name="{{input['variable_name']}}" value={{option['value']}} {% if option['checked']==True %} checked {% endif %} onclick="{{input['action_id']}}()">{{option['label']}}
+						<br><input type="checkbox" name="{{input['variable_name']}}" value="{{option['value']}}" {% if option['checked']==True %} checked {% endif %} onclick="{{input['action_id']}}()">{{option['label']}}
 					{%- endfor %}
 					</div>
 				
@@ -349,4 +349,3 @@
 	</div>
 	</body>
 </html>
-

@@ -208,8 +208,8 @@ class App:
 		DataFrame
 		"""
 		try:
-			return eval("self."+str(params['output_id'])+"()")
-		except:
+			return eval("self."+str(params['output_id'])+"(params)")
+		except AttributeError:
 			return pd.DataFrame({'name':['Override','getData() method','to generate tables'], 'count':[1,4,3]})
 
 	def getTable(self, params):
@@ -243,10 +243,12 @@ class App:
 		matplotlib.pyplot figure
 		"""
 		try:
-			return eval("self."+str(params['output_id'])+"()")
-		except:
-			plt.title("Override getPlot() method to generate figures")
-			return plt.gcf()
+			return eval("self."+str(params['output_id'])+"(params)")
+		except AttributeError:
+			fig = plt.figure()  # make figure object
+			splt = fig.add_subplot(1,1,1)
+			splt.set_title("Override getPlot() method to generate figures")
+			return fig
 
 	def getImage(self, params):
 		"""Override this function
@@ -255,8 +257,8 @@ class App:
 		returns: matplotlib.image (figure)
 		"""
 		try:
-			return eval("self."+str(params['output_id'])+"()")
-		except:
+			return eval("self."+str(params['output_id'])+"(params)")
+		except AttributeError:
 			return np.array([[0,0,0]])
 
 	def getHTML(self, params):
@@ -266,7 +268,7 @@ class App:
 		returns: html (string)
 		"""
 		try:
-			return eval("self."+str(params['output_id'])+"()")
+			return eval("self."+str(params['output_id'])+"(params)")
 		except:
 			return "<b>Override</b> the getHTML method to insert your own HTML <i>here</i>"
 
@@ -279,8 +281,8 @@ class App:
 		params (dict)
 		"""
 		try:
-			return eval("self."+str(params['output_id'])+"()")
-		except:
+			return eval("self."+str(params['output_id'])+"(params)")
+		except AttributeError:
 			pass
 
 	def getD3(self):

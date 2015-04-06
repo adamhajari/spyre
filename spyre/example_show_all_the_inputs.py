@@ -14,6 +14,7 @@ class SimpleSineApp(server.App):
     {"label": "Red", "value":'r'}, 
     {"label": "Blue", "value":'b'}, 
     {"label": "Yellow", "value":'y'},
+    {"label": "Yellow", "value":'hello world'},
     ]
 
 	title = "Simple Sine Wave"
@@ -26,7 +27,7 @@ class SimpleSineApp(server.App):
 			{	"input_type":'radiobuttons',
 				"label": 'Function', 
 				"options" : [
-					{"label": "Sine", "value":"sin", "checked":True}, 
+					{"label": "Sine", "value":"sin wave", "checked":True}, 
 					{"label":"Cosine", "value":"cos"}
 				],
 				"variable_name": 'func_type', 
@@ -36,7 +37,8 @@ class SimpleSineApp(server.App):
 				"label": 'Axis Labels', 
 				"options" : [
 					{"label": "x-axis", "value":1, "checked":True}, 
-					{"label":"y-axis", "value":2}
+					{"label":"y-axis", "value":2},
+					{"label":"z-axis", "value":"hello world"}
 				],
 				"variable_name": 'axis_label', 
 				"action_id" : "plot",
@@ -69,7 +71,7 @@ class SimpleSineApp(server.App):
 					"on_page_load" : True,
 				},
 				{	"output_type" : "plot",
-					"output_id" : "plot",
+					"output_id" : "plot1",
 					"control_id" : "button1",
 					"on_page_load" : True,
 				},
@@ -87,38 +89,39 @@ class SimpleSineApp(server.App):
 				{	"output_type" : "download",
 					"output_id" : "download_id",
 					"control_id" : "button2",
+					"on_page_load" : False,
 				}]
 
-	def getPlot(self, params):
-		fig = plt.figure()  # make figure object
-		splt = fig.add_subplot(1,1,1)
+	# def getPlot(self, params):
+	# 	fig = plt.figure()  # make figure object
+	# 	splt = fig.add_subplot(1,1,1)
 
-		f = float(params['freq'])
-		title = params['title']
-		axis_label = map( int, params['axis_label'] )
-		color = params['color']
-		func_type = params['func_type']
+	# 	f = float(params['freq'])
+	# 	title = params['title']
+	# 	axis_label = map( int, params['axis_label'] )
+	# 	color = params['color']
+	# 	func_type = params['func_type']
 
-		x = np.arange(0,6*pi,pi/50)
-		splt.set_title(title)
-		for axis in axis_label:
-			if axis==1:
-				splt.set_xlabel('x axis')
-			if axis==2:
-				splt.set_ylabel('y axis')
-		if func_type=='cos':
-			y = np.cos(f*x)
-		else:
-			y = np.sin(f*x)
-		splt.plot(x,y,color=color)  # sine wave
-		return fig
+	# 	x = np.arange(0,6*pi,pi/50)
+	# 	splt.set_title(title)
+	# 	for axis in axis_label:
+	# 		if axis==1:
+	# 			splt.set_xlabel('x axis')
+	# 		if axis==2:
+	# 			splt.set_ylabel('y axis')
+	# 	if func_type=='cos':
+	# 		y = np.cos(f*x)
+	# 	else:
+	# 		y = np.sin(f*x)
+	# 	splt.plot(x,y,color=color)  # sine wave
+	# 	return fig
 
 	# def getHTML(self,params):
 	# 	f = int(params['freq'])
 	# 	time.sleep(f)
 	# 	return "hello world"
 	
-	def plot(self):
+	def plot1(self,params):
 		fig = plt.figure()  # make figure object
 		splt = fig.add_subplot(1,1,1)
 
@@ -142,7 +145,8 @@ class SimpleSineApp(server.App):
 		splt.plot(x,y,color=color)  # sine wave
 		return fig
 
-	def plot2(self):
+	def plot2(self,params):
+		f = float(params['freq'])
 		fig = plt.figure()  # make figure object
 		splt = fig.add_subplot(1,1,1)
 		x = np.arange(0,6*pi,pi/50)
@@ -150,8 +154,13 @@ class SimpleSineApp(server.App):
 		splt.plot(x,y)  # sine wave
 		return fig
 
-	def html_id(self):
-		return "hello world"
+	def html_id(self,params):
+		func_type = params['func_type']
+		axis_label = params['axis_label']
+		color = params['color']
+		freq = params['freq']
+		html = "function type: {} <br>axis label: {}<br>color: {}<br>frequency: {}".format(func_type, axis_label, color, freq)
+		return html
 
 	def getData(self,params):
 		count = [1,4,3]
