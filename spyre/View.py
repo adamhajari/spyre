@@ -30,7 +30,7 @@ class View:
 		for file in os.listdir(self.JS_PATH):
 			if file.find('.js')>0:
 				file_path = os.path.join(self.JS_PATH, file) 
-				f = codecs.open(file_path)
+				f = codecs.open(file_path, 'rb')
 				content = f.read()
 				f.close()
 				self.JS += content.decode('utf-8')
