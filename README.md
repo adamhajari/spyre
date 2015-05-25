@@ -38,7 +38,6 @@ class SimpleSineApp(server.App):
 
 	def getPlot(self, params):
 		f = float(params['freq'])
-		print f
 		x = np.arange(0,2*np.pi,np.pi/150)
 		y = np.sin(f*x)
 		fig = plt.figure()
