@@ -14,6 +14,11 @@ class TestApp(server.App):
     {"label": "Yellow", "value":'y'},
     ]
 
+	on_demand_streaming_services = [
+		{"label": "Spotify", "value":'s'},
+		{"label": "Apple Music", "value":'a'},
+	]
+
 	title = "Simple Sine Wave"
 	inputs = [{	"input_type":'text',
 				"label": 'Title', 
@@ -40,9 +45,16 @@ class TestApp(server.App):
 				"action_id" : "plot",
 			},
 			{	"input_type":'dropdown',
-				"label": 'Line Color', 
-				"options" : colors,
-				"variable_name": 'color', 
+			     "label": 'Line Color',
+			     "options" : colors,
+			     "variable_name": 'color',
+			     "value": "b",
+			     "action_id" : "plot",
+			     },
+			{	"input_type":'dropdown',
+				"label": 'On-Demand Streaming Service',
+				"options" : on_demand_streaming_services,
+				"variable_name": 'on_demand_streaming_service',
 				"action_id" : "plot",
 			},
 			{	"input_type":'slider',
