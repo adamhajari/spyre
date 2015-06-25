@@ -7,6 +7,7 @@ import jinja2
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
+import copy
 
 try:
 	import StringIO as io  	# python2
@@ -71,6 +72,7 @@ class Root(object):
 				self.templateVars['outputs'] = outputs
 			if tabs is not None:
 				self.templateVars['tabs'] = tabs
+		self.defaultTemplateVars = self.templateVars
 
 		self.getJsonData = getJsonDataFunction
 		self.getData = getDataFunction
@@ -102,6 +104,7 @@ class Root(object):
 
 	@cherrypy.expose
 	def index(self, **args):
+		self.templateVars = copy.deepcopy(self.defaultTemplateVars)  # create a deepcopy so other people's changes aren't cached
 		clean_args = self.clean_args(args)
 		self.use_custom_input_values(clean_args)
 
