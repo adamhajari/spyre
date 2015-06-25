@@ -15,7 +15,8 @@ class FruitInventoryApp(server.App):
 				"options" : [	{"label": "Fruits", "value":"frt"},
 								{"label": "Vegetables", "value":"veg"},
 								{"label": "All", "value":"all"}],
-				"variable_name": 'type', 
+				"variable_name": 'type',
+	            "value": "all",
 				"action_id":"submit_plot"}]
 
 	controls = [{	"control_type" : "hidden",
