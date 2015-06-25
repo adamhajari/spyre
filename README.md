@@ -38,7 +38,6 @@ class SimpleSineApp(server.App):
 
 	def getPlot(self, params):
 		f = float(params['freq'])
-		print f
 		x = np.arange(0,2*np.pi,np.pi/150)
 		y = np.sin(f*x)
 		fig = plt.figure()
@@ -177,8 +176,15 @@ License
 MIT
 
 
+Acknowledgements
+----
+
+**[Next Big Sound]** is an innovative tech startup in New York city and the employer of Spyre's creator, adam hajari. Next Big Sound gives it's engineers and data scientiests 4 weeks a year to work on interesting projects, many of which are not directly related to it's core business. Spyre is, in part, possible because of this.
+
+
 [cherrypy]:http://docs.cherrypy.org/en/latest/install.html
 [jinja2]:http://jinja.pocoo.org/docs/dev/intro/#installation
 [pandas]:http://pandas.pydata.org/pandas-docs/stable/install.html#recommended-dependencies
 [matplotlib]:http://matplotlib.org/users/installing.html
 [simple sine example screenshot]:https://raw.githubusercontent.com/adamhajari/spyre/master/examples/screenshots/simple_sine_screenshot.png
+[Next Big Sound]: https://www.nextbigsound.com/about
