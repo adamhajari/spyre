@@ -5,25 +5,30 @@ class InputExample(server.Launch):
 
 	templateVars = {"title" : "Inputs",
 					"inputs" : [{	"input_type":'text',
-									"value" : 'Text Box',
+									"label" : 'Text Box',
+									"value" : 'text',
 									"variable_name": 'text_box', 
 								},
 								{	"input_type":'radiobuttons',
+									"label" : 'Radio Buttons',
 									"options" : [
-										{"label": "Radio", "value":1, "checked":True}, 
-										{"label":"Buttons", "value":2}
+										{"label": "A", "value":1, "checked":True}, 
+										{"label":"B", "value":2}
 									],
 									"variable_name": 'radio_buttons',
 								},
 								{	"input_type":'checkboxgroup',
+									"label" : 'Checkboxes',
 									"options" : [
-										{"label": "check", "value":1, "checked":True}, 
-										{"label":"boxes", "value":2}
+										{"label": "red", "value":1, "checked":True}, 
+										{"label":"blue", "value":2},
+										{"label":"green", "value":3}
 									],
 									"variable_name": 'check_boxes', 
 								},
 								{	"input_type":'dropdown',
-									"options" : [{"label":"Dropdown Menu", "value":1},
+									"label" : 'Dropdown Menu',
+									"options" : [{"label":"option 1", "value":1},
     											 {"label": "option 2", "value":2} ],
 									"variable_name": 'dd_menu', 
 									"action_id" : "html_output",
@@ -49,6 +54,7 @@ class InputExample(server.Launch):
 									"output_id" : "make_alert",
 									"alert_message" : "you pressed a button",
 									"control_id" : "button1",
+									"on_page_load" : False,
 								}]
 				}
 

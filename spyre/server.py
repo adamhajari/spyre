@@ -38,7 +38,24 @@ templateEnv = jinja2.Environment( loader=templateLoader )
 
 
 class Root(object):
-	def __init__(self,templateVars=None, title=None, inputs=None, outputs=None, controls=None, tabs=None, getJsonDataFunction=None, getDataFunction=None, getTableFunction=None, getPlotFunction=None, getImageFunction=None, getD3Function=None, getCustomCSSFunction=None, getCustomJSFunction=None, getHTMLFunction=None,  getDownloadFunction=None, noOutputFunction=None):
+	def __init__(self,templateVars=None, 
+		title=None, 
+		inputs=None, 
+		outputs=None, 
+		controls=None, 
+		tabs=None, 
+		getJsonDataFunction=None, 
+		getDataFunction=None, 
+		getTableFunction=None, 
+		getPlotFunction=None, 
+		getImageFunction=None, 
+		getD3Function=None, 
+		getCustomCSSFunction=None, 
+		getCustomJSFunction=None,
+		getCustomHeadFunction=None, 
+		getHTMLFunction=None,  
+		getDownloadFunction=None, 
+		noOutputFunction=None):
 		# populate template dictionary for creating input,controler, and output HTML and javascript
 		if templateVars is not None:
 			self.templateVars = templateVars
@@ -63,27 +80,64 @@ class Root(object):
 		self.getD3 = getD3Function
 		self.getCustomJS = getCustomJSFunction
 		self.getCustomCSS = getCustomCSSFunction
+		self.getCustomHead = getCustomHeadFunction
 		self.getHTML = getHTMLFunction
 		self.noOutput = noOutputFunction
 		self.getDownload = getDownloadFunction
 		d3 = self.getD3()
 		custom_js = self.getCustomJS()
 		custom_css = self.getCustomCSS()
+		custom_head = self.getCustomHead()
 
 		self.templateVars['d3js'] = d3['js']
 		self.templateVars['d3css'] = d3['css']
 		self.templateVars['custom_js'] = custom_js
 		self.templateVars['custom_css'] = custom_css
+		self.templateVars['custom_head'] = custom_head
 
 		v = View.View()
+		self.templateVars['document_ready_js'] = ""
 		self.templateVars['js'] = v.getJS()
 		self.templateVars['css'] = v.getCSS()
 
 	@cherrypy.expose
-	def index(self):
+	def index(self, **args):
+		clean_args = self.clean_args(args)
+		self.use_custom_input_values(clean_args)
+
 		v = View.View()
 		template = jinja2.Template(v.getHTML())
 		return template.render( self.templateVars )
+
+	def use_custom_input_values(self, args):
+		input_registration = {}
+		index = 0
+		for input in self.templateVars['inputs']:
+			# register inputs to be so we can look them up by their variable name later
+			input_registration[input['variable_name']] = {"type":input['input_type'], "action_id":input['action_id']}
+
+			# use the params passed in with the url switch out the default input values
+			if input['variable_name'] in args.keys():
+				if input['input_type'] in ['text','slider']:
+					self.templateVars['inputs'][index]['value'] = args[input['variable_name']]
+				if input['input_type'] in ['radiobuttons', 'dropdown']:
+					index2 = 0
+					for option in input['options']:
+						if option['value']==args[input['variable_name']]:
+							self.templateVars['inputs'][index]['options'][index2]['checked'] = True
+						else:
+							self.templateVars['inputs'][index]['options'][index2]['checked'] = False
+						index2+=1
+				if input['input_type'] == 'checkboxgroup':
+					index2 = 0
+					for option in input['options']:
+						if option['value'] in args[input['variable_name']]:
+							self.templateVars['inputs'][index]['options'][index2]['checked'] = True
+						else:
+							self.templateVars['inputs'][index]['options'][index2]['checked'] = False
+						index2+=1
+			index+=1
+		
 
 	@cherrypy.expose
 	def plot(self, **args):
@@ -311,6 +365,14 @@ class App(object):
 		"""
 		return ""
 
+	def getCustomHead(self):
+		"""Override this function
+
+		returns:
+		html to put in html header
+		"""
+		return ""
+
 	def launch(self,host="local",port=8080):
 		webapp = self.getRoot()
 		if host!="local":
@@ -330,7 +392,24 @@ class App(object):
 		return HTML('<iframe src=http://localhost:{} width={} height={}></iframe>'.format(port,width,height))
 
 	def getRoot(self):
-		webapp = Root(templateVars=self.templateVars, title=self.title, inputs=self.inputs, outputs=self.outputs, controls=self.controls, tabs=self.tabs, getJsonDataFunction=self.getJsonData, getDataFunction=self.getData, getTableFunction=self.getTable, getPlotFunction=self.getPlot, getImageFunction=self.getImage, getD3Function=self.getD3, getCustomJSFunction=self.getCustomJS, getCustomCSSFunction=self.getCustomCSS, getHTMLFunction=self.getHTML, getDownloadFunction=self.getDownload, noOutputFunction=self.noOutput)
+		webapp = Root(templateVars=self.templateVars, 
+			title=self.title, 
+			inputs=self.inputs, 
+			outputs=self.outputs, 
+			controls=self.controls, 
+			tabs=self.tabs, 
+			getJsonDataFunction=self.getJsonData, 
+			getDataFunction=self.getData, 
+			getTableFunction=self.getTable, 
+			getPlotFunction=self.getPlot, 
+			getImageFunction=self.getImage, 
+			getD3Function=self.getD3, 
+			getCustomJSFunction=self.getCustomJS, 
+			getCustomCSSFunction=self.getCustomCSS, 
+			getCustomHeadFunction=self.getCustomHead, 
+			getHTMLFunction=self.getHTML, 
+			getDownloadFunction=self.getDownload, 
+			noOutputFunction=self.noOutput)
 		return webapp
 class Site(object):
 	"""Creates a 'tree' of cherrypy 'Root' objects that allow for the

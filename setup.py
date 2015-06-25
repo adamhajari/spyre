@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='DataSpyre',
-    version='0.1.8',
+    version='0.1.9',
     description='Spyre makes it easy to build interactive web applications, and requires no knowledge of HTML, CSS, or Javascript.',
     url='https://github.com/adamhajari/spyre',
     author='Adam Hajari',
@@ -27,6 +27,7 @@ setup(
         'public': ['js/*.js','css/*.css'],
     },
     install_requires=[
+        "numpy",
         "pandas",
         "cherrypy",
         "jinja2",

@@ -8,6 +8,8 @@
 		<style>{{d3css}}</style>
 		<style>{{css}}</style>
 		<style>{{custom_css}}</style>
+		{{custom_head}}
+		<title>{{title}}</title>
 
 		<!-- load javascript -->
 		<script type='text/javascript'>{{js}}</script>
@@ -34,7 +36,60 @@
 					{%- endif %}
 					shared_params = shared_params+"{{input['variable_name']}}="+{{input['variable_name']}}+"&";
 				{%- endfor %}
+				if (typeof shared_params_old !== 'undefined' && shared_params_old!==shared_params) {
+				    console.log(shared_params_old);
+				    history.pushState('','','?'+shared_params);
+				}
+				shared_params_old = shared_params;
 				return shared_params;
+			}
+
+			// used to update input values on the fly
+			// type (ie input_type), variable_name, and action_id are all defined in the Spyre App
+			// for text value should be a string
+			// for checkboxgroups value should be a list of values corresponding to the options defined in the spyre app
+			// for dropdowns value should be a string corresponding to one of the options defined in the spyre App
+			// for sliders value should be a number in the range specified in the Spyre App
+			function updateInputValue(type,variable_name,value,action_id){
+				if(type=="text"){
+					document.getElementById(variable_name).value=value;
+				}else if(type=="radiobuttons"){
+					elements = document.getElementsByName(variable_name);
+					for (var i = elements.length - 1; i >= 0; i--) {
+						if(elements[i].value==value){
+							elements[i].checked=true;
+							break;
+						}
+					};
+				}else if(type=="checkboxgroup"){
+					elements = document.getElementsByName(variable_name);
+					for (var i = elements.length - 1; i >= 0; i--) {
+						elements[i].checked = false;
+						for (var j = value.length - 1; j >= 0; j--) {
+							console.log(elements[i],value[j])
+							if(elements[i].value==value[j]){
+								elements[i].checked = true;
+								break;
+							}
+						};
+					};
+				}else if(type=="dropdown"){
+					elements = document.getElementById(variable_name).value=value;
+					for (var i = elements.length - 1; i >= 0; i--) {
+						if(elements[i].value==value){
+							elements[i].selected=true;
+							break;
+						}
+					};
+				}else if(type=="slider"){
+					document.getElementById(variable_name).value=value;
+					document.getElementById(variable_name+"_value").value=value;
+				}else{
+					console.log("Unknow input type: "+type)
+				}
+				if (typeof action_id !== 'undefined') {
+				    eval(action_id+"()");
+				}
 			}
 
 			// connect controller function to output functions
@@ -200,12 +255,16 @@
 					});
 				{%- endfor %}
 
+				$("#share_url").click(function(e) {
+					url = document.location.origin+document.location.pathname+"?"+updateSharedParameters();
+					window.prompt("", url);
+				});
+
 				{% for output in outputs -%}
 					{%- if output['on_page_load'] or output['on_page_load'] is not defined %}
 					{{output['output_id']}}()  // if on_page_load is true, load when page loads
 					{%- endif %}
 				{%- endfor %}
-
 			});
 		</script>
 	</head>
@@ -258,7 +317,7 @@
 					{% endif %}
 					<select id="{{input['variable_name']}}"  onchange="{{input['action_id']}}();" >
 					{% for option in input['options'] -%}
-						<option value="{{option['value']}}">{{option['label']}}</option>
+						<option value="{{option['value']}}" {% if option['checked']==True %} selected="selected" {% endif %}>{{option['label']}} </option>
 					{%- endfor %}
 					</select><br></div>
 
@@ -304,6 +363,9 @@
 					<div class="button" id="{{control['control_id']}}" >{{control['label']}}</div><br>
 				{%- endif %}
 			{%- endfor %}
+			{% if False -%}
+				<div class="button" id="share_url" >Generate Sharable URL</div><br>
+			{%- endif %}
 		</div>
 
 		<!-- output -->

@@ -16,10 +16,10 @@ from bokeh.resources import CDN
 from bokeh.embed import components
 from bokeh import plotting
 
-class StocksWithBokeh(server.Launch):
+class StocksWithBokeh(server.App):
 	title = "Historical Stock Prices"
 
-	inputs = [{	"input_type":'dropdown',
+	inputs = [{	"input_type":'text',
 				"label": 'Company', 
 				"options" : [
 					{"label": "Google", "value":"GOOG"},
