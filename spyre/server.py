@@ -8,16 +8,17 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 import copy
-print "hello"
+
 try:
 	import StringIO as io  	# python2
 except:
 	import io 				# python3
 
-try:
-	from . import model
-except:
-	import model
+import model
+# try:
+# 	from . import model
+# except:
+# 	import model
 
 try:
 	from . import View
@@ -116,36 +117,31 @@ class Root(object):
 		input_registration = {}
 		index = 0
 		for input in self.templateVars['inputs']:
-			input_variable_name = input['variable_name']
 			# register inputs to be so we can look them up by their variable name later
-			input_registration[input_variable_name] = {"type":input['input_type'], "action_id":input['action_id']}
-
-			if input_variable_name in args.keys():
-				# use value from request
-				input_value = args[input_variable_name]
-			elif 'value' in input:
-				# use value from template
-				input_value = input['value']
-			else:
-				# no value specified
-				continue
+			input_registration[input['variable_name']] = {"type":input['input_type'], "action_id":input['action_id']}
 
 			# use the params passed in with the url switch out the default input values
-			if input['input_type'] in ['text','slider']:
-				self.templateVars['inputs'][index]['value'] = input_value
-			if input['input_type'] in ['radiobuttons', 'dropdown']:
-				for option in input['options']:
-					option['checked'] = (option['value'] == input_value)
-			if input['input_type'] == 'checkboxgroup':
-				index2 = 0
-				for option in input['options']:
-					if option['value'] in input_value:
-						self.templateVars['inputs'][index]['options'][index2]['checked'] = True
-					else:
-						self.templateVars['inputs'][index]['options'][index2]['checked'] = False
-					index2+=1
+			if input['variable_name'] in args.keys():
+				if input['input_type'] in ['text','slider']:
+					self.templateVars['inputs'][index]['value'] = args[input['variable_name']]
+				if input['input_type'] in ['radiobuttons', 'dropdown']:
+					index2 = 0
+					for option in input['options']:
+						if option['value']==args[input['variable_name']]:
+							self.templateVars['inputs'][index]['options'][index2]['checked'] = True
+						else:
+							self.templateVars['inputs'][index]['options'][index2]['checked'] = False
+						index2+=1
+				if input['input_type'] == 'checkboxgroup':
+					index2 = 0
+					for option in input['options']:
+						if option['value'] in args[input['variable_name']]:
+							self.templateVars['inputs'][index]['options'][index2]['checked'] = True
+						else:
+							self.templateVars['inputs'][index]['options'][index2]['checked'] = False
+						index2+=1
 			index+=1
-
+		
 
 	@cherrypy.expose
 	def plot(self, **args):
