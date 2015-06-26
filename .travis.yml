@@ -31,4 +31,6 @@ script:
 
 notifications:
   email:
+    recipients:
+      -adamjdanger+tests@gmail.com
     on_failure: always
