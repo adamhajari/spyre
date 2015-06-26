@@ -23,7 +23,6 @@ install:
   # Replace dep1 dep2 ... with your dependencies
   - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION numpy pandas matplotlib jinja2
   - pip install cherrypy
-  - conda install
   - source activate test-environment
   - python setup.py install
 
