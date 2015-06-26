@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 import copy
-
+print "hello"
 try:
 	import StringIO as io  	# python2
 except:
