@@ -1,6 +1,7 @@
 # from spyre import spyre
 # import spyre
 import server
+server.config.include_df_index = True
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -63,26 +64,34 @@ class SimpleSineApp(server.App):
 					"control_id" : "button2",
 					"label" : "download",
 				}]
+	tabs = ["Tab1", "Tab2"]
+	controls = [{	"control_type" : "button",
+					"control_id" : "refresh",
+					"label" : "refresh",
+				},
+				{	"control_type" : "button",
+					"control_id" : "button2",
+					"label" : "download",
+				}]
 	outputs = [{	"output_type" : "html",
 					"output_id" : "html1",
 					"control_id" : "refresh",
-					"on_page_load" : True,
+					"tab" : "Tab1"
 				},
 				{	"output_type" : "plot",
 					"output_id" : "plot1",
 					"control_id" : "refresh",
-					"on_page_load" : True,
+					"tab" : "Tab1"
+				},
+				{	"output_type" : "table",
+					"output_id" : "table1",
+					"control_id" : "refresh",
+					"tab" : "Tab1"
 				},
 				{	"output_type" : "plot",
 					"output_id" : "plot2",
 					"control_id" : "refresh",
-					"on_page_load" : True,
-				},
-				{	"output_type" : "table",
-					"output_id" : "table_id",
-					"control_id" : "refresh",
-					"sortable" : True,
-					"on_page_load" : True,
+					"tab" : "Tab1"
 				},
 				{	"output_type" : "download",
 					"output_id" : "download_id",
@@ -92,37 +101,52 @@ class SimpleSineApp(server.App):
 				{	"output_type" : "html",
 					"output_id" : "html2",
 					"control_id" : "refresh",
-					"on_page_load" : True,
-				},]
+					"tab" : "Tab1"
+				},
+				{	"output_type" : "plot",
+					"output_id" : "plot3",
+					"control_id" : "refresh",
+					"tab" : "Tab2"
+				},
+				{	"output_type" : "table",
+					"output_id" : "table2",
+					"control_id" : "refresh",
+					"sortable" : True,
+					"tab" : "Tab2"
+				}]
 
-	# def getPlot(self, params):
-	# 	fig = plt.figure()  # make figure object
-	# 	splt = fig.add_subplot(1,1,1)
+	def getJsonData(self,params):
+		count = [1,4,3]
+		name = ['<a href="http://adamhajari.com">A</a>','B','C']
+		return {'name':name, 'count':count}
 
-	# 	f = float(params['freq'])
-	# 	title = params['title']
-	# 	axis_label = params['axis_label']
-	# 	color = params['color']
-	# 	func_type = params['func_type']
+	# def getData(self,params):
+	# 	return df
+	
+	def table1(self,params):
+		data = self.getJsonData(params)
+		df = pd.DataFrame(data)
+		return df
 
-	# 	x = np.arange(0,6*pi,pi/50)
-	# 	splt.set_title(title)
-	# 	for axis in axis_label:
-	# 		if axis==1:
-	# 			splt.set_xlabel('x axis')
-	# 		if axis==2:
-	# 			splt.set_ylabel('y axis')
-	# 	if func_type=='cos':
-	# 		y = np.cos(f*x)
-	# 	else:
-	# 		y = np.sin(f*x)
-	# 	splt.plot(x,y,color=color)  # sine wave
-	# 	return fig
+	def table2(self,params):
+		f = float(params['freq'])
+		func_type = params['func_type']
+		x = np.arange(0,6*pi,pi/50)
+		y1 = np.cos(f*x)
+		y2 = np.sin(f*x)
+		df = pd.DataFrame({"cos":y1,"sin":y2},index=x)
+		df.index.name = "t"
+		return df
 
-	# def getHTML(self,params):
-	# 	f = int(params['freq'])
-	# 	time.sleep(f)
-	# 	return "hello world"
+	
+	def plot3(self,params):
+		axis_label = params['axis_label']
+		color = params['color']
+		df = self.table2(params)
+		ax = df.plot(title=params['title'])
+		ax.set_ylabel('y axis')
+		ax.set_xlabel('x axis')
+		return ax
 	
 	def plot1(self,params):
 		fig = plt.figure()  # make figure object
@@ -149,7 +173,7 @@ class SimpleSineApp(server.App):
 		return fig
 
 	def plot2(self,params):
-		data = self.getData(params)
+		data = self.table1(params)
 		fig = plt.figure()  # make figure object
 		splt = fig.add_subplot(1,1,1)
 		ind = np.arange(len(data['name']))
@@ -170,16 +194,6 @@ class SimpleSineApp(server.App):
 		freq = params['freq']
 		html = "function type: {} <br>axis label: {}<br>color: {}<br>frequency: {}".format(func_type, axis_label, color, freq)
 		return html
-
-	def getJsonData(self,params):
-		count = [1,4,3]
-		name = ['<a href="http://adamhajari.com">A</a>','B','C']
-		return {'name':name, 'count':count}
-
-	def getData(self,params):
-		data = self.getJsonData(params)
-		df = pd.DataFrame(data)
-		return df
 
 	def noOutput(self, input_params):
 		return 0

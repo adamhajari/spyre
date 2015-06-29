@@ -9,8 +9,10 @@ class Plot:
 		buffer = io.BytesIO()
 		if isinstance(plt_obj, plt.Figure):
 			plt_obj.savefig(buffer,format='png',bbox_inches='tight')
+		if isinstance(plt_obj, matplotlib.axes.Axes):
+			plt_obj.get_figure().savefig(buffer,format='png',bbox_inches='tight')
 		else:
-			print("Error: getPlot method must return an pyplot figure object")
+			print("Error: getPlot method must return an pyplot figure or matplotlib Axes object")
 		plt.close('all')
 		return(buffer)
 
