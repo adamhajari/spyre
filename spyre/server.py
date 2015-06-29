@@ -20,6 +20,11 @@ except:
 	import model
 
 try:
+	from . import config
+except:
+	import config
+
+try:
 	from . import View
 except:
 	try:
@@ -176,7 +181,7 @@ class Root(object):
 	def table(self, **args):
 		args = self.clean_args(args)
 		df = self.getTable(args)
-		html = df.to_html(index=False, escape=False)
+		html = df.to_html(index=config.include_df_index, escape=False)
 		i = 0
 		for col in df.columns:
 			html = html.replace('<th>{}'.format(col),'<th><a onclick="sortTable({},"table0");"><b>{}</b></a>'.format(i,col))
