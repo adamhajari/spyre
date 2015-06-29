@@ -20,11 +20,6 @@ except:
 	import model
 
 try:
-	from . import config
-except:
-	import config
-
-try:
 	from . import View
 except:
 	try:
@@ -35,6 +30,9 @@ except:
 import cherrypy
 from cherrypy.lib.static import serve_file
 from cherrypy.lib.static import serve_fileobj
+
+# Settings
+include_df_index = True
 
 ROOT_DIR = os.path.dirname(os.path.realpath(__file__))
 
@@ -181,7 +179,7 @@ class Root(object):
 	def table(self, **args):
 		args = self.clean_args(args)
 		df = self.getTable(args)
-		html = df.to_html(index=config.include_df_index, escape=False)
+		html = df.to_html(index=include_df_index, escape=False)
 		i = 0
 		for col in df.columns:
 			html = html.replace('<th>{}'.format(col),'<th><a onclick="sortTable({},"table0");"><b>{}</b></a>'.format(i,col))

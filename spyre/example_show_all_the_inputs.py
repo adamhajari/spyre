@@ -1,7 +1,7 @@
 # from spyre import spyre
 # import spyre
 import server
-server.config.include_df_index = True
+server.include_df_index = True
 
 import matplotlib.pyplot as plt
 import numpy as np
