@@ -20,8 +20,8 @@ hr{
 }
 
 .slider_value {
-	padding: 3px 1px;
-	margin: 2px 2px;
+	padding: 3px 1px !important;
+	margin: 2px 2px !important;
 	border: 1px 2px;
 	text-align: center;
 	font-size: 12px;
@@ -30,13 +30,13 @@ hr{
 }
 
 .slider_slider {
-	width:62%;
+	width:62% !important;
 }
 
 input {
 	display: block;
-	padding: 5px;
-	margin: 5px 0 0;
+	padding: 5px !important;
+	margin: 5px 0 0 !important;
 	font: 14px bold;
 	font-family: Arial, Helvetica, sans-serif;
 	width: 100%;
@@ -52,21 +52,21 @@ input:hover {
 
 input[type="radio"] {
 	display: inline-block;
-	padding: 5px;
-	margin: 0 0 10px 5px;
+	padding: 5px !important;
+	margin: 0 0 10px 5px !important;
 	width: 10%;
 }
 
 input[type="checkbox"] {
 	display: inline-block;
-	padding: 5px;
-	margin: 0 0 10px 5px;
+	padding: 5px !important;
+	margin: 0 0 10px 5px !important;
 	width: 10%;
 }
 
 select {
-	padding: 5px;
-	margin: 5px 0 11px 5px;
+	padding: 5px !important;
+	margin: 5px 0 11px 5px !important;
 	font: 14px bold;
 	font-family: Arial, Helvetica, sans-serif;
 	background: #f4f4f4;
