@@ -32,7 +32,7 @@ from cherrypy.lib.static import serve_file
 from cherrypy.lib.static import serve_fileobj
 
 # Settings
-include_df_index = True
+include_df_index = False
 
 ROOT_DIR = os.path.dirname(os.path.realpath(__file__))
 
@@ -121,7 +121,11 @@ class Root(object):
 		for input in self.templateVars['inputs']:
 			input_variable_name = input['variable_name']
 			# register inputs to be so we can look them up by their variable name later
-			input_registration[input_variable_name] = {"type":input['input_type'], "action_id":input['action_id']}
+			if input.has_key('action_id'):
+				input_registration[input_variable_name] = {"type":input['input_type'], "action_id":input['action_id']}
+			else:
+				input_registration[input_variable_name] = {"type":input['input_type'], "action_id":None}
+			
 
 			if input_variable_name in args.keys():
 				# use value from request
@@ -314,10 +318,13 @@ class App(object):
 		try:
 			return eval("self."+str(params['output_id'])+"(params)")
 		except AttributeError:
-			fig = plt.figure()  # make figure object
-			splt = fig.add_subplot(1,1,1)
-			splt.set_title("Override getPlot() method to generate figures")
-			return fig
+			try:
+				return self.getData(params).plot()
+			except:
+				fig = plt.figure()  # make figure object
+				splt = fig.add_subplot(1,1,1)
+				splt.set_title("Override getPlot() method to generate figures")
+				return fig
 
 	def getImage(self, params):
 		"""Override this function
