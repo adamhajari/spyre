@@ -37,11 +37,30 @@
 					shared_params = shared_params+"{{input['variable_name']}}="+{{input['variable_name']}}+"&";
 				{%- endfor %}
 				if (typeof shared_params_old !== 'undefined' && shared_params_old!==shared_params) {
-				    console.log(shared_params_old);
 				    history.pushState('','','?'+shared_params);
 				}
 				shared_params_old = shared_params;
 				return shared_params;
+			}
+			// when an input value changes, executes the action id and/or updates any linked variables
+			// variable_name/action_id is the name/action_id of variable being actively changed
+			// referenced_by is either 'id' (for text, dropdown, or slider) or 'name' (for checkboxgroup or radiobuttons)
+			// linked_variable_type and linked_variable_name are for the element being passively updated
+			function inputChange( variable_name, referenced_by, linked_variable_type, linked_variable_name, linked_value, action_id ){
+				var value = "";
+				if (linked_value !== '') {
+				    value = linked_value;
+				}else if(referenced_by==='name'){
+					var elements = document.getElementsByName(variable_name);
+					for (var i = elements.length - 1; i >= 0; i--) {
+						if(elements[i].checked){
+							value += elements[i].value;
+						}
+					};
+				}else{
+					value = document.getElementById(variable_name).value;
+				}
+				updateInputValue(linked_variable_type,linked_variable_name,value,action_id);
 			}
 
 			// used to update input values on the fly
@@ -298,7 +317,7 @@
 			{%- for input in inputs %}
 				{% if input['input_type']=="text" -%}
 					<!-- text input -->
-					<form action="javascript:{{input['action_id']}}()">
+					<form action="javascript:inputChange( '{{input['variable_name']}}', 'id', '{{input['linked_variable_type']}}', '{{input['linked_variable_name']}}', '{{input['linked_value']}}', '{{input['action_id']}}');">
 					<div class="text_input">
 					{% if input['label'] is defined %}
 						{{input['label']}}:
@@ -315,7 +334,7 @@
 					{% if input['label'] is defined %}
 						{{input['label']}}:
 					{% endif %}
-					<select id="{{input['variable_name']}}"  onchange="{{input['action_id']}}();" >
+					<select id="{{input['variable_name']}}"  onchange="inputChange( '{{input['variable_name']}}', 'id', '{{input['linked_variable_type']}}', '{{input['linked_variable_name']}}', '{{input['linked_value']}}', '{{input['action_id']}}');" >
 					{% for option in input['options'] -%}
 						<option value="{{option['value']}}" {% if option['checked']==True %} selected="selected" {% endif %}>{{option['label']}} </option>
 					{%- endfor %}
@@ -328,7 +347,7 @@
 						{{input['label']}}:
 					{% endif %}
 					{% for option in input['options'] -%}
-						<br><input type="radio" name="{{input['variable_name']}}" value="{{option['value']}}" {% if option['checked']==True %} checked {% endif %} onclick="{{input['action_id']}}()">{{option['label']}}
+						<br><input type="radio" name="{{input['variable_name']}}" value="{{option['value']}}" {% if option['checked']==True %} checked {% endif %} onclick="inputChange( '{{input['variable_name']}}', 'name', '{{input['linked_variable_type']}}', '{{input['linked_variable_name']}}', '{{input['linked_value']}}', '{{input['action_id']}}');">{{option['label']}}
 					{%- endfor %}
 					</div>
 
@@ -339,7 +358,7 @@
 						{{input['label']}}:
 					{% endif %}
 					{% for option in input['options'] -%}
-						<br><input type="checkbox" name="{{input['variable_name']}}" value="{{option['value']}}" {% if option['checked']==True %} checked {% endif %} onclick="{{input['action_id']}}()">{{option['label']}}
+						<br><input type="checkbox" name="{{input['variable_name']}}" value="{{option['value']}}" {% if option['checked']==True %} checked {% endif %} onclick="inputChange( '{{input['variable_name']}}', 'name', '{{input['linked_variable_type']}}', '{{input['linked_variable_name']}}', '{{input['linked_value']}}', '{{input['action_id']}}');">{{option['label']}}
 					{%- endfor %}
 					</div>
 				
@@ -350,8 +369,8 @@
 						{{input['label']}}:
 					{% endif %}
 					<div class="slider">
-						<input type="text" class="slider_value" id="{{input['variable_name']}}_value" value="{{input['value']}}" onchange="{{input['action_id']}}()">
-						<input type="range" class="slider_slider" id="{{input['variable_name']}}" min="{{input['min']}}" max="{{input['max']}}" step="{{input['step']}}"  value="{{input['value']}}" onchange="{{input['action_id']}}()" />
+						<input type="text" class="slider_value" id="{{input['variable_name']}}_value" value="{{input['value']}}" onchange="inputChange( '{{input['variable_name']}}', '{{input['linked_variable_type']}}', '{{input['linked_variable_name']}}',  '{{input['linked_value']}}','{{input['action_id']}}');">
+						<input type="range" class="slider_slider" id="{{input['variable_name']}}" min="{{input['min']}}" max="{{input['max']}}" step="{{input['step']}}"  value="{{input['value']}}" onchange="inputChange( '{{input['variable_name']}}', 'id', '{{input['linked_variable_type']}}', '{{input['linked_variable_name']}}', '{{input['linked_value']}}', '{{input['action_id']}}');" />
 					</div>
 					</div>
 				{%- endif %}
