@@ -9,7 +9,9 @@ import pandas as pd
 from numpy import pi
 import time
 
-class SimpleSineApp(server.App):
+from bokeh.resources import INLINE
+
+class TestApp1(server.App):
 	colors = [
 	{"label":"Green", "value":'g'},
     {"label": "Red", "value":'r', "checked":True}, 
@@ -17,7 +19,7 @@ class SimpleSineApp(server.App):
     {"label": "Yellow", "value":'y'},
     ]
 
-	title = "Simple Sine Wave"
+	title = "Test App 1"
 	inputs = [{	"input_type":'text',
 				"label": 'Title', 
 				"value" : 'Simple Sine Wave',
@@ -47,6 +49,9 @@ class SimpleSineApp(server.App):
 				"options" : colors,
 				"variable_name": 'color', 
 				"action_id" : "refresh",
+				"linked_variable_name": 'title', 
+				"linked_variable_type": 'text', 
+				"linked_value":"hey"
 			},
 			{	"input_type":'slider',
 				"label": 'frequency', 
@@ -55,15 +60,9 @@ class SimpleSineApp(server.App):
 				"min" : 1, 
 				"max" : 30,
 				"action_id" : "refresh",
+				"linked_variable_name": 'title', 
+				"linked_variable_type": 'text', 
 			}]
-	controls = [{	"control_type" : "button",
-					"control_id" : "refresh",
-					"label" : "refresh",
-				},
-				{	"control_type" : "button",
-					"control_id" : "button2",
-					"label" : "download",
-				}]
 	tabs = ["Tab1", "Tab2"]
 	controls = [{	"control_type" : "button",
 					"control_id" : "refresh",
@@ -198,6 +197,9 @@ class SimpleSineApp(server.App):
 	def noOutput(self, input_params):
 		return 0
 
+	def getCustomCSS(self):
+		return INLINE.css_raw[0]
+
 if __name__ == '__main__':
-	app = SimpleSineApp()
+	app = TestApp1()
 	app.launch(port=9096)
