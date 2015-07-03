@@ -14,3 +14,10 @@ install:
 
 script:
   - python -m unittest discover tests
+
+notifications:
+  email:
+    recipients:
+      - adamjdanger+kdx@gmail.com
+    on_success: always
+    on_failure: always
