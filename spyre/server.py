@@ -121,7 +121,7 @@ class Root(object):
 		for input in self.templateVars['inputs']:
 			input_variable_name = input['variable_name']
 			# register inputs to be so we can look them up by their variable name later
-			if input.has_key('action_id'):
+			if 'action_id' in input:
 				input_registration[input_variable_name] = {"type":input['input_type'], "action_id":input['action_id']}
 			else:
 				input_registration[input_variable_name] = {"type":input['input_type'], "action_id":None}

@@ -1,6 +1,9 @@
 # from spyre import spyre
 # import spyre
-import server
+try:
+	from . import server
+except:
+	import server
 server.include_df_index = True
 
 import matplotlib.pyplot as plt
