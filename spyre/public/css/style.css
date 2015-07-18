@@ -5,6 +5,10 @@
 */
 
 
+/*
+* Base classes
+*/
+
 h1 {
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 24px;
@@ -19,27 +23,6 @@ hr {
 	width: 95%;
 }
 
-.slider {
-	padding:2px;
-	margin:1px 1px 8px 1px;
-	height:30px;
-	background: #f4f4f4
-}
-
-.slider_value {
-	padding: 3px 1px !important;
-	margin: 2px 2px !important;
-	border: 1px 2px;
-	text-align: center;
-	font-size: 12px;
-	float:left;
-	width:14%;
-}
-
-.slider_slider {
-	width:62% !important;
-}
-
 input {
 	display: block;
 	padding: 5px !important;
@@ -49,13 +32,6 @@ input {
 	width: 100%;
 	box-sizing: border-box;  /* Ensures that the input will not extend past the input panel */
 }
-
-/* 
-input:focus,
-input:hover {
-	width: 250%;
-}
-*/
 
 input[type="radio"] {
 	display: inline-block;
@@ -81,6 +57,46 @@ select {
 	height: 30px;
 }
 
+ul {
+	margin:0px;
+}
+
+li.active a, li.active a:hover {
+	background:#fdfdfd;
+	color:#000000;
+}
+
+/*
+* Slider
+*/
+
+
+.slider {
+	padding:2px;
+	margin:1px 1px 8px 1px;
+	height:30px;
+	background: #f4f4f4
+}
+
+.slider_value {
+	padding: 3px 1px !important;
+	margin: 2px 2px !important;
+	border: 1px 2px;
+	text-align: center;
+	font-size: 12px;
+	float:left;
+	width:14%;
+}
+
+.slider_slider {
+	width:62% !important;
+}
+
+
+/*
+* Button
+*/
+
 .button {
 	display: block;
 	font-size: 14px;
@@ -99,13 +115,9 @@ select {
 	cursor: pointer;
 }
 
-img {
-	 max-width: 100%;
-}
-
-.outer {
-	padding: 15px;
-}
+/*
+* Panels
+*/
 
 .left-panel {   
 	font: 14px bold;
@@ -124,7 +136,6 @@ img {
 	float:left;
 }​
 
-
 .bar {
   fill: orange;
 }
@@ -137,7 +148,10 @@ img {
   display: none;
 }
 
-/*----- Table -----*/
+/*
+* Table
+*/
+
 table.sortable {
 	font-family: Arial, Helvetica, sans-serif;;
 	font-size: 12px;
@@ -172,22 +186,19 @@ table.sortable tbody tr:hover td {
 }
 
 
-/*----- APP Tabs -----*/
+/*
+* Tabs
+*/
+
 .apptabs {
 	width:100%;
 	display:inline-block;
 }
  
-/*----- Tab Links -----*/
-/* Clearfix */
 .apptab-links:after {
 	display:block;
 	clear:both;
 	content:'';
-}
-
-ul {
-	margin:0px;
 }
 
 .apptab-links li {
@@ -213,11 +224,6 @@ ul {
 .apptab-links a:hover {
 	background:#DDC4C4;
 	text-decoration:none;
-}
-
-li.active a, li.active a:hover {
-	background:#fdfdfd;
-	color:#000000;
 }
  
 /*----- Content of Tabs -----*/
