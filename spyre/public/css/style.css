@@ -8,7 +8,7 @@
 h1 {
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 24px;
-	font-color: #333333;  
+	color: #333333;  
 	margin: 5px;
 }
 
@@ -110,7 +110,7 @@ img {
 .left-panel {   
 	font: 14px bold;
 	font-family: Arial, Helvetica, sans-serif;
-	font-color: #333333;	 
+	color: #333333;	 
 	background: #f4f4f4;
 	padding: 10px;
 	width:20%;
