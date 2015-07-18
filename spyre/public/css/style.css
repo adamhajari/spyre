@@ -1,18 +1,25 @@
-h1{
+/*
+*
+* Spyre CSS
+*
+*/
+
+
+h1 {
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 24px;
 	font-color: #333333;  
 	margin: 5px;
 }
 
-hr{
+hr {
 	background: #333333;
 	padding-top: 4px;
 	border-radius: 5px;
 	width: 95%;
 }
 
-.slider{
+.slider {
 	padding:2px;
 	margin:1px 1px 8px 1px;
 	height:30px;
@@ -96,11 +103,11 @@ img {
 	 max-width: 100%;
 }
 
-.outer{
+.outer {
 	padding: 15px;
 }
-.left-panel
-{   
+
+.left-panel {   
 	font: 14px bold;
 	font-family: Arial, Helvetica, sans-serif;
 	font-color: #333333;	 
@@ -109,8 +116,8 @@ img {
 	width:20%;
 	float:left;  
 }
-.right-panel
-{		
+
+.right-panel {		
 	background-color:white;
 	padding: 0px 5px 5px 15px;
 	width:75%;
@@ -131,8 +138,7 @@ img {
 }
 
 /*----- Table -----*/
-table.sortable
-{
+table.sortable {
 	font-family: Arial, Helvetica, sans-serif;;
 	font-size: 12px;
 	background: #fff;
@@ -141,28 +147,27 @@ table.sortable
 	border-collapse: collapse;
 	text-align: left;
 }
-table.sortable thead
-{
+
+table.sortable thead {
 	font-size: 14px;
 	font-weight: normal;
 	color: #039;
 	padding: 10px 8px;
 	border-bottom: 2px solid #6678b1;
 }
-table.sortable td
-{
+table.sortable td {
 	border-bottom: 1px solid #ccc;
 	color: #669;
 	padding: 6px 8px;
 }
-table.sortable th
-{
+
+table.sortable th {
 	border-bottom: 1px solid #ccc;
 	color: #669;
 	padding: 6px 8px;
 }
-table.sortable tbody tr:hover td
-{
+
+table.sortable tbody tr:hover td {
 	color: #009;
 }
 
@@ -173,61 +178,61 @@ table.sortable tbody tr:hover td
 	display:inline-block;
 }
  
-	/*----- Tab Links -----*/
-	/* Clearfix */
-	.apptab-links:after {
-		display:block;
-		clear:both;
-		content:'';
-	}
+/*----- Tab Links -----*/
+/* Clearfix */
+.apptab-links:after {
+	display:block;
+	clear:both;
+	content:'';
+}
 
-	ul {
-		margin:0px;
-	}
+ul {
+	margin:0px;
+}
+
+.apptab-links li {
+	margin:5px 5px;
+	float:left;
+	list-style:none;
+}
+
+.apptab-links a {
+	padding:6px 6px;
+	display:inline-block;
+	border-radius:3px 3px 3px 3px;
+	background:CornflowerBlue;
+	font-size:16px;
+	min-width: 50px;
+	text-align: center;
+	font-weight:600;
+	color:#000000;
+	text-decoration: none;
+	transition:all linear 0.15s;
+}
+
+.apptab-links a:hover {
+	background:#DDC4C4;
+	text-decoration:none;
+}
+
+li.active a, li.active a:hover {
+	background:#fdfdfd;
+	color:#000000;
+}
  
-	.apptab-links li {
-		margin:5px 5px;
-		float:left;
-		list-style:none;
-	}
+/*----- Content of Tabs -----*/
+.apptab-content {
+	padding:10px;
+	background:#fdfdfd;
+}
  
-		.apptab-links a {
-			padding:6px 6px;
-			display:inline-block;
-			border-radius:3px 3px 3px 3px;
-			background:#CCCCCC;
-			font-size:16px;
-			min-width: 50px;
-			text-align: center;
-			font-weight:600;
-			color:#000000;
-			text-decoration: none;
-			transition:all linear 0.15s;
-		}
- 
-		.apptab-links a:hover {
-			background:#DDC4C4;
-			text-decoration:none;
-		}
- 
-	li.active a, li.active a:hover {
-		background:#fdfdfd;
-		color:#000000;
-	}
- 
-	/*----- Content of Tabs -----*/
-	.apptab-content {
-		padding:10px;
-		background:#fdfdfd;
-	}
- 
-		.apptab {
-			display:none;
-		}
- 
-		.apptab.active {
-			display:block;
-		}
+.apptab {
+	display:none;
+}
+
+.apptab.active {
+	display:block;
+}
 
 
 
@@ -238,58 +243,58 @@ table.sortable tbody tr:hover td
 	display:inline-block;
 }
  
-	/*----- Tab Links -----*/
-	/* Clearfix */
-	.tab-links:after {
-		display:block;
-		clear:both;
-		content:'';
-	}
+/*----- Tab Links -----*/
+/* Clearfix */
+.tab-links:after {
+	display:block;
+	clear:both;
+	content:'';
+}
 
-	ul {
-		margin:0px;
-	}
+ul {
+	margin:0px;
+}
+
+.tab-links li {
+	margin:0px 5px;
+	float:left;
+	list-style:none;
+}
  
-	.tab-links li {
-		margin:0px 5px;
-		float:left;
-		list-style:none;
-	}
+.tab-links a {
+	padding:9px 15px;
+	display:inline-block;
+	border-radius:3px 3px 0px 0px;
+	background:#f4f4f4;
+	font-size:16px;
+	min-width: 50px;
+	text-align: center;
+	font-weight:600;
+	color:#000000;
+	text-decoration: none;
+	transition:all linear 0.15s;
+}
  
-		.tab-links a {
-			padding:9px 15px;
-			display:inline-block;
-			border-radius:3px 3px 0px 0px;
-			background:#f4f4f4;
-			font-size:16px;
-			min-width: 50px;
-			text-align: center;
-			font-weight:600;
-			color:#000000;
-			text-decoration: none;
-			transition:all linear 0.15s;
-		}
+.tab-links a:hover {
+	background:#DDC4C4;
+	text-decoration:none;
+}
  
-		.tab-links a:hover {
-			background:#DDC4C4;
-			text-decoration:none;
-		}
+li.active a, li.active a:hover {
+	background:#fdfdfd;
+	color:#000000;
+}
+
+/*----- Content of Tabs -----*/
+.tab-content {
+	padding:15px;
+	background:#fdfdfd;
+}
  
-	li.active a, li.active a:hover {
-		background:#fdfdfd;
-		color:#000000;
-	}
- 
-	/*----- Content of Tabs -----*/
-	.tab-content {
-		padding:15px;
-		background:#fdfdfd;
-	}
- 
-		.tab {
-			display:none;
-		}
- 
-		.tab.active {
-			display:block;
-		}
+.tab {
+	display:none;
+}
+
+.tab.active {
+	display:block;
+}
