@@ -251,10 +251,6 @@ li.active a, li.active a:hover {
 	content:'';
 }
 
-ul {
-	margin:0px;
-}
-
 .tab-links li {
 	margin:0px 5px;
 	float:left;
