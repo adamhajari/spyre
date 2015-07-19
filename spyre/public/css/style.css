@@ -13,14 +13,10 @@ h1 {
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 24px;
 	color: #333333;  
-	margin: 5px;
-}
-
-hr {
-	background: #333333;
-	padding-top: 4px;
-	border-radius: 5px;
-	width: 95%;
+	margin: 5px 0 20px;
+	padding: 0 0 4px 0;
+	text-transform: uppercase;
+	border-bottom: 5px solid #333;
 }
 
 input {
