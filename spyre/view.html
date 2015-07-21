@@ -21,20 +21,20 @@
 			function updateSharedParameters(){
 				var shared_params = "";
 				{% for input in inputs -%}
-					{% if input['input_type']=="radiobuttons" -%}
-						var {{input['variable_name']}} = $('input[name="{{input['variable_name']}}"]:checked').val();
-					{% elif input['input_type']=="checkboxgroup" -%}
-						var {{input['variable_name']}} = new Array();
-						{{input['variable_name']}}.push("__list__");
-						$.each($('input[name="{{input['variable_name']}}"]:checked'), function() {
-							{{input['variable_name']}}.push($(this).val());
+					{% if input['type']=="radiobuttons" -%}
+						var {{input['key']}} = $('input[name="{{input['key']}}"]:checked').val();
+					{% elif input['type']=="checkboxgroup" -%}
+						var {{input['key']}} = new Array();
+						{{input['key']}}.push("__list__");
+						$.each($('input[name="{{input['key']}}"]:checked'), function() {
+							{{input['key']}}.push($(this).val());
 						});
-					{% elif input['input_type']=="slider" -%}
-						var {{input['variable_name']}} = "__float__".concat($("#{{input['variable_name']}}").val());
+					{% elif input['type']=="slider" -%}
+						var {{input['key']}} = "__float__".concat($("#{{input['key']}}").val());
 					{% else %}
-						var {{input['variable_name']}} = $("#{{input['variable_name']}}").val();
+						var {{input['key']}} = $("#{{input['key']}}").val();
 					{%- endif %}
-					shared_params = shared_params+"{{input['variable_name']}}="+{{input['variable_name']}}+"&";
+					shared_params = shared_params+"{{input['key']}}="+{{input['key']}}+"&";
 				{%- endfor %}
 				if (typeof shared_params_old !== 'undefined' && shared_params_old!==shared_params) {
 				    history.pushState('','','?'+shared_params);
@@ -43,37 +43,37 @@
 				return shared_params;
 			}
 			// when an input value changes, executes the action id and/or updates any linked variables
-			// variable_name/action_id is the name/action_id of variable being actively changed
+			// key/action_id is the name/action_id of variable being actively changed
 			// referenced_by is either 'id' (for text, dropdown, or slider) or 'name' (for checkboxgroup or radiobuttons)
-			// linked_variable_type and linked_variable_name are for the element being passively updated
-			function inputChange( variable_name, referenced_by, linked_variable_type, linked_variable_name, linked_value, action_id ){
+			// linked_type and linked_key are for the element being passively updated
+			function inputChange( key, referenced_by, linked_type, linked_key, linked_value, action_id ){
 				var value = "";
 				if (linked_value !== '') {
 				    value = linked_value;
 				}else if(referenced_by==='name'){
-					var elements = document.getElementsByName(variable_name);
+					var elements = document.getElementsByName(key);
 					for (var i = elements.length - 1; i >= 0; i--) {
 						if(elements[i].checked){
 							value += elements[i].value;
 						}
 					};
 				}else{
-					value = document.getElementById(variable_name).value;
+					value = document.getElementById(key).value;
 				}
-				updateInputValue(linked_variable_type,linked_variable_name,value,action_id);
+				updateInputValue(linked_type,linked_key,value,action_id);
 			}
 
 			// used to update input values on the fly
-			// type (ie input_type), variable_name, and action_id are all defined in the Spyre App
+			// type, key, and action_id are all defined in the Spyre App
 			// for text value should be a string
 			// for checkboxgroups value should be a list of values corresponding to the options defined in the spyre app
 			// for dropdowns value should be a string corresponding to one of the options defined in the spyre App
 			// for sliders value should be a number in the range specified in the Spyre App
-			function updateInputValue(type,variable_name,value,action_id){
+			function updateInputValue(type,key,value,action_id){
 				if(type=="text"){
-					document.getElementById(variable_name).value=value;
+					document.getElementById(key).value=value;
 				}else if(type=="radiobuttons"){
-					elements = document.getElementsByName(variable_name);
+					elements = document.getElementsByName(key);
 					for (var i = elements.length - 1; i >= 0; i--) {
 						if(elements[i].value==value){
 							elements[i].checked=true;
@@ -81,7 +81,7 @@
 						}
 					};
 				}else if(type=="checkboxgroup"){
-					elements = document.getElementsByName(variable_name);
+					elements = document.getElementsByName(key);
 					for (var i = elements.length - 1; i >= 0; i--) {
 						elements[i].checked = false;
 						for (var j = value.length - 1; j >= 0; j--) {
@@ -93,7 +93,7 @@
 						};
 					};
 				}else if(type=="dropdown"){
-					elements = document.getElementById(variable_name).value=value;
+					elements = document.getElementById(key).value=value;
 					for (var i = elements.length - 1; i >= 0; i--) {
 						if(elements[i].value==value){
 							elements[i].selected=true;
@@ -101,8 +101,8 @@
 						}
 					};
 				}else if(type=="slider"){
-					document.getElementById(variable_name).value=value;
-					document.getElementById(variable_name+"_value").value=value;
+					document.getElementById(key).value=value;
+					document.getElementById(key+"_value").value=value;
 				}else{
 					console.log("Unknow input type: "+type)
 				}
@@ -113,10 +113,10 @@
 
 			// connect controller function to output functions
 			{%- for control in controls %}
-				function {{control['control_id']}}(){
+				function {{control['id']}}(){
 					{% for output in outputs %}
-						{% if output['control_id']==control['control_id'] -%}
-							{{output['output_id']}}()
+						{% if output['control_id']==control['id'] -%}
+							{{output['id']}}()
 						{%- endif %}
 					{%- endfor %}
 				}
@@ -124,62 +124,62 @@
 
 			// define output functions
 			{%- for output in outputs %}
-				{%- if output['output_type']=='plot' %}
+				{%- if output['type']=='plot' %}
 					// load plot function
-					function {{output['output_id']}}(){
+					function {{output['id']}}(){
 						var spinning_wheel = $("<img />").attr('src', "/spinning_wheel");
-						$("#{{output['output_id']}}").html(spinning_wheel);
+						$("#{{output['id']}}").html(spinning_wheel);
 
 						var params = updateSharedParameters();
-						params = params+"output_id={{output['output_id']}}&";
+						params = params+"output_id={{output['id']}}&";
 						
 						var plot = $("<img />").attr('src', "plot?"+params).load(function(){
-							$("#{{output['output_id']}}").html("");
-							$("#{{output['output_id']}}").append(plot)
+							$("#{{output['id']}}").html("");
+							$("#{{output['id']}}").append(plot)
 						});
 					}
 				{%- endif %}
 
-				{%- if output['output_type']=='image' %}
+				{%- if output['type']=='image' %}
 					// load image function
-					function {{output['output_id']}}(){
+					function {{output['id']}}(){
 						var params = updateSharedParameters();
-						params = params+"output_id={{output['output_id']}}&";
+						params = params+"output_id={{output['id']}}&";
 						var img = $("<img />").attr('src', "image?"+params);
-						$("#{{output['output_id']}}").html(img);
+						$("#{{output['id']}}").html(img);
 					}
 				{%- endif %}
 
-				{%- if output['output_type']=='html' %}
+				{%- if output['type']=='html' %}
 					// custom html function
-					function {{output['output_id']}}(){
+					function {{output['id']}}(){
 						var spinning_wheel = $("<img />").attr('src', "/spinning_wheel");
-						$("#{{output['output_id']}}").html(spinning_wheel);
+						$("#{{output['id']}}").html(spinning_wheel);
 
 						var params = updateSharedParameters();
-						params = params+"output_id={{output['output_id']}}&";
+						params = params+"output_id={{output['id']}}&";
 						$.ajax({
 							url : "html?"+params,
 							success: function(response, textStatus, jqXHR){
-								$("#{{output['output_id']}}").html(response);
+								$("#{{output['id']}}").html(response);
 							}
 						});
 					}
 				{%- endif %}
 
-				{%- if output['output_type']=='table' %}
+				{%- if output['type']=='table' %}
 					// table output function
-					function {{output['output_id']}}(){
+					function {{output['id']}}(){
 						var spinning_wheel = $("<img />").attr('src', "/spinning_wheel");
-						$("#{{output['output_id']}}").html(spinning_wheel);
+						$("#{{output['id']}}").html(spinning_wheel);
 						updateSharedParameters()
 						var params = updateSharedParameters();
-						params = params+"output_id={{output['output_id']}}&";
+						params = params+"output_id={{output['id']}}&";
 						$.ajax({
 							type: 'GET',
 							url : "table?"+params
 						}).done(function(response){
-							$("#{{output['output_id']}}").html(response);
+							$("#{{output['id']}}").html(response);
 							{%- if output['sortable'] is defined %}
 								{%- if output['sortable'] %}
 									initTable("sortable");
@@ -189,22 +189,22 @@
 					}
 				{%- endif %}
 
-				{%- if output['output_type']=='download' %}
+				{%- if output['type']=='download' %}
 					// custom html function
-					function {{output['output_id']}}(){
+					function {{output['id']}}(){
 						var params = updateSharedParameters();
-						params = params+"output_id={{output['output_id']}}&";
+						params = params+"output_id={{output['id']}}&";
 						window.location = "download?"+params;
 					}
 				{%- endif %}
 
 
-				{%- if output['output_type']=='no_output' %}
+				{%- if output['type']=='no_output' %}
 					// no_output output function
-					function {{output['output_id']}}(){
+					function {{output['id']}}(){
 						updateSharedParameters()
 						var params = updateSharedParameters();
-						params = params+"output_id={{output['output_id']}}&";
+						params = params+"output_id={{output['id']}}&";
 						$.ajax({
 							type: 'GET',
 							url : "no_output?"+params
@@ -214,8 +214,8 @@
 					}
 				{%- endif %}
 
-				{%- if output['output_type']=='d3' %}
-					function {{output['output_id']}}(){
+				{%- if output['type']=='d3' %}
+					function {{output['id']}}(){
 						show_d3_plot()					
 					}
 				{%- endif %}
@@ -251,26 +251,26 @@
 				{%- endfor %}
 				
 				{% for input in inputs -%}
-					{% if input['input_type']=="slider" -%}
+					{% if input['type']=="slider" -%}
 					// jquery for sliders
 						// update slider text box when slider moves
-						jQuery("#{{input['variable_name']}}").on('change mousemove', function(e)  {
-							$("#{{input['variable_name']}}_value").val($("#{{input['variable_name']}}").val())
+						jQuery("#{{input['key']}}").on('change mousemove', function(e)  {
+							$("#{{input['key']}}_value").val($("#{{input['key']}}").val())
 		    			});
-		    			$("#{{input['variable_name']}}_value").val($("#{{input['variable_name']}}").val())
+		    			$("#{{input['key']}}_value").val($("#{{input['key']}}").val())
 
 		    			// update slider position when text box changes
-		    			jQuery("#{{input['variable_name']}}_value").on('change keyup', function(e)  {
-							$("#{{input['variable_name']}}").val($("#{{input['variable_name']}}_value").val())
+		    			jQuery("#{{input['key']}}_value").on('change keyup', function(e)  {
+							$("#{{input['key']}}").val($("#{{input['key']}}_value").val())
 		    			});
-		    			$("#{{input['variable_name']}}").val($("#{{input['variable_name']}}_value").val())
+		    			$("#{{input['key']}}").val($("#{{input['key']}}_value").val())
 		    		{%- endif %}
 				{%- endfor %}
 
 				// connect controller functions to controllers
 				{%- for control in controls %}
-					$("#{{control['control_id']}}").click(function(e) {
-						{{control['control_id']}}()
+					$("#{{control['id']}}").click(function(e) {
+						{{control['id']}}()
 					});
 				{%- endfor %}
 
@@ -281,7 +281,7 @@
 
 				{% for output in outputs -%}
 					{%- if output['on_page_load'] or output['on_page_load'] is not defined %}
-					{{output['output_id']}}()  // if on_page_load is true, load when page loads
+					{{output['id']}}()  // if on_page_load is true, load when page loads
 					{%- endif %}
 				{%- endfor %}
 			});
@@ -315,62 +315,62 @@
 			<hr>
 			<!-- inputs -->
 			{%- for input in inputs %}
-				{% if input['input_type']=="text" -%}
+				{% if input['type']=="text" -%}
 					<!-- text input -->
-					<form action="javascript:inputChange( '{{input['variable_name']}}', 'id', '{{input['linked_variable_type']}}', '{{input['linked_variable_name']}}', '{{input['linked_value']}}', '{{input['action_id']}}');">
+					<form action="javascript:inputChange( '{{input['key']}}', 'id', '{{input['linked_type']}}', '{{input['linked_key']}}', '{{input['linked_value']}}', '{{input['action_id']}}');">
 					<div class="text_input">
 					{% if input['label'] is defined %}
 						{{input['label']}}:
 					{% endif %}
-					<input type=text value="{{input['value']}}" id="{{input['variable_name']}}" />
+					<input type=text value="{{input['value']}}" id="{{input['key']}}" />
 					</div>
 					</form>
 					<br>
 				
 				<!-- dropdown -->
-				{% elif input['input_type']=="dropdown" -%}
+				{% elif input['type']=="dropdown" -%}
 					<!-- dropdown menu -->
 					<div class="dropdown_input">
 					{% if input['label'] is defined %}
 						{{input['label']}}:
 					{% endif %}
-					<select id="{{input['variable_name']}}"  onchange="inputChange( '{{input['variable_name']}}', 'id', '{{input['linked_variable_type']}}', '{{input['linked_variable_name']}}', '{{input['linked_value']}}', '{{input['action_id']}}');" >
+					<select id="{{input['key']}}"  onchange="inputChange( '{{input['key']}}', 'id', '{{input['linked_type']}}', '{{input['linked_key']}}', '{{input['linked_value']}}', '{{input['action_id']}}');" >
 					{% for option in input['options'] -%}
 						<option value="{{option['value']}}" {% if option['checked']==True %} selected="selected" {% endif %}>{{option['label']}} </option>
 					{%- endfor %}
 					</select><br></div>
 
 				<!-- radiobuttons -->
-				{% elif input['input_type']=="radiobuttons" -%}
-					<div class="radiobuttons_input" id="{{input['variable_name']}}">
+				{% elif input['type']=="radiobuttons" -%}
+					<div class="radiobuttons_input" id="{{input['key']}}">
 					{% if input['label'] is defined %}
 						{{input['label']}}:
 					{% endif %}
 					{% for option in input['options'] -%}
-						<br><input type="radio" name="{{input['variable_name']}}" value="{{option['value']}}" {% if option['checked']==True %} checked {% endif %} onclick="inputChange( '{{input['variable_name']}}', 'name', '{{input['linked_variable_type']}}', '{{input['linked_variable_name']}}', '{{input['linked_value']}}', '{{input['action_id']}}');">{{option['label']}}
+						<br><input type="radio" name="{{input['key']}}" value="{{option['value']}}" {% if option['checked']==True %} checked {% endif %} onclick="inputChange( '{{input['key']}}', 'name', '{{input['linked_type']}}', '{{input['linked_key']}}', '{{input['linked_value']}}', '{{input['action_id']}}');">{{option['label']}}
 					{%- endfor %}
 					</div>
 
 				<!-- checkbox group -->
-				{% elif input['input_type']=="checkboxgroup" -%}
-					<div class="checkboxgroup_input" id="{{input['variable_name']}}">
+				{% elif input['type']=="checkboxgroup" -%}
+					<div class="checkboxgroup_input" id="{{input['key']}}">
 					{% if input['label'] is defined %}
 						{{input['label']}}:
 					{% endif %}
 					{% for option in input['options'] -%}
-						<br><input type="checkbox" name="{{input['variable_name']}}" value="{{option['value']}}" {% if option['checked']==True %} checked {% endif %} onclick="inputChange( '{{input['variable_name']}}', 'name', '{{input['linked_variable_type']}}', '{{input['linked_variable_name']}}', '{{input['linked_value']}}', '{{input['action_id']}}');">{{option['label']}}
+						<br><input type="checkbox" name="{{input['key']}}" value="{{option['value']}}" {% if option['checked']==True %} checked {% endif %} onclick="inputChange( '{{input['key']}}', 'name', '{{input['linked_type']}}', '{{input['linked_key']}}', '{{input['linked_value']}}', '{{input['action_id']}}');">{{option['label']}}
 					{%- endfor %}
 					</div>
 				
 				<!-- sliders -->
-				{% elif input['input_type']=="slider" -%}
+				{% elif input['type']=="slider" -%}
 					<div class="slider_input">
 					{% if input['label'] is defined %}
 						{{input['label']}}:
 					{% endif %}
 					<div class="slider">
-						<input type="text" class="slider_value" id="{{input['variable_name']}}_value" value="{{input['value']}}" onchange="inputChange( '{{input['variable_name']}}', '{{input['linked_variable_type']}}', '{{input['linked_variable_name']}}',  '{{input['linked_value']}}','{{input['action_id']}}');">
-						<input type="range" class="slider_slider" id="{{input['variable_name']}}" min="{{input['min']}}" max="{{input['max']}}" step="{{input['step']}}"  value="{{input['value']}}" onchange="inputChange( '{{input['variable_name']}}', 'id', '{{input['linked_variable_type']}}', '{{input['linked_variable_name']}}', '{{input['linked_value']}}', '{{input['action_id']}}');" />
+						<input type="text" class="slider_value" id="{{input['key']}}_value" value="{{input['value']}}" onchange="inputChange( '{{input['key']}}', '{{input['linked_type']}}', '{{input['linked_key']}}',  '{{input['linked_value']}}','{{input['action_id']}}');">
+						<input type="range" class="slider_slider" id="{{input['key']}}" min="{{input['min']}}" max="{{input['max']}}" step="{{input['step']}}"  value="{{input['value']}}" onchange="inputChange( '{{input['key']}}', 'id', '{{input['linked_type']}}', '{{input['linked_key']}}', '{{input['linked_value']}}', '{{input['action_id']}}');" />
 					</div>
 					</div>
 				{%- endif %}
@@ -378,8 +378,8 @@
 
 			<!-- buttons -->
 			{%- for control in controls %}
-				{% if control['control_type']=="button" -%}
-					<div class="button" id="{{control['control_id']}}" >{{control['label']}}</div><br>
+				{% if control['type']=="button" -%}
+					<div class="button" id="{{control['id']}}" >{{control['label']}}</div><br>
 				{%- endif %}
 			{%- endfor %}
 			{% if False -%}
@@ -411,12 +411,12 @@
 							{%- endif %}
 							{%- for output in outputs %}
 								{%- if output['tab'] == tab %}
-									{%- if output['output_type'] != "d3" %}
+									{%- if output['type'] != "d3" %}
 										<!-- plots, custom html, or table -->
-										<div id="{{output['output_id']}}"></div>
+										<div id="{{output['id']}}"></div>
 									{%- endif %}
 
-									{%- if output['output_type'] == "d3" %}
+									{%- if output['type'] == "d3" %}
 										<!-- d3 figs go here -->
 										<div id="chart"></div>
 									{%- endif %}
@@ -431,12 +431,12 @@
 
 				{%- for output in outputs %}
 					<!-- plots, custom html, tables, anything not d3 -->
-					{% if output['output_type'] != "d3" -%}
-						<div id="{{output['output_id']}}"></div>
-						<div id="{{output['output_id']}}_spinner"></div>
+					{% if output['type'] != "d3" -%}
+						<div id="{{output['id']}}"></div>
+						<div id="{{output['id']}}_spinner"></div>
 					{%- endif %}
 
-					{% if output['output_type'] == "d3" -%}
+					{% if output['type'] == "d3" -%}
 						<!-- d3 figs go here -->
 						<div id="chart"></div>
 					{%- endif %}

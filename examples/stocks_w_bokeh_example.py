@@ -19,42 +19,50 @@ from bokeh import plotting
 class StocksWithBokeh(server.App):
 	title = "Historical Stock Prices"
 
-	inputs = [{	"input_type":'text',
+	inputs = [{	"type":'dropdown',
 				"label": 'Company', 
 				"options" : [
-					{"label": "Google", "value":"GOOG"},
+					{"label": "Choose A Company", "value":"empty"},
+					{"label": "Google", "value":"GOOG", "checked":True},
 					{"label": "Yahoo", "value":"YHOO"},
 					{"label": "Apple", "value":"AAPL"}],
-				"variable_name": 'ticker', 
-				"action_id": "update_data"
-			}]
+				"key": 'ticker', 
+				"action_id": "update_data",
+				"linked_key":'custom_ticker',
+				"linked_type":'text',
+			},
+			{	"type":'text',
+				"label": 'or enter a ticker symbol', 
+				"key": 'custom_ticker', 
+				"action_id": "update_data",
+				"linked_key":'ticker',
+				"linked_type":'dropdown',
+				"linked_value":'empty' }]
 
-	controls = [{"control_type" : "hidden",
+	controls = [{"type" : "hidden",
 					"label" : "get historical stock prices",
-					"control_id" : "update_data" 
+					"id" : "update_data" 
 				}]
 
-	outputs = [{"output_type" : "plot",
-					"output_id" : "plot",
+	outputs = [{"type" : "plot",
+					"id" : "plot",
 					"control_id" : "update_data",
-					"tab" : "Plot",
-					"on_page_load" : True},
-				{"output_type" : "table",
-					"output_id" : "table_id",
+					"tab" : "Plot"},
+				{"type" : "table",
+					"id" : "table_id",
 					"control_id" : "update_data",
-					"tab" : "Table",
-					"on_page_load" : True},
-				{"output_type" : "html",
-					"output_id" : "html_id",
+					"tab" : "Table"},
+				{"type" : "html",
+					"id" : "html_id",
 					"control_id" : "update_data",
-					"tab" : "Bokeh",
-					"on_page_load" : True
-				}]
+					"tab" : "Bokeh"}]
 
 	tabs = ["Plot", "Table", "Bokeh"]
 
 	def getData(self, params):
 		ticker = params['ticker']
+		if ticker=='empty':
+				ticker=params['custom_ticker']
 		# make call to yahoo finance api to get historical stock data
 		api_url = 'https://chartapi.finance.yahoo.com/instrument/1.0/{}/chartdata;type=quote;range=3m/json'.format(ticker)
 		result = urllib2.urlopen(api_url).read()

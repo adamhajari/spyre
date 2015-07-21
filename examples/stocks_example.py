@@ -18,27 +18,28 @@ class StockExample(server.App):
 
 	title = "Historical Stock Prices"
 
-	inputs = [{		"input_type":'dropdown',
+	inputs = [{		"type":'dropdown',
 					"label": 'Company', 
-					"options" : [ {"label": "Google", "value":"GOOG"},
+					"options" : [ {"label": "Choose A Company", "value":"empty"},
+								  {"label": "Google", "value":"GOOG"},
 								  {"label": "Yahoo", "value":"YHOO"},
 								  {"label": "Apple", "value":"AAPL"}],
-					"variable_name": 'ticker', 
-					"action_id": "update_data" }]
+					"value":'GOOG',
+					"key": 'ticker', 
+					"action_id": "update_data"}]
 
-	controls = [{	"control_type" : "hidden",
+	controls = [{	"type" : "hidden",
 					"label" : "get historical stock prices",
-					"control_id" : "update_data"}]
+					"id" : "update_data"}]
 
 	tabs = ["Plot", "Table"]
 
-	outputs = [{	"output_type" : "plot",
-					"output_id" : "plot",
+	outputs = [{	"type" : "plot",
+					"id" : "plot",
 					"control_id" : "update_data",
-					"tab" : "Plot",
-					"on_page_load" : True },
-				{	"output_type" : "table",
-					"output_id" : "table_id",
+					"tab" : "Plot"},
+				{	"type" : "table",
+					"id" : "table_id",
 					"control_id" : "update_data",
 					"tab" : "Table",
 					"on_page_load" : True }]

@@ -3,9 +3,9 @@
 from spyre.server import Site, App
 
 
-from simple_sine_example import SimpleSineApp
-from stocks_w_bokeh_example import StocksWithBokeh
-from NBS_category_example import NBSCategoriesApp
+from sliders_examples import SlidersApp
+from stocks_example import StockExample
+from image_editor import ImageEditor
 
 
 
@@ -16,10 +16,10 @@ class Index(App):
 
 #site = Site(Index)
 
-site = Site(SimpleSineApp)
+site = Site(SlidersApp)
 
-site.addApp(StocksWithBokeh, '/sineapp')
-site.addApp(NBSCategoriesApp, '/sineapp/mylaunch')
+site.addApp(StockExample, '/app2')
+site.addApp(ImageEditor, '/app2/app3')
 
 
 site.launch()

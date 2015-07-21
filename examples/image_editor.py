@@ -6,43 +6,34 @@ from skimage import data, filter, io
 
 class ImageEditor(server.App):
 	title = "Image Editor"
-	inputs = [{	"input_type": "slider",
-					"variable_name": "sigma",
+	inputs = [{	"type": "slider",
+					"key": "sigma",
 					"label": "sigma",
-					"value": 0.1,
-					"max": 10,
-					"step":0.1,
+					"value": 0.1,"max": 10,"step":0.1,
 					"action_id":"image"},
-				{"input_type": "slider",
-					"variable_name": "red",
+				{"type": "slider",
+					"key": "red",
 					"label": "red",
-					"value": 1,
-					"max": 1,
-					"step":0.1,
+					"value": 1,"max": 1,"step":0.1,
 					"action_id":"image"},
-				{"input_type": "slider",
-					"variable_name": "green",
+				{"type": "slider",
+					"key": "green",
 					"label": "green",
-					"value": 1,
-					"max": 1,
-					"step":0.1,
+					"value": 1,"max": 1,"step":0.1,
 					"action_id":"image"},
-				{"input_type": "slider",
-					"variable_name": "blue",
+				{"type": "slider",
+					"key": "blue",
 					"label": "blue",
-					"value": 1,
-					"max": 1,
-					"step":0.1,
+					"value": 1,"max": 1,"step":0.1,
 					"action_id":"image"}]
 
-	controls = [{"control_type":"hidden",
-					"control_id":"render",
+	controls = [{"type":"hidden",
+					"id":"render",
 					"label":"render"}]
 
-	outputs = [{"output_type":"image",
-					"output_id":"image",
-					"control_id":"render",
-					"on_page_load":"true"}]
+	outputs = [{"type":"image",
+					"id":"image",
+					"control_id":"render"}]
 
 	def getImage(self,params):
 		sigma = float(params['sigma'])

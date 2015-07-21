@@ -9,25 +9,19 @@ from numpy import pi
 class SlidersApp(server.App):
 	title = "Decaying Sine Wave"
 
-	inputs =[{ "input_type":'slider',
+	inputs =[{ "type":'slider',
 				"label": 'Frequency', 
-				"min" : 1,
-				"max" : 100,
-				"value" : 50,
-				"variable_name": 'freq', 
+				"min" : 1,"max" : 100,"value" : 50,
+				"key": 'freq', 
 				"action_id": 'plot'},
-			{ "input_type":'slider',
+			{ "type":'slider',
 				"label": 'Decay Rate', 
-				"min" : 0,
-				"max" : 2,
-				"step" : 0.01,
-				"value" : 0.5,
-				"variable_name": 'decay', 
+				"min" : 0,"max" : 2,"step" : 0.01,"value" : 0.5,
+				"key": 'decay', 
 				"action_id": 'plot'}]
 
-	outputs = [{ "output_type" : "plot",
-					"output_id" : "plot",
-					"on_page_load" : True }]
+	outputs = [{ "type" : "plot",
+					"id" : "plot" }]
 
 	def getPlot(self, params):
 		f = float(params['freq'])

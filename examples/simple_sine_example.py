@@ -5,14 +5,13 @@ import numpy as np
 
 class SimpleSineApp(server.App):
 	title = "Simple Sine App"
-	inputs = [{ "input_type":"text",
-				"variable_name":"freq",
-				"value":5,
+	inputs = [{ "type":"slider",
+				"key":"freq",
+				"value":5, "max":10,
 				"action_id":"sine_wave_plot"}]
 
-	outputs = [{"output_type":"plot",
-				"output_id":"sine_wave_plot",
-				"on_page_load":True }]
+	outputs = [{"type":"plot",
+				"id":"sine_wave_plot"}]
 
 	def getPlot(self, params):
 		f = float(params['freq'])

@@ -15,103 +15,96 @@ import time
 from bokeh.resources import INLINE
 
 class TestApp1(server.App):
-	colors = [
-	{"label":"Green", "value":'g'},
-    {"label": "Red", "value":'r', "checked":True}, 
-    {"label": "Blue", "value":'b'}, 
-    {"label": "Yellow", "value":'y'},
-    ]
+	colors = [	{"label":"Green", "value":'g'},
+			    {"label": "Red", "value":'r', "checked":True}, 
+			    {"label": "Blue", "value":'b'}, 
+			    {"label": "Yellow", "value":'y'}]
 
 	title = "Test App 1"
-	inputs = [{	"input_type":'text',
+	inputs = [{	"type":'text',
 				"label": 'Title', 
 				"value" : 'Simple Sine Wave',
-				"variable_name": 'title', 
+				"key": 'title', 
 				"action_id" : "refresh",
 			},
-			{	"input_type":'radiobuttons',
+			{	"type":'radiobuttons',
 				"label": 'Function', 
 				"options" : [
 					{"label": "Sine", "value":"sin", "checked":True}, 
 					{"label":"Cosine", "value":"cos"}
 				],
-				"variable_name": 'func_type', 
+				"key": 'func_type', 
 				"action_id" : "refresh",
 			},
-			{	"input_type":'checkboxgroup',
+			{	"type":'checkboxgroup',
 				"label": 'Axis Labels', 
 				"options" : [
 					{"label": "x-axis", "value":"x", "checked":True}, 
 					{"label":"y-axis", "value":"y"}
 				],
-				"variable_name": 'axis_label', 
+				"key": 'axis_label', 
 				"action_id" : "refresh",
 			},
-			{	"input_type":'dropdown',
+			{	"type":'dropdown',
 				"label": 'Line Color', 
 				"options" : colors,
-				"variable_name": 'color', 
+				"key": 'color', 
 				"action_id" : "refresh",
-				"linked_variable_name": 'title', 
-				"linked_variable_type": 'text', 
+				"linked_key": 'title', 
+				"linked_type": 'text', 
 				"linked_value":"hey"
 			},
-			{	"input_type":'slider',
+			{	"type":'slider',
 				"label": 'frequency', 
-				"variable_name": 'freq', 
+				"key": 'freq', 
 				"value" : 2,
 				"min" : 1, 
 				"max" : 30,
 				"action_id" : "refresh",
-				"linked_variable_name": 'title', 
-				"linked_variable_type": 'text', 
+				"linked_key": 'title', 
+				"linked_type": 'text', 
 			}]
 	tabs = ["Tab1", "Tab2"]
-	controls = [{	"control_type" : "button",
-					"control_id" : "refresh",
+	controls = [{	"type" : "button",
+					"id" : "refresh",
 					"label" : "refresh",
 				},
-				{	"control_type" : "button",
-					"control_id" : "button2",
+				{	"type" : "button",
+					"id" : "button2",
 					"label" : "download",
 				}]
-	outputs = [{	"output_type" : "html",
-					"output_id" : "html1",
+	outputs = [{	"type" : "plot",
+					"id" : "plot1",
 					"control_id" : "refresh",
 					"tab" : "Tab1"
 				},
-				{	"output_type" : "plot",
-					"output_id" : "plot1",
+				{	"type" : "table",
+					"id" : "table1",
 					"control_id" : "refresh",
 					"tab" : "Tab1"
 				},
-				{	"output_type" : "table",
-					"output_id" : "table1",
+				{	"type" : "plot",
+					"id" : "plot2",
 					"control_id" : "refresh",
 					"tab" : "Tab1"
 				},
-				{	"output_type" : "plot",
-					"output_id" : "plot2",
-					"control_id" : "refresh",
-					"tab" : "Tab1"
-				},
-				{	"output_type" : "download",
-					"output_id" : "download_id",
+				{	"type" : "download",
+					"id" : "download_id",
 					"control_id" : "button2",
 					"on_page_load" : False,
 				},
-				{	"output_type" : "html",
-					"output_id" : "html2",
+				{	"type" : "html",
+					"id" : "html_out",
 					"control_id" : "refresh",
 					"tab" : "Tab1"
 				},
-				{	"output_type" : "plot",
-					"output_id" : "plot3",
+				{	"type" : "plot",
+					"id" : "plot3",
 					"control_id" : "refresh",
 					"tab" : "Tab2"
 				},
-				{	"output_type" : "table",
-					"output_id" : "table2",
+				{	"type" : "table",
+					"id" : "table2",
 					"control_id" : "refresh",
 					"sortable" : True,
 					"tab" : "Tab2"
@@ -122,9 +115,6 @@ class TestApp1(server.App):
 		name = ['<a href="http://adamhajari.com">A</a>','B','C']
 		return {'name':name, 'count':count}
 
-	# def getData(self,params):
-	# 	return df
-	
 	def table1(self,params):
 		data = self.getJsonData(params)
 		df = pd.DataFrame(data)
@@ -186,16 +176,16 @@ class TestApp1(server.App):
 		splt.set_xticklabels(["A","B","C"])
 		return fig
 
-	def html1(self,params):
-		return "hello world"
-
-	def html2(self,params):
+	def html_out(self,params):
 		func_type = params['func_type']
 		axis_label = params['axis_label']
 		color = params['color']
 		freq = params['freq']
 		html = "function type: {} <br>axis label: {}<br>color: {}<br>frequency: {}".format(func_type, axis_label, color, freq)
 		return html
+
+	def download_id(self,params):
+		return self.table2(params)
 
 	def noOutput(self, input_params):
 		return 0

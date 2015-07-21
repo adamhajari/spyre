@@ -43,10 +43,10 @@ templateEnv = jinja2.Environment( loader=templateLoader )
 
 class Root(object):
 	def __init__(self,templateVars=None, 
-		title=None, 
-		inputs=None, 
-		outputs=None, 
-		controls=None, 
+		title="", 
+		inputs=[], 
+		outputs=[], 
+		controls=[], 
 		tabs=None, 
 		getJsonDataFunction=None, 
 		getDataFunction=None, 
@@ -65,14 +65,30 @@ class Root(object):
 			self.templateVars = templateVars
 		else:
 			self.templateVars = {}
-			if title is not None:
-				self.templateVars['title'] = title
-			if inputs is not None:
-				self.templateVars['inputs'] = inputs
-			if controls is not None:
-				self.templateVars['controls'] = controls
-			if outputs is not None:
-				self.templateVars['outputs'] = outputs
+			self.templateVars['title'] = title
+			# necessary to ensure that spyre apps prior to version 0.2.0 still work
+			for input in inputs:
+				if 'input_type' in input:
+					input['type'] = input['input_type']
+				if 'variable_name' in input:
+					input['key'] = input['variable_name']
+				if 'linked_variable_name' in input:
+					input['linked_key'] = input['linked_variable_name']
+				if 'linked_variable_type' in input:
+					input['linked_type'] = input['linked_variable_type']
+			self.templateVars['inputs'] = inputs
+			for control in controls:
+				if 'control_type' in control:
+					control['type'] = control['control_type']
+				if 'control_id' in control:
+					control['id'] = control['control_id']
+			self.templateVars['controls'] = controls
+			for output in outputs:
+				if 'output_type' in output:
+					output['type'] = output['output_type']
+				if 'output_id' in output:
+					output['id'] = output['output_id']
+			self.templateVars['outputs'] = outputs
 			if tabs is not None:
 				self.templateVars['tabs'] = tabs
 		self.defaultTemplateVars = self.templateVars
@@ -119,17 +135,17 @@ class Root(object):
 		input_registration = {}
 		index = 0
 		for input in self.templateVars['inputs']:
-			input_variable_name = input['variable_name']
+			input_key = input['key']
 			# register inputs to be so we can look them up by their variable name later
 			if 'action_id' in input:
-				input_registration[input_variable_name] = {"type":input['input_type'], "action_id":input['action_id']}
+				input_registration[input_key] = {"type":input['type'], "action_id":input['action_id']}
 			else:
-				input_registration[input_variable_name] = {"type":input['input_type'], "action_id":None}
+				input_registration[input_key] = {"type":input['type'], "action_id":None}
 			
 
-			if input_variable_name in args.keys():
+			if input_key in args.keys():
 				# use value from request
-				input_value = args[input_variable_name]
+				input_value = args[input_key]
 			elif 'value' in input:
 				# use value from template
 				input_value = input['value']
@@ -138,12 +154,12 @@ class Root(object):
 				continue
 
 			# use the params passed in with the url switch out the default input values
-			if input['input_type'] in ['text','slider']:
+			if input['type'] in ['text','slider']:
 				self.templateVars['inputs'][index]['value'] = input_value
-			if input['input_type'] in ['radiobuttons', 'dropdown']:
+			if input['type'] in ['radiobuttons', 'dropdown']:
 				for option in input['options']:
 					option['checked'] = (option['value'] == input_value)
-			if input['input_type'] == 'checkboxgroup':
+			if input['type'] == 'checkboxgroup':
 				index2 = 0
 				for option in input['options']:
 					if option['value'] in input_value:
@@ -241,24 +257,13 @@ class Root(object):
 
 class App(object):
 
-	title = None
+	title = ""
 
 	#Will be used when there are more than one app in a site
 	app_bar_html = None
-
-	inputs = [{		"input_type":'text',
-					"label": 'Variable', 
-					"value" : "Value Here",
-					"variable_name": 'var1'}]
-
-	controls = None
-
-	outputs = [{	"output_type" : "plot",
-					"output_id" : "plot",
-					"control_id" : "button1",
-					"on_page_load" : "true"}]
-	outputs = None
-	inputs = None
+	outputs = []
+	inputs = []
+	controls = []
 	tabs = None
 	templateVars = None
 				

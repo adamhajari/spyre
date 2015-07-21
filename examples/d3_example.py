@@ -1,4 +1,4 @@
-# requires d3py
+# requires d3py library
 # only tested with python 2.7
 from spyre import server
 

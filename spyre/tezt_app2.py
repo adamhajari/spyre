@@ -14,26 +14,17 @@ import time
 
 class TestApp2(server.App):
 	title = "Test App 2"
-	inputs = [{	"input_type":'slider',
+	inputs = [{	"type":'slider',
 				"label": 'frequency', 
-				"variable_name": 'freq', 
-				"value" : 2,
-				"min" : 1, 
-				"max" : 10,
-				"action_id" : "refresh",
+				"key": 'freq', 
+				"value":2, "min":1, "max":10,
+				"action_id":"refresh",
 			}]
-	controls = [{	"control_type" : "button",
-					"control_id" : "refresh",
-					"label" : "refresh",
-				}]
-	outputs = [{	"output_type" : "plot",
-					"output_id" : "plot1",
-					"control_id" : "refresh",
-				},
-				{	"output_type" : "table",
-					"output_id" : "table1",
-					"control_id" : "refresh",
-				}]
+
+	controls = [{"type":"button", "id":"refresh", "label":"refresh"}]
+
+	outputs = [ {"type":"plot", "id":"plot1", "control_id":"refresh"},
+				{"type":"table", "id":"table1", "control_id":"refresh"}]
 
 	def getData(self,params):
 		f = float(params['freq'])
