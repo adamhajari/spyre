@@ -195,7 +195,7 @@ table.sortable tbody tr:hover td
 			padding:6px 6px;
 			display:inline-block;
 			border-radius:3px 3px 3px 3px;
-			background:CornflowerBlue;
+			background:#CCCCCC;
 			font-size:16px;
 			min-width: 50px;
 			text-align: center;
