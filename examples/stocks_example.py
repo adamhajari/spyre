@@ -20,8 +20,7 @@ class StockExample(server.App):
 
 	inputs = [{		"type":'dropdown',
 					"label": 'Company', 
-					"options" : [ {"label": "Choose A Company", "value":"empty"},
-								  {"label": "Google", "value":"GOOG"},
+					"options" : [ {"label": "Google", "value":"GOOG"},
 								  {"label": "Yahoo", "value":"YHOO"},
 								  {"label": "Apple", "value":"AAPL"}],
 					"value":'GOOG',
@@ -29,7 +28,6 @@ class StockExample(server.App):
 					"action_id": "update_data"}]
 
 	controls = [{	"type" : "hidden",
-					"label" : "get historical stock prices",
 					"id" : "update_data"}]
 
 	tabs = ["Plot", "Table"]
