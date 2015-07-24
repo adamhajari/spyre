@@ -6,7 +6,7 @@ Spyre is a Web Application Framework for providing a simple user interface for P
 
 Requirements
 ----
-Spyre runs on the minimalist python web framework, **[cherrypy]**, with **[jinja2]** templating. At it's heart, spyre is about data and data visualization, so you'll also need **[pandas]** and **[matplotlib]**.
+Spyre runs on the minimalist python web framework, **[cherrypy]**, with **[jinja2]** templating. Spyre is all about data and data visualization, so you'll also need **[pandas]** and **[matplotlib]**.
 
 
 Installation
@@ -27,14 +27,13 @@ import numpy as np
 
 class SimpleSineApp(server.App):
 	title = "Simple Sine App"
-	inputs = [{ "input_type":"text",
-				"variable_name":"freq",
-				"value":5,
+	inputs = [{ "type":"text",
+				"key":"freq",
+				"value":5, 
 				"action_id":"sine_wave_plot"}]
 
-	outputs = [{"output_type":"plot",
-				"output_id":"sine_wave_plot",
-				"on_page_load":True }]
+	outputs = [{"type":"plot",
+				"id":"sine_wave_plot"}]
 
 	def getPlot(self, params):
 		f = float(params['freq'])
@@ -49,26 +48,26 @@ app = SimpleSineApp()
 app.launch()
 ```
 
-The SimpleSineApp class inherits server.App which includes a few methods that you can override to generate outputs. In this case we want our app to display a Plot so we'll overide the getPlot method. This method should return a matplotlib figure.
+The SimpleSineApp class inherits server.App which includes a few methods that you can override to generate outputs. In this case we want our app to display a Plot so we'll overide the getPlot method. This method should return a matplotlib figure object or Axes object.
 
 We also need specify the attributes of our inputs and outputs which we can do by defining the App's inputs and outputs variables.
 
 ### inputs ###
-This is a list of input dictionaries. In our simple example above, there's only one input, of type "text". We give it a label and initial value with the keys "label" and "value".  The value from this input will be used as an input parameter when generating the outputs (a plot in this case), so we need to also give it a variable_name that we can reference in the getPlot method. "action_id" is an optional variable that equals either an output_id from the list of outputs, or a control_id from the list of controls (we'll get to controls in the next example). When action_id is defined, a change in the input will result in either an update to the referenced output or a call to the functions connected to the referenced control. 
+This is a list of input dictionaries. In our simple example above, there's only one input, of type "text". We give it a label and initial value with the keys "label" and "value". The value from this input will be used as an input parameter when generating the outputs (a plot in this case), so we need to also give it a key that we can reference in any output methods (getPlot in this case). "action_id" is an optional variable that equals either an output_id from the list of outputs, or a control_id from the list of controls (we'll get to controls in the next example). When action_id is defined, a change in the input will result in either an update to the referenced output or a call to the functions connected to the referenced control. 
 
 ### outputs ###
-output_types can be "plot", "image", "table", "html", or "download". In addition to the output_type, we also need to provide a unique output_id. If this output is suppose to get updated on execution of one of the controls specified in the list of controls, we need to also specify the control_id of that controller. All outputs get generated on page load by default. If we want an output *not* to load on the page load, we can also set "on_page_load" to False.
+an output's `type` can be "plot", "image", "table", "html", or "download". In addition to the type, we also need to provide a unique id. If this output is suppose to get updated on execution of one of the controls specified in the list of controls, we need to also specify the control_id of that controller (which we'll see in the next example). All outputs get generated on page load by default. If we want an output *not* to load on the page load, we can also set "on_page_load" to False.
 
 ### controls ###
-Controls are one mechanism by which a spyre app can update its outputs. The "control_id" can be referenced by either an input or an output. When an output references the control_id, executing the control updates that output. When an input references the controld_id (via the "action_id"), updating the input executes the control. The two control_types are "button" and "hidden". "button" will add a button to the left panel. No control is added to the left-panel for control_types "hidden". "hidden" controls are useful for linking a single input action to multiple outputs.
+Controls are one mechanism by which a spyre app can update its outputs. A control's "id" can be referenced by either an input or an output. When an output references the control's id, executing the control updates that output. When an input references the controld's id (via the "action_id"), updating the input executes the control. The two control `type` options are "button" and "hidden". "button" will add a button to the left panel. No control is added to the left-panel for control_types "hidden". "hidden" controls are useful for linking a single input action to multiple outputs.
 
 ### generating a plot ###
 Let's get back to our getPlot method. Notice that it takes a single argument: params. params is a dictionary containing:
 
-1. all of the input values (with key equal to the variable_name specified in the input dictionary)
-2. the output_id for the output that needs to get created.
+1. all of the input values (with key equal to the key specified in the input dictionary)
+2. the output_id for the output that needs to get created. You usually don't need to do anything with this.
 
-For this simple example you can ignore the output_id. With the exception of the input type "checkboxgroup", the value of each of the params is a string. In this example our one input variable represents a frequency, which is a number, so we'll need to cast it as a float before we use it.  The matplotlib figure returned by getPlot will be displayed in the right panel of our Spyre app.
+With the exception of the input type "checkboxgroup", the value of each of the params is a string. In this example our one input variable represents a frequency, which is a number, so we'll need to cast it as a float before we use it.  The matplotlib figure returned by getPlot will be displayed in the right panel of our Spyre app.
 
 ### launching the app ###
 To launch our app we just need to create an instance of our SimpleSineApp class and call the launch method. The launch method takes to optional parameters: host and port. By default, apps are served locally on port 8080. Set host='0.0.0.0' to serve your app to external traffic.
@@ -77,7 +76,7 @@ Assuming you name this file "simple_sine_example.py" you can launch this app fro
 ```bash
     $ python simple_sine_example.py
 ```
-The output will indicate where the app is being served (usually something like http://127.0.0.1:8080)
+The output will indicate where the app is being served (http://127.0.0.1:8080 by default)
 
 If all goes smoothly your spyre app should look like this:
 
@@ -100,27 +99,25 @@ import json
 class StockExample(server.App):
 	title = "Historical Stock Prices"
 
-	inputs = [{		"input_type":'dropdown',
+	inputs = [{		"type":'dropdown',
 					"label": 'Company', 
 					"options" : [ {"label": "Google", "value":"GOOG"},
 								  {"label": "Yahoo", "value":"YHOO"},
 								  {"label": "Apple", "value":"AAPL"}],
-					"variable_name": 'ticker', 
-					"action_id": "update_data" }]
+					"key": 'ticker', 
+					"action_id": "update_data"}]
 
-	controls = [{	"control_type" : "hidden",
-					"label" : "get historical stock prices",
-					"control_id" : "update_data"}]
+	controls = [{	"type" : "hidden",
+					"id" : "update_data"}]
 
 	tabs = ["Plot", "Table"]
 
-	outputs = [{	"output_type" : "plot",
-					"output_id" : "plot",
+	outputs = [{ "type" : "plot",
+					"id" : "plot",
 					"control_id" : "update_data",
-					"tab" : "Plot",
-					"on_page_load" : True },
-				{	"output_type" : "table",
-					"output_id" : "table_id",
+					"tab" : "Plot"},
+				{ "type" : "table",
+					"id" : "table_id",
 					"control_id" : "update_data",
 					"tab" : "Table",
 					"on_page_load" : True }]
@@ -137,8 +134,8 @@ class StockExample(server.App):
 		return df
 
 	def getPlot(self, params):
-		df = self.getData(params)
-		plt_obj = df.set_index('Date').drop(['volume'],axis=1).plot()
+		df = self.getData(params).set_index('Date').drop(['volume'],axis=1)
+		plt_obj = df.plot()
 		plt_obj.set_ylabel("Price")
 		plt_obj.set_title(self.company_name)
 		fig = plt_obj.get_figure()
