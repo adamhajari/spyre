@@ -15,5 +15,5 @@ SOURCES.txt
 .ipynb_checkpoints/*
 DataSpyre.egg-info/
 /notebooks*
-*.ipynb
+tutorial/SpyrePresentation_demo*
 .tox/*
