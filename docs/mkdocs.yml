@@ -1,0 +1,6 @@
+site_name: Spyre
+pages:
+- [index.md, Getting Started]
+- [inputs_outputs_controls.md, Inputs Outputs and Controls]
+- [outputs.md, Generating the Output]
+theme: readthedocs
