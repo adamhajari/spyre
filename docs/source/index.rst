@@ -1,3 +1,4 @@
+hello
 .. Spyre documentation master file, created by
    sphinx-quickstart on Mon Jul 27 11:41:36 2015.
    You can adapt this file completely to your liking, but it should at least
@@ -18,7 +19,7 @@ Spyre is a Web Application Framework for providing a simple user interface for P
 
 
 Requirements
--------------
+------------------
 
 Spyre runs on the minimalist python web framework, `cherrypy <http://docs.cherrypy.org/en/latest/install.html/>`_ , with `jinja2 <http://jinja.pocoo.org/docs/dev/intro/#installation/>`_ templating. At it's heart, spyre is about data and data visualization, so you'll also need `pandas <http://pandas.pydata.org/pandas-docs/stable/install.html#recommended-dependencies>`_  and `matplotlib <http://matplotlib.org/users/installing.html>`_.
 
@@ -29,7 +30,9 @@ Installation
    $ pip install dataspyre
 
 
-The simplest of examples
+Getting Started
+
+Example 1: The simplest of examples
 ------------------------
 
 Here's a very simple spyre example that shows the primary components of a spyre app::
