@@ -1,13 +1,11 @@
 Inputs
 =========
 
-- The inputs to spyre are a list of dictionaries. 
-- Each element in the list represents an input type (for example text box) Other types are documented below
-- Each element has some mandatory attributes: (type, key) and some optional attributes (label, value, actionid)
+Inputs for a spyre app are defined as a list of dictionaries. Each element in the list represents a different input and the attributes for each input are defined in these dictionaries.  Each input type has some mandatory attributes: (i.e. type, key) and some optional attributes (i.e. label, value, action_id)
 
 
 Types
-=========
+-------
 
 TextBox
 +++++++++++++
