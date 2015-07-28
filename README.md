@@ -22,57 +22,48 @@ Here's a very simple spyre example that shows the primary components of a spyre 
 ```python
 from spyre import server
 
-import matplotlib.pyplot as plt
-import numpy as np
-
-class SimpleSineApp(server.App):
-	title = "Simple Sine App"
+class SimpleApp(server.App):
+	title = "Simple App"
 	inputs = [{ "type":"text",
-				"key":"freq",
-				"value":5, 
-				"action_id":"sine_wave_plot"}]
+				"key":"words",
+				"label":"write words here",
+				"value":"hello world", 
+				"action_id":"simple_html_output"}]
 
-	outputs = [{"type":"plot",
-				"id":"sine_wave_plot"}]
+	outputs = [{"type":"html",
+				"id":"simple_html_output"}]
 
-	def getPlot(self, params):
-		f = float(params['freq'])
-		x = np.arange(0,2*np.pi,np.pi/150)
-		y = np.sin(f*x)
-		fig = plt.figure()
-		splt1 = fig.add_subplot(1,1,1)
-		splt1.plot(x,y)
-		return fig
+	def getHTML(self, params):
+		words = params["words"]
+		return "Here's what you wrote in the textbox: <b>%s</b>" % words
 
-app = SimpleSineApp()
+app = SimpleApp()
 app.launch()
 ```
 
-The SimpleSineApp class inherits server.App which includes a few methods that you can override to generate outputs. In this case we want our app to display a Plot so we'll overide the getPlot method. This method should return a matplotlib figure object or Axes object.
+The SimpleApp class inherits server.App which includes a few methods that you can override to generate outputs. In this case we want our app to display HTML (just text for now) so we'll overide the getHTML method. This method should return a string.
 
-We also need specify the attributes of our inputs and outputs which we can do by defining the App's inputs and outputs variables.
+We also need to specify the attributes of our inputs and outputs which we can do by defining the App's inputs and outputs variables.
 
 ### inputs ###
-This is a list of input dictionaries. In our simple example above, there's only one input, of type "text". We give it a label and initial value with the keys "label" and "value". The value from this input will be used as an input parameter when generating the outputs (a plot in this case), so we need to also give it a key that we can reference in any output methods (getPlot in this case). "action_id" is an optional variable that equals either an output_id from the list of outputs, or a control_id from the list of controls (we'll get to controls in the next example). When action_id is defined, a change in the input will result in either an update to the referenced output or a call to the functions connected to the referenced control. 
+This is a list of dictionaries, one dictionary for each input element. In our simple example above, there's only one input, of type "text". We give it a label and initial value with the keys "label" and "value".  The value from this input will be used as an input parameter when generating the outputs (html in this case), so we need to also give it a key that we can reference in the getHTML method. "action_id" is an optional variable that equals id from either an output or a control element (we'll get to controls in the next example). When action_id is defined, a change in the input will result in either an update to the referenced output or a call to the functions connected to the referenced control. 
 
 ### outputs ###
-an output's `type` can be "plot", "image", "table", "html", or "download". In addition to the type, we also need to provide a unique id. If this output is suppose to get updated on execution of one of the controls specified in the list of controls, we need to also specify the control_id of that controller (which we'll see in the next example). All outputs get generated on page load by default. If we want an output *not* to load on the page load, we can also set "on_page_load" to False.
+An output's `type` can be "plot", "image", "table", "html", or "download". In addition to the type, we also need to provide a unique id (must start with a letter). If this output is suppose to get updated on execution of one of the controls specified in the list of controls, we need to also specify the control_id of that controller (which we'll see in the next example). All outputs get generated on page load by default. If we want an output *not* to load on the page load, we can also specify an "on_page_load" attribute and set it to False.
 
 ### controls ###
-Controls are one mechanism by which a spyre app can update its outputs. A control's "id" can be referenced by either an input or an output. When an output references the control's id, executing the control updates that output. When an input references the controld's id (via the "action_id"), updating the input executes the control. The two control `type` options are "button" and "hidden". "button" will add a button to the left panel. No control is added to the left-panel for control_types "hidden". "hidden" controls are useful for linking a single input action to multiple outputs.
+Controls are one mechanism by which a spyre app can update its outputs. A control's `id` can be referenced by either an input or an output. When an output references the control's id, executing the control updates that output. When an input references the controld's id (via the "action_id"), updating the input executes the control. The two control `type` options are "button" and "hidden". "button" will add a button to the left panel. No control is added to the left-panel for control_types "hidden" (this is useful for linking a single input action to multiple outputs).
 
-### generating a plot ###
-Let's get back to our getPlot method. Notice that it takes a single argument: params. params is a dictionary containing:
+### generating an output ###
+Let's get back to our getHTML method. Notice that it takes a single argument: params. params is a dictionary containing:
 
-1. all of the input values (with key equal to the key specified in the input dictionary)
+1. all of the input values (where the key is specified in the input dictionary)
 2. the output_id for the output that needs to get created. You usually don't need to do anything with this.
 
-With the exception of the input type "checkboxgroup", the value of each of the params is a string. In this example our one input variable represents a frequency, which is a number, so we'll need to cast it as a float before we use it.  The matplotlib figure returned by getPlot will be displayed in the right panel of our Spyre app.
+With the exception of the input type "checkboxgroup", the value of each of the params elements is a string. The string returned by getHTML will be displayed in the right panel of our Spyre app.
 
 ### launching the app ###
-To launch our app we just need to create an instance of our SimpleSineApp class and call the launch method. The launch method takes to optional parameters: host and port. By default, apps are served locally on port 8080. Set host='0.0.0.0' to serve your app to external traffic.
-
-Assuming you name this file "simple_sine_example.py" you can launch this app from the command line with:
+To launch our app we just need to create an instance of our SimpleApp class and call the launch method. Assuming you name this file "simple_sine_example.py" you can launch this app from the command line with:
 ```bash
     $ python simple_sine_example.py
 ```

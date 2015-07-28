@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Welcome to Spyre’s documentation! &mdash; Spyre 0.2.0 documentation</title>
+    <title>Spyre &mdash; Spyre 0.2.0 documentation</title>
     
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -37,16 +37,12 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="welcome-to-spyre-s-documentation">
-<h1>Welcome to Spyre&#8217;s documentation!<a class="headerlink" href="#welcome-to-spyre-s-documentation" title="Permalink to this headline">¶</a></h1>
-<p>Contents:</p>
+  <div class="section" id="spyre">
+<h1>Spyre<a class="headerlink" href="#spyre" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
 <ul class="simple">
 </ul>
 </div>
-</div>
-<div class="section" id="spyre">
-<h1>Spyre<a class="headerlink" href="#spyre" title="Permalink to this headline">¶</a></h1>
 <p>Spyre is a Web Application Framework for providing a simple user interface for Python data projects.</p>
 <div class="section" id="requirements">
 <h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h2>
@@ -58,74 +54,69 @@
 </pre></div>
 </div>
 </div>
-<div class="section" id="the-simplest-of-examples">
-<h2>The simplest of examples<a class="headerlink" href="#the-simplest-of-examples" title="Permalink to this headline">¶</a></h2>
-<p>Here&#8217;s a very simple spyre example that shows the primary components of a spyre app:</p>
+</div>
+<div class="section" id="getting-started">
+<h1>Getting started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h1>
+<p>A basic web app is just a set of inputs that a user can change in order to update the state of the app&#8217;s outputs. In a spyre app we define the attributes of these inputs and outpus as lists of dictionaries and define a set of methods that generate the actual content of the app&#8217;s outputs. Let&#8217;s start by looking at at a couple of examples.</p>
+<div class="section" id="example-1-simple-example">
+<h2>Example 1: simple example<a class="headerlink" href="#example-1-simple-example" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">spyre</span> <span class="kn">import</span> <span class="n">server</span>
 
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="k">class</span> <span class="nc">SimpleApp</span><span class="p">(</span><span class="n">server</span><span class="o">.</span><span class="n">App</span><span class="p">):</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="s">&quot;Simple App&quot;</span>
+    <span class="n">inputs</span> <span class="o">=</span> <span class="p">[</span><span class="nb">dict</span><span class="p">(</span> <span class="nb">type</span><span class="o">=</span><span class="s">&#39;text&#39;</span><span class="p">,</span>
+                    <span class="n">key</span><span class="o">=</span><span class="s">&#39;words&#39;</span><span class="p">,</span>
+                    <span class="n">label</span><span class="o">=</span><span class="s">&#39;write words here&#39;</span><span class="p">,</span>
+                    <span class="n">value</span><span class="o">=</span><span class="s">&#39;hello world&#39;</span><span class="p">,</span>
+                    <span class="n">action_id</span><span class="o">=</span><span class="s">&#39;simple_html_output&#39;</span><span class="p">)]</span>
 
-<span class="k">class</span> <span class="nc">SimpleSineApp</span><span class="p">(</span><span class="n">server</span><span class="o">.</span><span class="n">App</span><span class="p">):</span>
-        <span class="n">title</span> <span class="o">=</span> <span class="s">&quot;Simple Sine App&quot;</span>
-        <span class="n">inputs</span> <span class="o">=</span> <span class="p">[{</span> <span class="s">&quot;type&quot;</span><span class="p">:</span><span class="s">&quot;text&quot;</span><span class="p">,</span>
-                                <span class="s">&quot;key&quot;</span><span class="p">:</span><span class="s">&quot;freq&quot;</span><span class="p">,</span>
-                                <span class="s">&quot;value&quot;</span><span class="p">:</span><span class="mi">5</span><span class="p">,</span>
-                                <span class="s">&quot;action_id&quot;</span><span class="p">:</span><span class="s">&quot;sine_wave_plot&quot;</span><span class="p">}]</span>
+    <span class="n">outputs</span> <span class="o">=</span> <span class="p">[</span><span class="nb">dict</span><span class="p">(</span> <span class="nb">type</span><span class="o">=</span><span class="s">&#39;html&#39;</span><span class="p">,</span>
+                     <span class="nb">id</span><span class="o">=</span><span class="s">&#39;simple_html_output&#39;</span><span class="p">)]</span>
 
-        <span class="n">outputs</span> <span class="o">=</span> <span class="p">[{</span><span class="s">&quot;type&quot;</span><span class="p">:</span><span class="s">&quot;plot&quot;</span><span class="p">,</span>
-                                <span class="s">&quot;id&quot;</span><span class="p">:</span><span class="s">&quot;sine_wave_plot&quot;</span><span class="p">}]</span>
+    <span class="k">def</span> <span class="nf">getHTML</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+        <span class="n">words</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="s">&quot;words&quot;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="s">&quot;Here&#39;s what you wrote in the textbox: &lt;b&gt;</span><span class="si">%s</span><span class="s">&lt;/b&gt;&quot;</span> <span class="o">%</span> <span class="n">words</span>
 
-        <span class="k">def</span> <span class="nf">getPlot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
-                <span class="n">f</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s">&#39;freq&#39;</span><span class="p">])</span>
-                <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">150</span><span class="p">)</span>
-                <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">f</span><span class="o">*</span><span class="n">x</span><span class="p">)</span>
-                <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
-                <span class="n">splt1</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
-                <span class="n">splt1</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
-                <span class="k">return</span> <span class="n">fig</span>
-
-<span class="n">app</span> <span class="o">=</span> <span class="n">SimpleSineApp</span><span class="p">()</span>
+<span class="n">app</span> <span class="o">=</span> <span class="n">SimpleApp</span><span class="p">()</span>
 <span class="n">app</span><span class="o">.</span><span class="n">launch</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>The SimpleSineApp class inherits server.App which includes a few methods that you can override to generate outputs. In this case we want our app to display a Plot so we&#8217;ll overide the getPlot method. This method should return a matplotlib figure.</p>
-<p>We also need specify the attributes of our inputs and outputs which we can do by defining the App&#8217;s inputs and outputs variables.</p>
+<p>The SimpleApp class inherits server.App which includes a few methods that you can override to generate outputs. In this case we want our app to display HTML (just text for now) so we&#8217;ll overide the getHTML method. This method should return a string.</p>
+<p>We also need to specify the attributes of our inputs and outputs which we can do by defining the App&#8217;s inputs and outputs variables.</p>
 <div class="section" id="inputs">
 <h3>inputs<a class="headerlink" href="#inputs" title="Permalink to this headline">¶</a></h3>
-<p>This is a list of input dictionaries. In our simple example above, there&#8217;s only one input, of type &#8220;text&#8221;. We give it a label and initial value with the keys &#8220;label&#8221; and &#8220;value&#8221;.  The value from this input will be used as an input parameter when generating the outputs (a plot in this case), so we need to also give it a variable_name that we can reference in the getPlot method. &#8220;action_id&#8221; is an optional variable that equals either an output_id from the list of outputs, or a control_id from the list of controls (we&#8217;ll get to controls in the next example). When action_id is defined, a change in the input will result in either an update to the referenced output or a call to the functions connected to the referenced control.</p>
+<p>This is a list of dictionaries, one dictionary for each input element. In our simple example above, there&#8217;s only one input, of type &#8220;text&#8221;. We give it a label and initial value with the keys &#8220;label&#8221; and &#8220;value&#8221;.  The value from this input will be used as an input parameter when generating the outputs (html in this case), so we need to also give it a key that we can reference in the getHTML method. &#8220;action_id&#8221; is an optional variable that equals id from either an output or a control element (we&#8217;ll get to controls in the next example). When action_id is defined, a change in the input will result in either an update to the referenced output or a call to the functions connected to the referenced control.</p>
 </div>
 <div class="section" id="outputs">
 <h3>outputs<a class="headerlink" href="#outputs" title="Permalink to this headline">¶</a></h3>
-<p>output_types can be &#8220;plot&#8221;, &#8220;image&#8221;, &#8220;table&#8221;, &#8220;html&#8221;, or &#8220;download&#8221;. In addition to the output_type, we also need to provide a unique output_id. If this output is suppose to get updated on execution of one of the controls specified in the list of controls, we need to also specify the control_id of that controller. All outputs get generated on page load by default. If we want an output <em>not</em> to load on the page load, we can also set &#8220;on_page_load&#8221; to False.</p>
+<p>An output&#8217;s <cite>type</cite> can be &#8220;plot&#8221;, &#8220;image&#8221;, &#8220;table&#8221;, &#8220;html&#8221;, or &#8220;download&#8221;. In addition to the type, we also need to provide a unique id (must start with a letter). If this output is suppose to get updated on execution of one of the controls specified in the list of controls, we need to also specify the control_id of that controller (which we&#8217;ll see in the next example). All outputs get generated on page load by default. If we want an output <em>not</em> to load on the page load, we can also specify an &#8220;on_page_load&#8221; attribute and set it to False.</p>
 </div>
 <div class="section" id="controls">
 <h3>controls<a class="headerlink" href="#controls" title="Permalink to this headline">¶</a></h3>
-<p>Controls are one mechanism by which a spyre app can update its outputs. The &#8220;control_id&#8221; can be referenced by either an input or an output. When an output references the control_id, executing the control updates that output. When an input references the controld_id (via the &#8220;action_id&#8221;), updating the input executes the control. The two control_types are &#8220;button&#8221; and &#8220;hidden&#8221;. &#8220;button&#8221; will add a button to the left panel. No control is added to the left-panel for control_types &#8220;hidden&#8221;. &#8220;hidden&#8221; controls are useful for linking a single input action to multiple outputs.</p>
+<p>Controls are one mechanism by which a spyre app can update its outputs. A control&#8217;s <cite>id</cite> can be referenced by either an input or an output. When an output references the control&#8217;s id, executing the control updates that output. When an input references the controld&#8217;s id (via the &#8220;action_id&#8221;), updating the input executes the control. The two control <cite>type</cite> options are &#8220;button&#8221; and &#8220;hidden&#8221;. &#8220;button&#8221; will add a button to the left panel. No control is added to the left-panel for control_types &#8220;hidden&#8221; (this is useful for linking a single input action to multiple outputs).</p>
 </div>
-<div class="section" id="generating-a-plot">
-<h3>generating a plot<a class="headerlink" href="#generating-a-plot" title="Permalink to this headline">¶</a></h3>
-<p>Let&#8217;s get back to our getPlot method. Notice that it takes a single argument: params. params is a dictionary containing:</p>
+<div class="section" id="generating-an-output">
+<h3>generating an output<a class="headerlink" href="#generating-an-output" title="Permalink to this headline">¶</a></h3>
+<p>Let&#8217;s get back to our getHTML method. Notice that it takes a single argument: params. params is a dictionary containing:</p>
 <ol class="arabic simple">
-<li>all of the input values (with key equal to the variable_name specified in the input dictionary)</li>
-<li>the output_id for the output that needs to get created.</li>
+<li>all of the input values (where the key is specified in the input dictionary)</li>
+<li>the output_id for the output that needs to get created. You usually don&#8217;t need to do anything with this.</li>
 </ol>
-<p>For this simple example you can ignore the output_id. With the exception of the input type &#8220;checkboxgroup&#8221;, the value of each of the params is a string. In this example our one input variable represents a frequency, which is a number, so we&#8217;ll need to cast it as a float before we use it.  The matplotlib figure returned by getPlot will be displayed in the right panel of our Spyre app.</p>
+<p>With the exception of the input type &#8220;checkboxgroup&#8221;, the value of each of the params elements is a string. The string returned by getHTML will be displayed in the right panel of our Spyre app.</p>
 </div>
 <div class="section" id="launching-the-app">
 <h3>launching the app<a class="headerlink" href="#launching-the-app" title="Permalink to this headline">¶</a></h3>
-<p>To launch our app we just need to create an instance of our SimpleSineApp class and call the launch method. The launch method takes to optional parameters: host and port. By default, apps are served locally on port 8080. Set host=&#8216;0.0.0.0&#8217; to serve your app to external traffic.</p>
-<p>Assuming you name this file &#8220;simple_sine_example.py&#8221; you can launch this app from the command line with:</p>
+<p>To launch our app we just need to create an instance of our SimpleApp class and call the launch method. Assuming you name this file &#8220;simple_sine_example.py&#8221; you can launch this app from the command line with:</p>
 <div class="highlight-python"><div class="highlight"><pre>$ python simple_sine_example.py
 </pre></div>
 </div>
-<p>The output will indicate where the app is being served (usually something like <a class="reference external" href="http://127.0.0.1:8080">http://127.0.0.1:8080</a>)</p>
+<p>The output will indicate where the app is being served (<a class="reference external" href="http://127.0.0.1:8080">http://127.0.0.1:8080</a> by default)</p>
 <p>If all goes smoothly your spyre app should look like this:</p>
-<img alt="https://raw.githubusercontent.com/adamhajari/spyre/master/examples/screenshots/simple_sine_screenshot.png" src="https://raw.githubusercontent.com/adamhajari/spyre/master/examples/screenshots/simple_sine_screenshot.png" />
+<img alt="_images/simple_app.png" src="_images/simple_app.png" />
 </div>
 </div>
 <div class="section" id="example-2-tabs-and-tables">
-<h2>Example 2: Tabs and Tables<a class="headerlink" href="#example-2-tabs-and-tables" title="Permalink to this headline">¶</a></h2>
+<h2>Example 2: tabs and tables<a class="headerlink" href="#example-2-tabs-and-tables" title="Permalink to this headline">¶</a></h2>
 <p>Let&#8217;s look at another example to introduce controls, tabs, and a second output type, tables. Many apps will require multiple outputs. In these cases, it&#8217;s often cleaner to put each output in a separte tab.</p>
 <p>In the example below we&#8217;ll show historical stock data in a line graph and a table, each in it&#8217;s own tab.  Since inputs can only have a single action_id (and we have two outputs), we&#8217;ll need to introduce a button control in order to update both outputs:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">spyre</span> <span class="kn">import</span> <span class="n">server</span>
@@ -137,47 +128,47 @@
 <span class="k">class</span> <span class="nc">StockExample</span><span class="p">(</span><span class="n">server</span><span class="o">.</span><span class="n">App</span><span class="p">):</span>
     <span class="n">title</span> <span class="o">=</span> <span class="s">&quot;Historical Stock Prices&quot;</span>
 
-    <span class="n">inputs</span> <span class="o">=</span> <span class="p">[{</span>             <span class="s">&quot;type&quot;</span><span class="p">:</span><span class="s">&#39;dropdown&#39;</span><span class="p">,</span>
-                                    <span class="s">&quot;label&quot;</span><span class="p">:</span> <span class="s">&#39;Company&#39;</span><span class="p">,</span>
-                                    <span class="s">&quot;options&quot;</span> <span class="p">:</span> <span class="p">[</span> <span class="p">{</span><span class="s">&quot;label&quot;</span><span class="p">:</span> <span class="s">&quot;Google&quot;</span><span class="p">,</span> <span class="s">&quot;value&quot;</span><span class="p">:</span><span class="s">&quot;GOOG&quot;</span><span class="p">},</span>
-                                                              <span class="p">{</span><span class="s">&quot;label&quot;</span><span class="p">:</span> <span class="s">&quot;Yahoo&quot;</span><span class="p">,</span> <span class="s">&quot;value&quot;</span><span class="p">:</span><span class="s">&quot;YHOO&quot;</span><span class="p">},</span>
-                                                              <span class="p">{</span><span class="s">&quot;label&quot;</span><span class="p">:</span> <span class="s">&quot;Apple&quot;</span><span class="p">,</span> <span class="s">&quot;value&quot;</span><span class="p">:</span><span class="s">&quot;AAPL&quot;</span><span class="p">}],</span>
-                                    <span class="s">&quot;key&quot;</span><span class="p">:</span> <span class="s">&#39;ticker&#39;</span><span class="p">,</span>
-                                    <span class="s">&quot;action_id&quot;</span><span class="p">:</span> <span class="s">&quot;update_data&quot;</span><span class="p">}]</span>
+    <span class="n">inputs</span> <span class="o">=</span> <span class="p">[{</span>        <span class="s">&quot;type&quot;</span><span class="p">:</span><span class="s">&#39;dropdown&#39;</span><span class="p">,</span>
+                    <span class="s">&quot;label&quot;</span><span class="p">:</span> <span class="s">&#39;Company&#39;</span><span class="p">,</span>
+                    <span class="s">&quot;options&quot;</span> <span class="p">:</span> <span class="p">[</span> <span class="p">{</span><span class="s">&quot;label&quot;</span><span class="p">:</span> <span class="s">&quot;Google&quot;</span><span class="p">,</span> <span class="s">&quot;value&quot;</span><span class="p">:</span><span class="s">&quot;GOOG&quot;</span><span class="p">},</span>
+                                  <span class="p">{</span><span class="s">&quot;label&quot;</span><span class="p">:</span> <span class="s">&quot;Yahoo&quot;</span><span class="p">,</span> <span class="s">&quot;value&quot;</span><span class="p">:</span><span class="s">&quot;YHOO&quot;</span><span class="p">},</span>
+                                  <span class="p">{</span><span class="s">&quot;label&quot;</span><span class="p">:</span> <span class="s">&quot;Apple&quot;</span><span class="p">,</span> <span class="s">&quot;value&quot;</span><span class="p">:</span><span class="s">&quot;AAPL&quot;</span><span class="p">}],</span>
+                    <span class="s">&quot;key&quot;</span><span class="p">:</span> <span class="s">&#39;ticker&#39;</span><span class="p">,</span>
+                    <span class="s">&quot;action_id&quot;</span><span class="p">:</span> <span class="s">&quot;update_data&quot;</span><span class="p">}]</span>
 
-    <span class="n">controls</span> <span class="o">=</span> <span class="p">[{</span>   <span class="s">&quot;type&quot;</span> <span class="p">:</span> <span class="s">&quot;hidden&quot;</span><span class="p">,</span>
-                                    <span class="s">&quot;id&quot;</span> <span class="p">:</span> <span class="s">&quot;update_data&quot;</span><span class="p">}]</span>
+    <span class="n">controls</span> <span class="o">=</span> <span class="p">[{</span>    <span class="s">&quot;type&quot;</span> <span class="p">:</span> <span class="s">&quot;hidden&quot;</span><span class="p">,</span>
+                    <span class="s">&quot;id&quot;</span> <span class="p">:</span> <span class="s">&quot;update_data&quot;</span><span class="p">}]</span>
 
     <span class="n">tabs</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;Plot&quot;</span><span class="p">,</span> <span class="s">&quot;Table&quot;</span><span class="p">]</span>
 
     <span class="n">outputs</span> <span class="o">=</span> <span class="p">[{</span> <span class="s">&quot;type&quot;</span> <span class="p">:</span> <span class="s">&quot;plot&quot;</span><span class="p">,</span>
-                                    <span class="s">&quot;id&quot;</span> <span class="p">:</span> <span class="s">&quot;plot&quot;</span><span class="p">,</span>
-                                    <span class="s">&quot;control_id&quot;</span> <span class="p">:</span> <span class="s">&quot;update_data&quot;</span><span class="p">,</span>
-                                    <span class="s">&quot;tab&quot;</span> <span class="p">:</span> <span class="s">&quot;Plot&quot;</span><span class="p">},</span>
-                            <span class="p">{</span> <span class="s">&quot;type&quot;</span> <span class="p">:</span> <span class="s">&quot;table&quot;</span><span class="p">,</span>
-                                    <span class="s">&quot;id&quot;</span> <span class="p">:</span> <span class="s">&quot;table_id&quot;</span><span class="p">,</span>
-                                    <span class="s">&quot;control_id&quot;</span> <span class="p">:</span> <span class="s">&quot;update_data&quot;</span><span class="p">,</span>
-                                    <span class="s">&quot;tab&quot;</span> <span class="p">:</span> <span class="s">&quot;Table&quot;</span><span class="p">,</span>
-                                    <span class="s">&quot;on_page_load&quot;</span> <span class="p">:</span> <span class="bp">True</span> <span class="p">}]</span>
+                    <span class="s">&quot;id&quot;</span> <span class="p">:</span> <span class="s">&quot;plot&quot;</span><span class="p">,</span>
+                    <span class="s">&quot;control_id&quot;</span> <span class="p">:</span> <span class="s">&quot;update_data&quot;</span><span class="p">,</span>
+                    <span class="s">&quot;tab&quot;</span> <span class="p">:</span> <span class="s">&quot;Plot&quot;</span><span class="p">},</span>
+                <span class="p">{</span> <span class="s">&quot;type&quot;</span> <span class="p">:</span> <span class="s">&quot;table&quot;</span><span class="p">,</span>
+                    <span class="s">&quot;id&quot;</span> <span class="p">:</span> <span class="s">&quot;table_id&quot;</span><span class="p">,</span>
+                    <span class="s">&quot;control_id&quot;</span> <span class="p">:</span> <span class="s">&quot;update_data&quot;</span><span class="p">,</span>
+                    <span class="s">&quot;tab&quot;</span> <span class="p">:</span> <span class="s">&quot;Table&quot;</span><span class="p">,</span>
+                    <span class="s">&quot;on_page_load&quot;</span> <span class="p">:</span> <span class="bp">True</span> <span class="p">}]</span>
 
     <span class="k">def</span> <span class="nf">getData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
-            <span class="n">ticker</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="s">&#39;ticker&#39;</span><span class="p">]</span>
-            <span class="c"># make call to yahoo finance api to get historical stock data</span>
-            <span class="n">api_url</span> <span class="o">=</span> <span class="s">&#39;https://chartapi.finance.yahoo.com/instrument/1.0/{}/chartdata;type=quote;range=3m/json&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ticker</span><span class="p">)</span>
-            <span class="n">result</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">api_url</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;finance_charts_json_callback( &#39;</span><span class="p">,</span><span class="s">&#39;&#39;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>  <span class="c"># strip away the javascript and load json</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">company_name</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;meta&#39;</span><span class="p">][</span><span class="s">&#39;Company-Name&#39;</span><span class="p">]</span>
-            <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_records</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;series&#39;</span><span class="p">])</span>
-            <span class="n">df</span><span class="p">[</span><span class="s">&#39;Date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s">&#39;Date&#39;</span><span class="p">],</span><span class="n">format</span><span class="o">=</span><span class="s">&#39;%Y%m</span><span class="si">%d</span><span class="s">&#39;</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">df</span>
+        <span class="n">ticker</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="s">&#39;ticker&#39;</span><span class="p">]</span>
+        <span class="c"># make call to yahoo finance api to get historical stock data</span>
+        <span class="n">api_url</span> <span class="o">=</span> <span class="s">&#39;https://chartapi.finance.yahoo.com/instrument/1.0/{}/chartdata;type=quote;range=3m/json&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ticker</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">api_url</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;finance_charts_json_callback( &#39;</span><span class="p">,</span><span class="s">&#39;&#39;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>  <span class="c"># strip away the javascript and load json</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">company_name</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;meta&#39;</span><span class="p">][</span><span class="s">&#39;Company-Name&#39;</span><span class="p">]</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_records</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;series&#39;</span><span class="p">])</span>
+        <span class="n">df</span><span class="p">[</span><span class="s">&#39;Date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s">&#39;Date&#39;</span><span class="p">],</span><span class="n">format</span><span class="o">=</span><span class="s">&#39;%Y%m</span><span class="si">%d</span><span class="s">&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">df</span>
 
     <span class="k">def</span> <span class="nf">getPlot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
-            <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getData</span><span class="p">(</span><span class="n">params</span><span class="p">)</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s">&#39;Date&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s">&#39;volume&#39;</span><span class="p">],</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-            <span class="n">plt_obj</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
-            <span class="n">plt_obj</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s">&quot;Price&quot;</span><span class="p">)</span>
-            <span class="n">plt_obj</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">company_name</span><span class="p">)</span>
-            <span class="n">fig</span> <span class="o">=</span> <span class="n">plt_obj</span><span class="o">.</span><span class="n">get_figure</span><span class="p">()</span>
-            <span class="k">return</span> <span class="n">fig</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getData</span><span class="p">(</span><span class="n">params</span><span class="p">)</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s">&#39;Date&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s">&#39;volume&#39;</span><span class="p">],</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">plt_obj</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+        <span class="n">plt_obj</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s">&quot;Price&quot;</span><span class="p">)</span>
+        <span class="n">plt_obj</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">company_name</span><span class="p">)</span>
+        <span class="n">fig</span> <span class="o">=</span> <span class="n">plt_obj</span><span class="o">.</span><span class="n">get_figure</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">fig</span>
 
 <span class="n">app</span> <span class="o">=</span> <span class="n">StockExample</span><span class="p">()</span>
 <span class="n">app</span><span class="o">.</span><span class="n">launch</span><span class="p">(</span><span class="n">port</span><span class="o">=</span><span class="mi">9093</span><span class="p">)</span>
@@ -224,19 +215,21 @@
         <div class="sphinxsidebarwrapper">
   <h3><a href="#">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">Welcome to Spyre&#8217;s documentation!</a></li>
-<li><a class="reference internal" href="#spyre">Spyre</a><ul>
+<li><a class="reference internal" href="#">Spyre</a><ul>
 <li><a class="reference internal" href="#requirements">Requirements</a></li>
 <li><a class="reference internal" href="#installation">Installation</a></li>
-<li><a class="reference internal" href="#the-simplest-of-examples">The simplest of examples</a><ul>
+</ul>
+</li>
+<li><a class="reference internal" href="#getting-started">Getting started</a><ul>
+<li><a class="reference internal" href="#example-1-simple-example">Example 1: simple example</a><ul>
 <li><a class="reference internal" href="#inputs">inputs</a></li>
 <li><a class="reference internal" href="#outputs">outputs</a></li>
 <li><a class="reference internal" href="#controls">controls</a></li>
-<li><a class="reference internal" href="#generating-a-plot">generating a plot</a></li>
+<li><a class="reference internal" href="#generating-an-output">generating an output</a></li>
 <li><a class="reference internal" href="#launching-the-app">launching the app</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#example-2-tabs-and-tables">Example 2: Tabs and Tables</a><ul>
+<li><a class="reference internal" href="#example-2-tabs-and-tables">Example 2: tabs and tables</a><ul>
 <li><a class="reference internal" href="#plot-tab">Plot tab</a></li>
 <li><a class="reference internal" href="#table-tab">Table tab</a></li>
 </ul>

@@ -17,4 +17,3 @@ DataSpyre.egg-info/
 /notebooks*
 tutorial/SpyrePresentation_demo*
 .tox/*
-docs/build/*
