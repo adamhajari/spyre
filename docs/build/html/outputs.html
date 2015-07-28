@@ -1,0 +1,223 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Outputs &mdash; Spyre 0.2.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.2.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Spyre 0.2.0 documentation" href="index.html" />
+    <link rel="prev" title="Inputs" href="inputs.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="inputs.html" title="Inputs"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Spyre 0.2.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="outputs">
+<h1>Outputs<a class="headerlink" href="#outputs" title="Permalink to this headline">¶</a></h1>
+<p>The attributes for the outputs for a spyre app are defined as a list of dictionaries. Each element in the outputs list should have a corresponding method which generates that output. The output dictionary should specify the type and provide and id. The id must be alphanumeric and cannot start with a number. Outputs can also have a control_id key, which references an id from the controls list.</p>
+<p>By default the outputs load on page load using the default values for each of the inputs. If an output should not load on page load, set the &#8216;on_page_load&#8217; attribute to False (see example for Download output type)</p>
+<div class="section" id="generating-outputs">
+<h2>Generating outputs<a class="headerlink" href="#generating-outputs" title="Permalink to this headline">¶</a></h2>
+<p>There are a few options for generating an output&#8217;s content.</p>
+<div class="section" id="overriding-the-method-from-the-server-app-class">
+<h3>Overriding the method from the server.App class<a class="headerlink" href="#overriding-the-method-from-the-server-app-class" title="Permalink to this headline">¶</a></h3>
+<p>Each output type has a corresponding method in the server.App class that gets called whenever an instance of that output get displayed in the app. For instance, if an html output is included in your list of outputs, server.App&#8217;s getHTML() method gets called everytime that block of html gets loaded.</p>
+<p>You can override the methods for each of the output types. For instance, if an app had an html output that was suppose to display the string <cite>Be &lt;b&gt;bold&lt;/b&gt;</cite>, you could include this method in your app&#8217;s class:</p>
+<div class="highlight-python"><div class="highlight"><pre>getHTML(self, params):
+    return &quot;be &lt;b&gt;bold&lt;/b&gt;&quot;
+</pre></div>
+</div>
+</div>
+<div class="section" id="matching-the-method-name-to-the-output-id">
+<h3>Matching the method name to the output id<a class="headerlink" href="#matching-the-method-name-to-the-output-id" title="Permalink to this headline">¶</a></h3>
+<p>If server.App&#8217;s built-in output method isn&#8217;t overridden for an output in the app&#8217;s outputs list, the built-in method will look for a method with a name matching the output id. Suppose, for instance, our app only has one output:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">outputs</span> <span class="o">=</span> <span class="p">[{</span> <span class="s">&#39;type&#39;</span><span class="p">:</span><span class="s">&#39;html&#39;</span><span class="p">,</span>
+             <span class="s">&#39;id&#39;</span><span class="p">:</span><span class="s">&#39;aphorism1&#39;</span><span class="p">}]</span>
+</pre></div>
+</div>
+<p>If we do not overide the getHTML method, server.App&#8217;s getHTML method will look for a method named &#8220;aphorism1&#8221;. We can generate output then by creating an output that matches that name:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">aphorism1</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+    <span class="k">return</span> <span class="s">&quot;if it ain&#39;t broke, don&#39;t fix it.&quot;</span>
+</pre></div>
+</div>
+<p>If we have more than one output of the same type, we can use the method naming convention to generate outputs for both of them:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">outputs</span> <span class="o">=</span> <span class="p">[{</span> <span class="s">&#39;type&#39;</span><span class="p">:</span><span class="s">&#39;html&#39;</span><span class="p">,</span>
+             <span class="s">&#39;id&#39;</span><span class="p">:</span><span class="s">&#39;aphorism1&#39;</span><span class="p">},</span>
+             <span class="p">{</span> <span class="s">&#39;type&#39;</span><span class="p">:</span><span class="s">&#39;html&#39;</span><span class="p">,</span>
+             <span class="s">&#39;id&#39;</span><span class="p">:</span><span class="s">&#39;aphorism2&#39;</span><span class="p">},</span>
+             <span class="p">{</span> <span class="s">&#39;type&#39;</span><span class="p">:</span><span class="s">&#39;html&#39;</span><span class="p">,</span>
+             <span class="s">&#39;id&#39;</span><span class="p">:</span><span class="s">&#39;aphorism3&#39;</span><span class="p">},]</span>
+
+<span class="k">def</span> <span class="nf">aphorism1</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+    <span class="k">return</span> <span class="s">&quot;if it ain&#39;t broke, don&#39;t fix it.&quot;</span>
+
+<span class="k">def</span> <span class="nf">aphorism2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+    <span class="k">return</span> <span class="s">&quot;The art of prophecy is very difficult - especially with respect to the future.&quot;</span>
+
+<span class="k">def</span> <span class="nf">aphorism3</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+    <span class="k">return</span> <span class="s">&quot;All you need in this life is ignorance and confidence, and then success is sure. &quot;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="including-a-getdata-method">
+<h3>Including a getData method<a class="headerlink" href="#including-a-getdata-method" title="Permalink to this headline">¶</a></h3>
+<p>The getData method can be used to generate the output for tables, plots, or downloads. The getData method should return a pandas dataframe and will be converted into the approriate output. Using getData, an app can generate up to three outputs with a single method.</p>
+</div>
+</div>
+<div class="section" id="output-types">
+<h2>Output types<a class="headerlink" href="#output-types" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="table">
+<h3>Table<a class="headerlink" href="#table" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">{</span>
+    <span class="s">&#39;type&#39;</span><span class="p">:</span><span class="s">&#39;table&#39;</span><span class="p">,</span>
+    <span class="s">&#39;id&#39;</span><span class="p">:</span><span class="s">&#39;average_rainfall_table&#39;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="plot">
+<h3>Plot<a class="headerlink" href="#plot" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">{</span>
+    <span class="s">&#39;type&#39;</span><span class="p">:</span><span class="s">&#39;plot&#39;</span><span class="p">,</span>
+    <span class="s">&#39;id&#39;</span><span class="p">:</span><span class="s">&#39;average_rainfall_linegraph&#39;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="html">
+<h3>HTML<a class="headerlink" href="#html" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">{</span>
+    <span class="s">&#39;type&#39;</span><span class="p">:</span><span class="s">&#39;html&#39;</span><span class="p">,</span>
+    <span class="s">&#39;id&#39;</span><span class="p">:</span><span class="s">&#39;readme&#39;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="image">
+<h3>Image<a class="headerlink" href="#image" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">{</span>
+    <span class="s">&#39;type&#39;</span><span class="p">:</span><span class="s">&#39;image&#39;</span><span class="p">,</span>
+    <span class="s">&#39;id&#39;</span><span class="p">:</span><span class="s">&#39;cat_photo&#39;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="download">
+<h3>Download<a class="headerlink" href="#download" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">{</span>
+    <span class="s">&#39;type&#39;</span><span class="p">:</span><span class="s">&#39;download&#39;</span><span class="p">,</span>
+    <span class="s">&#39;id&#39;</span><span class="p">:</span><span class="s">&#39;results_csv&#39;</span><span class="p">,</span>
+    <span class="s">&#39;on_page_load&#39;</span><span class="p">:</span><span class="bp">False</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Outputs</a><ul>
+<li><a class="reference internal" href="#generating-outputs">Generating outputs</a><ul>
+<li><a class="reference internal" href="#overriding-the-method-from-the-server-app-class">Overriding the method from the server.App class</a></li>
+<li><a class="reference internal" href="#matching-the-method-name-to-the-output-id">Matching the method name to the output id</a></li>
+<li><a class="reference internal" href="#including-a-getdata-method">Including a getData method</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#output-types">Output types</a><ul>
+<li><a class="reference internal" href="#table">Table</a></li>
+<li><a class="reference internal" href="#plot">Plot</a></li>
+<li><a class="reference internal" href="#html">HTML</a></li>
+<li><a class="reference internal" href="#image">Image</a></li>
+<li><a class="reference internal" href="#download">Download</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="inputs.html"
+                        title="previous chapter">Inputs</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/outputs.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="inputs.html" title="Inputs"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Spyre 0.2.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, adam hajari.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+    </div>
+  </body>
+</html>

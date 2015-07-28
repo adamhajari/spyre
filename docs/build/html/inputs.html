@@ -1,0 +1,210 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Inputs &mdash; Spyre 0.2.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.2.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Spyre 0.2.0 documentation" href="index.html" />
+    <link rel="next" title="Outputs" href="outputs.html" />
+    <link rel="prev" title="Outputs" href="outputs.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="outputs.html" title="Outputs"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="outputs.html" title="Outputs"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Spyre 0.2.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="inputs">
+<h1>Inputs<a class="headerlink" href="#inputs" title="Permalink to this headline">¶</a></h1>
+<p>Inputs for a spyre app are defined as a list of dictionaries. Each element in the list represents a different input and the attributes for each input are defined in these dictionaries.  Each input type has some mandatory attributes: (i.e. type, key) and some optional attributes (i.e. label, value, action_id)</p>
+<div class="section" id="types">
+<h2>Types<a class="headerlink" href="#types" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="textbox">
+<h3>TextBox<a class="headerlink" href="#textbox" title="Permalink to this headline">¶</a></h3>
+<p>This is an example of the text input element</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">{</span>
+    <span class="s">&quot;type&quot;</span><span class="p">:</span><span class="s">&#39;text&#39;</span><span class="p">,</span>
+    <span class="s">&quot;label&quot;</span><span class="p">:</span> <span class="s">&#39;Title&#39;</span><span class="p">,</span>
+    <span class="s">&quot;value&quot;</span> <span class="p">:</span> <span class="s">&#39;Simple Sine Wave&#39;</span><span class="p">,</span>
+    <span class="s">&quot;key&quot;</span><span class="p">:</span> <span class="s">&#39;title&#39;</span><span class="p">,</span>
+    <span class="s">&quot;action_id&quot;</span> <span class="p">:</span> <span class="s">&quot;refresh&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="radiobutton">
+<h3>RadioButton<a class="headerlink" href="#radiobutton" title="Permalink to this headline">¶</a></h3>
+<p>This is an example of the RadioButton input element</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">{</span>
+    <span class="s">&quot;type&quot;</span><span class="p">:</span><span class="s">&#39;radiobuttons&#39;</span><span class="p">,</span>
+    <span class="s">&quot;label&quot;</span><span class="p">:</span> <span class="s">&#39;Function&#39;</span><span class="p">,</span>
+    <span class="s">&quot;options&quot;</span> <span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span><span class="s">&quot;label&quot;</span><span class="p">:</span> <span class="s">&quot;Sine&quot;</span><span class="p">,</span> <span class="s">&quot;value&quot;</span><span class="p">:</span><span class="s">&quot;sin&quot;</span><span class="p">,</span> <span class="s">&quot;checked&quot;</span><span class="p">:</span><span class="bp">True</span><span class="p">},</span>
+        <span class="p">{</span><span class="s">&quot;label&quot;</span><span class="p">:</span><span class="s">&quot;Cosine&quot;</span><span class="p">,</span> <span class="s">&quot;value&quot;</span><span class="p">:</span><span class="s">&quot;cos&quot;</span><span class="p">}</span>
+    <span class="p">],</span>
+    <span class="s">&quot;key&quot;</span><span class="p">:</span> <span class="s">&#39;func_type&#39;</span><span class="p">,</span>
+    <span class="s">&quot;action_id&quot;</span> <span class="p">:</span> <span class="s">&quot;refresh&quot;</span><span class="p">,</span>
+<span class="p">},</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="checkbox-group">
+<h3>Checkbox Group<a class="headerlink" href="#checkbox-group" title="Permalink to this headline">¶</a></h3>
+<p>This is an example of the Checkbox Group input element</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">{</span>
+    <span class="s">&quot;type&quot;</span><span class="p">:</span><span class="s">&#39;checkboxgroup&#39;</span><span class="p">,</span>
+    <span class="s">&quot;label&quot;</span><span class="p">:</span> <span class="s">&#39;Axis Labels&#39;</span><span class="p">,</span>
+    <span class="s">&quot;options&quot;</span> <span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span><span class="s">&quot;label&quot;</span><span class="p">:</span> <span class="s">&quot;x-axis&quot;</span><span class="p">,</span> <span class="s">&quot;value&quot;</span><span class="p">:</span><span class="s">&quot;x&quot;</span><span class="p">,</span> <span class="s">&quot;checked&quot;</span><span class="p">:</span><span class="bp">True</span><span class="p">},</span>
+        <span class="p">{</span><span class="s">&quot;label&quot;</span><span class="p">:</span><span class="s">&quot;y-axis&quot;</span><span class="p">,</span> <span class="s">&quot;value&quot;</span><span class="p">:</span><span class="s">&quot;y&quot;</span><span class="p">}</span>
+    <span class="p">],</span>
+    <span class="s">&quot;key&quot;</span><span class="p">:</span> <span class="s">&#39;axis_label&#39;</span><span class="p">,</span>
+    <span class="s">&quot;action_id&quot;</span> <span class="p">:</span> <span class="s">&quot;refresh&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="dropdown">
+<h3>Dropdown<a class="headerlink" href="#dropdown" title="Permalink to this headline">¶</a></h3>
+<p>This is an example of the Dropdown input element</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">{</span>
+    <span class="s">&quot;type&quot;</span><span class="p">:</span><span class="s">&#39;dropdown&#39;</span><span class="p">,</span>
+    <span class="s">&quot;label&quot;</span><span class="p">:</span> <span class="s">&#39;Line Color&#39;</span><span class="p">,</span>
+    <span class="s">&quot;options&quot;</span> <span class="p">:</span> <span class="n">colors</span><span class="p">,</span>
+    <span class="s">&quot;key&quot;</span><span class="p">:</span> <span class="s">&#39;color&#39;</span><span class="p">,</span>
+    <span class="s">&quot;action_id&quot;</span> <span class="p">:</span> <span class="s">&quot;refresh&quot;</span><span class="p">,</span>
+    <span class="s">&quot;linked_key&quot;</span><span class="p">:</span> <span class="s">&#39;title&#39;</span><span class="p">,</span>
+    <span class="s">&quot;linked_type&quot;</span><span class="p">:</span> <span class="s">&#39;text&#39;</span><span class="p">,</span>
+    <span class="s">&quot;linked_value&quot;</span><span class="p">:</span><span class="s">&quot;hey&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="slider-input">
+<h3>Slider Input<a class="headerlink" href="#slider-input" title="Permalink to this headline">¶</a></h3>
+<p>This is an example of the Slider input element</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">{</span>
+    <span class="s">&quot;type&quot;</span><span class="p">:</span><span class="s">&#39;slider&#39;</span><span class="p">,</span>
+    <span class="s">&quot;label&quot;</span><span class="p">:</span> <span class="s">&#39;frequency&#39;</span><span class="p">,</span>
+    <span class="s">&quot;key&quot;</span><span class="p">:</span> <span class="s">&#39;freq&#39;</span><span class="p">,</span>
+    <span class="s">&quot;value&quot;</span> <span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="s">&quot;min&quot;</span> <span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s">&quot;max&quot;</span> <span class="p">:</span> <span class="mi">30</span><span class="p">,</span>
+    <span class="s">&quot;action_id&quot;</span> <span class="p">:</span> <span class="s">&quot;refresh&quot;</span><span class="p">,</span>
+    <span class="s">&quot;linked_key&quot;</span><span class="p">:</span> <span class="s">&#39;title&#39;</span><span class="p">,</span>
+    <span class="s">&quot;linked_type&quot;</span><span class="p">:</span> <span class="s">&#39;text&#39;</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Inputs</a><ul>
+<li><a class="reference internal" href="#types">Types</a><ul>
+<li><a class="reference internal" href="#textbox">TextBox</a></li>
+<li><a class="reference internal" href="#radiobutton">RadioButton</a></li>
+<li><a class="reference internal" href="#checkbox-group">Checkbox Group</a></li>
+<li><a class="reference internal" href="#dropdown">Dropdown</a></li>
+<li><a class="reference internal" href="#slider-input">Slider Input</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="outputs.html"
+                        title="previous chapter">Outputs</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="outputs.html"
+                        title="next chapter">Outputs</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/inputs.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="outputs.html" title="Outputs"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="outputs.html" title="Outputs"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Spyre 0.2.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, adam hajari.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+    </div>
+  </body>
+</html>
