@@ -329,33 +329,34 @@ table.sortable tbody tr:hover td {
 }
 
 .tab-links li {
-	margin:0px 5px;
-	float:left;
-	list-style:none;
+	margin: 0px 5px;
+	float: left;
+	list-style: none;
 }
  
 .tab-links a {
-	padding:9px 15px;
-	display:inline-block;
-	border-radius:3px 3px 0px 0px;
-	background:#f4f4f4;
-	font-size:16px;
+	padding: 9px 15px;
+	display: inline-block;
+	border-radius: 3px 3px 0px 0px;
+	background: #f4f4f4;
+	font-size: 16px;
 	min-width: 50px;
 	text-align: center;
-	font-weight:600;
-	color:#000000;
+	font-weight: 600;
+	color: #000000;
 	text-decoration: none;
-	transition:all linear 0.15s;
 }
  
 .tab-links a:hover {
-	background:#DDC4C4;
-	text-decoration:none;
+	background: #585858;
+	color: #FFF;
+	text-decoration: none;
 }
  
-li.active a, li.active a:hover {
-	background:#fdfdfd;
-	color:#000000;
+.tab-links.active a,
+.tab-links.active a:hover {
+	background: #fdfdfd;
+	color: #000000;
 }
 
 /*----- Content of Tabs -----*/
