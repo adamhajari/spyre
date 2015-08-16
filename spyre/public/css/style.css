@@ -217,6 +217,10 @@ li.active a, li.active a:hover {
 	float: left;
 }​
 
+/*
+* Bars
+*/
+
 .bar {
   fill: orange;
 }
@@ -382,3 +386,22 @@ table.sortable tbody tr:hover td {
 .tab.active {
 	display:block;
 }
+
+
+
+
+/*
+* Responsive
+*/
+
+@media (max-width: 600px) {
+	.menu,
+	.content {
+		width: 100%;
+	}
+
+	.content {
+		padding-top: 30px;
+	}
+}
+
