@@ -164,6 +164,14 @@ li.active a, li.active a:hover {
 	float: left;
 }
 
+/*
+* <img>
+*/
+
+.spyreImg {
+	max-width: 100%;
+}
+
 
 /*
 * Button
@@ -197,14 +205,16 @@ li.active a, li.active a:hover {
 	color: #333333;	 
 	background: #f4f4f4;
 	padding: 10px;
-	width:20%;
-	float:left;
+	width: 25%;
+	box-sizing: border-box;
+	float: left;
 }
 
 .content {		
 	padding: 0px 5px 5px 15px;
-	width:75%;
-	float:left;
+	width: 75%;
+	box-sizing: border-box;
+	float: left;
 }​
 
 .bar {
@@ -227,8 +237,8 @@ table.sortable {
 	font-family: Arial, Helvetica, sans-serif;;
 	font-size: 12px;
 	background: #fff;
-	margin: 10px;
-	min-width: 480px;
+	min-width: 380px;
+	max-width: 100%;
 	border-collapse: collapse;
 	text-align: left;
 }

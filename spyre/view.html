@@ -133,9 +133,9 @@
 						var params = updateSharedParameters();
 						params = params+"output_id={{output['id']}}&";
 						
-						var plot = $("<img />").attr('src', "plot?"+params).load(function(){
-							$("#{{output['id']}}").html("");
-							$("#{{output['id']}}").append(plot)
+						var plot = $("<img />").addClass('spyreImg').attr('src', "plot?"+params).load(function(){
+							$("#{{output['output_id']}}").html("");
+							$("#{{output['output_id']}}").append(plot)
 						});
 					}
 				{%- endif %}
