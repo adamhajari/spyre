@@ -83,6 +83,65 @@ li.active a, li.active a:hover {
 }
 
 /*
+* Paddings
+* S: 10px;
+* M: 20px;
+*/
+
+
+.spyrePad--topS {
+	padding-top: 10px;
+	box-sizing: border-box;
+}
+
+.spyrePad--bottomS {
+	padding-bottom: 10px;
+	box-sizing: border-box;
+}
+
+.spyrePad--leftS {
+	padding-left: 10px;
+	box-sizing: border-box;
+}
+
+.spyrePad--rightS {
+	padding-right: 10px;
+	box-sizing: border-box;
+}
+
+.spyrePad--vertS {
+	padding-top: 10px;
+	padding-bottom: 10px;
+	box-sizing: border-box;
+}
+
+.spyrePad--topM {
+	padding-top: 20px;
+	box-sizing: border-box;
+}
+
+.spyrePad--bottomM {
+	padding-bottom: 20px;
+	box-sizing: border-box;
+}
+
+.spyrePad--leftM {
+	padding-left: 20px;
+	box-sizing: border-box;
+}
+
+.spyrePad--rightM {
+	padding-right: 20px;
+	box-sizing: border-box;
+}
+
+.spyrePad--vertM {
+	padding-top: 20px;
+	padding-bottom: 20px;
+	box-sizing: border-box;
+}
+
+/*
 * Slider
 */
 
