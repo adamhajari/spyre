@@ -434,12 +434,16 @@
 										{%- if output['tab'] == tab %}
 											{%- if output['output_type'] != "d3" %}
 												<!-- plots, custom html, or table -->
-												<div id="{{output['output_id']}}"></div>
+												<div class="spyrePad--bottomM">
+													<div id="{{output['output_id']}}"></div>
+												</div>
 											{%- endif %}
 
 											{%- if output['output_type'] == "d3" %}
 												<!-- d3 figs go here -->
-												<div id="chart"></div>
+												<div class="spyrePad--bottomM">
+													<div id="chart"></div>
+												</div>
 											{%- endif %}
 										{%- endif %}
 									{%- endfor %}
@@ -451,8 +455,10 @@
 					{%- for output in outputs %}
 						<!-- plots, custom html, tables, anything not d3 -->
 						{% if output['output_type'] != "d3" -%}
-							<div id="{{output['output_id']}}"></div>
-							<div id="{{output['output_id']}}_spinner"></div>
+							<div class="spyrePad--bottomM">
+								<div id="{{output['output_id']}}"></div>
+								<div id="{{output['output_id']}}_spinner"></div>
+							</div>
 						{%- endif %}
 
 						{% if output['output_type'] == "d3" -%}

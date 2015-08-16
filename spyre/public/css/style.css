@@ -9,6 +9,10 @@
 * Base classes
 */
 
+body {
+	margin: 10px;
+}
+
 h1 {
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 24px;
@@ -23,7 +27,7 @@ input {
 	display: block;
 	padding: 5px;
 	margin: 5px 0 0;
-	font: 14px bold;
+	font-size: 14px;
 	font-family: Arial, Helvetica, sans-serif;
 	width: 100%;
 	box-sizing: border-box;  /* Ensures that the input will not extend past the input panel */
@@ -44,12 +48,11 @@ input[type="checkbox"] {
 }
 
 select {
-	padding: 5px;
-	margin: 5px 0 11px 5px;
-	font: 14px bold;
+	font-size: 14px;
+	display: block;
 	font-family: Arial, Helvetica, sans-serif;
 	background: #f4f4f4;
-	width: 80%;
+	width: 100%;
 	height: 30px;
 }
 
@@ -200,7 +203,7 @@ li.active a, li.active a:hover {
 */
 
 .menu {   
-	font: 14px bold;
+	font-size: 14px;
 	font-family: Arial, Helvetica, sans-serif;
 	color: #333333;	 
 	background: #f4f4f4;
