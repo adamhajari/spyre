@@ -67,7 +67,19 @@ li.active a, li.active a:hover {
 */
 
 .container {
-	padding: 20px;
+	box-sizing: border-box;
+	display: block;
+}
+
+.container:before {
+	content: "";
+	display: table;
+}
+
+.container:after {
+	content: "";
+	display: table;
+	clear: both;
 }
 
 /*
