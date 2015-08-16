@@ -367,7 +367,7 @@
 					{% if input['label'] is defined %}
 						{{input['label']}}:
 					{% endif %}
-					<div class="slider">
+					<div class="slider container">
 						<input type="text" class="slider_value" id="{{input['key']}}_value" value="{{input['value']}}" onchange="inputChange( '{{input['key']}}', '{{input['linked_type']}}', '{{input['linked_key']}}',  '{{input['linked_value']}}','{{input['action_id']}}');">
 						<input type="range" class="slider_slider" id="{{input['key']}}" min="{{input['min']}}" max="{{input['max']}}" step="{{input['step']}}"  value="{{input['value']}}" onchange="inputChange( '{{input['key']}}', 'id', '{{input['linked_type']}}', '{{input['linked_key']}}', '{{input['linked_value']}}', '{{input['action_id']}}');" />
 					</div>

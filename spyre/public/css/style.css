@@ -86,25 +86,16 @@ li.active a, li.active a:hover {
 * Slider
 */
 
-.slider {
-	padding:2px;
-	margin:1px 1px 8px 1px;
-	height:30px;
-	background: #f4f4f4
-}
-
 .slider_value {
-	padding: 3px 1px;
-	margin: 2px 2px;
-	border: 1px 2px;
 	text-align: center;
 	font-size: 12px;
-	float:left;
-	width:14%;
+	float: left;
+	width: 20%;
 }
 
-.slider_slider {
-	width:62%;
+.slider_slider[type="range"] {
+	width: 80%;
+	float: left;
 }
 
 
