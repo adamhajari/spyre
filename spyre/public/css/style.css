@@ -84,6 +84,7 @@ li.active a, li.active a:hover {
 
 /*
 * Paddings
+* XS: 5px;
 * S: 10px;
 * M: 20px;
 */
@@ -112,6 +113,12 @@ li.active a, li.active a:hover {
 .spyrePad--vertS {
 	padding-top: 10px;
 	padding-bottom: 10px;
+	box-sizing: border-box;
+}
+
+.spyrePad--vertXS {
+	padding-top: 5px;
+	padding-bottom: 5px;
 	box-sizing: border-box;
 }
 
