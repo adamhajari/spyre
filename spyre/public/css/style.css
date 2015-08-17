@@ -57,12 +57,12 @@ select {
 }
 
 ul {
-	margin:0px;
+	margin: 0px;
 }
 
 li.active a, li.active a:hover {
-	background:#fdfdfd;
-	color:#000000;
+	background: #fdfdfd;
+	color: #000000;
 }
 
 /*
@@ -188,7 +188,7 @@ li.active a, li.active a:hover {
 	text-align: center;
 	color: #ffffff;
 	background-color: #777777;
-  	width:80%;
+  	width: 80%;
   	border: 1px solid;
 	border-radius: 8px;
 }
@@ -279,53 +279,53 @@ table.sortable tbody tr:hover td {
 */
 
 .apptabs {
-	width:100%;
-	display:inline-block;
+	width: 100%;
+	display: inline-block;
 }
  
 .apptab-links:after {
-	display:block;
-	clear:both;
-	content:'';
+	display: block;
+	clear: both;
+	content: '';
 }
 
 .apptab-links li {
-	margin:5px 5px;
-	float:left;
-	list-style:none;
+	margin: 5px 5px;
+	float: left;
+	list-style: none;
 }
 
 .apptab-links a {
-	padding:6px 6px;
-	display:inline-block;
-	border-radius:3px 3px 3px 3px;
-	background:CornflowerBlue;
-	font-size:16px;
+	padding: 6px 6px;
+	display: inline-block;
+	border-radius: 3px 3px 3px 3px;
+	background: CornflowerBlue;
+	font-size: 16px;
 	min-width: 50px;
 	text-align: center;
-	font-weight:600;
-	color:#000000;
+	font-weight: 600;
+	color: #000000;
 	text-decoration: none;
-	transition:all linear 0.15s;
+	transition: all linear 0.15s;
 }
 
 .apptab-links a:hover {
-	background:#DDC4C4;
-	text-decoration:none;
+	background: #DDC4C4;
+	text-decoration: none;
 }
  
 /*----- Content of Tabs -----*/
 .apptab-content {
-	padding:10px;
-	background:#fdfdfd;
+	padding: 10px;
+	background: #fdfdfd;
 }
  
 .apptab {
-	display:none;
+	display: none;
 }
 
 .apptab.active {
-	display:block;
+	display: block;
 }
 
 
