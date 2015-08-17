@@ -202,22 +202,24 @@ img {
 * Panels
 */
 
-.menu {   
+.menu {
+	position: fixed;
+	-webkit-transform: translateZ(0);
+	transform: translateZ(0px);
 	font-size: 14px;
 	font-family: Arial, Helvetica, sans-serif;
 	color: #333333;	 
 	background: #f4f4f4;
 	padding: 10px;
-	width: 25%;
+	width: 280px;
 	box-sizing: border-box;
-	float: left;
 }
 
 .content {		
-	padding: 0px 5px 5px 15px;
-	width: 75%;
+	padding: 0;
 	box-sizing: border-box;
-	float: left;
+	margin-left: 280px;
+	max-width: 100%;
 }​
 
 /*
@@ -244,7 +246,7 @@ table.sortable {
 	font-family: Arial, Helvetica, sans-serif;;
 	font-size: 12px;
 	background: #fff;
-	min-width: 480px;
+	min-width: 420px;
 	max-width: 100%;
 	border-collapse: collapse;
 	text-align: left;
@@ -397,13 +399,15 @@ table.sortable tbody tr:hover td {
 * Responsive
 */
 
-@media (max-width: 600px) {
+@media (max-width: 760px) {
 	.menu,
 	.content {
+		position: relative;
 		width: 100%;
 	}
 
 	.content {
+		margin: 0;
 		padding-top: 30px;
 	}
 }
