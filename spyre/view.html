@@ -40,7 +40,7 @@
 				    history.pushState('','','?'+shared_params);
 				}
 				shared_params_old = shared_params;
-				return shared_params;
+				return encodeURI(shared_params);
 			}
 			// when an input value changes, executes the action id and/or updates any linked variables
 			// key/action_id is the name/action_id of variable being actively changed
