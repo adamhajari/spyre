@@ -134,8 +134,8 @@
 						params = params+"output_id={{output['id']}}&";
 						
 						var plot = $("<img />").addClass('spyreImg').attr('src', "plot?"+params).load(function(){
-							$("#{{output['output_id']}}").html("");
-							$("#{{output['output_id']}}").append(plot)
+							$("#{{output['id']}}").html("");
+							$("#{{output['id']}}").append(plot)
 						});
 					}
 				{%- endif %}
@@ -312,27 +312,27 @@
 				<h1>{{title}}</h1>
 				<!-- inputs -->
 				{%- for input in inputs %}
-					{% if input['input_type']=="text" -%}
+					{% if input['type']=="text" -%}
 						<div class="spyrePad--vertS">
 							<!-- text input -->
-							<form action="javascript:inputChange( '{{input['variable_name']}}', 'id', '{{input['linked_variable_type']}}', '{{input['linked_variable_name']}}', '{{input['linked_value']}}', '{{input['action_id']}}');">
+							<form action="javascript:inputChange( '{{input['key']}}', 'id', '{{input['linked_type']}}', '{{input['linked_key']}}', '{{input['linked_value']}}', '{{input['action_id']}}');">
 								<div class="text_input">
 									{% if input['label'] is defined %}
 										{{input['label']}}:
 									{% endif %}
-									<input type="text" value="{{input['value']}}" id="{{input['variable_name']}}" />
+									<input type="text" value="{{input['value']}}" id="{{input['key']}}" />
 								</div>
 							</form>
 						</div>
 
 					<!-- dropdown -->
-					{% elif input['input_type']=="dropdown" -%}
+					{% elif input['type']=="dropdown" -%}
 						<!-- dropdown menu -->
 						<div class="spyrePad--vertS">
 							{% if input['label'] is defined %}
 								{{input['label']}}:
 							{% endif %}
-							<select id="{{input['variable_name']}}"  onchange="inputChange( '{{input['variable_name']}}', 'id', '{{input['linked_variable_type']}}', '{{input['linked_variable_name']}}', '{{input['linked_value']}}', '{{input['action_id']}}');" >
+							<select id="{{input['key']}}"  onchange="inputChange( '{{input['key']}}', 'id', '{{input['linked_type']}}', '{{input['linked_key']}}', '{{input['linked_value']}}', '{{input['action_id']}}');" >
 								{% for option in input['options'] -%}
 									<option value="{{option['value']}}" {% if option['checked']==True %} selected="selected" {% endif %}>
 										{{option['label']}}
@@ -342,48 +342,48 @@
 						</div>
 
 					<!-- radiobuttons -->
-					{% elif input['input_type']=="radiobuttons" -%}
+					{% elif input['type']=="radiobuttons" -%}
 						<div
 							class="spyrePad--vertS"
-							id="{{input['variable_name']}}"
+							id="{{input['key']}}"
 						>
 							{% if input['label'] is defined %}
 								{{input['label']}}:
 							{% endif %}
 							{% for option in input['options'] -%}
 								<div>
-									<input type="radio" name="{{input['variable_name']}}" value="{{option['value']}}" {% if option['checked']==True %} checked {% endif %} onclick="inputChange( '{{input['variable_name']}}', 'name', '{{input['linked_variable_type']}}', '{{input['linked_variable_name']}}', '{{input['linked_value']}}', '{{input['action_id']}}');">
+									<input type="radio" name="{{input['key']}}" value="{{option['value']}}" {% if option['checked']==True %} checked {% endif %} onclick="inputChange( '{{input['key']}}', 'name', '{{input['linked_type']}}', '{{input['linked_key']}}', '{{input['linked_value']}}', '{{input['action_id']}}');">
 									{{option['label']}}
 								</div>
 							{%- endfor %}
 						</div>
 
 					<!-- checkbox group -->
-					{% elif input['input_type']=="checkboxgroup" -%}
+					{% elif input['type']=="checkboxgroup" -%}
 						<div
 							class="spyrePad--vertS"
-							id="{{input['variable_name']}}"
+							id="{{input['key']}}"
 						>
 							{% if input['label'] is defined %}
 								{{input['label']}}:
 							{% endif %}
 							{% for option in input['options'] -%}
 								<div>
-									<input type="checkbox" name="{{input['variable_name']}}" value="{{option['value']}}" {% if option['checked']==True %} checked {% endif %} onclick="inputChange( '{{input['variable_name']}}', 'name', '{{input['linked_variable_type']}}', '{{input['linked_variable_name']}}', '{{input['linked_value']}}', '{{input['action_id']}}');">
+									<input type="checkbox" name="{{input['key']}}" value="{{option['value']}}" {% if option['checked']==True %} checked {% endif %} onclick="inputChange( '{{input['key']}}', 'name', '{{input['linked_type']}}', '{{input['linked_key']}}', '{{input['linked_value']}}', '{{input['action_id']}}');">
 									{{option['label']}}
 								</div>
 							{%- endfor %}
 						</div>
 
 					<!-- sliders -->
-					{% elif input['input_type']=="slider" -%}
+					{% elif input['type']=="slider" -%}
 						<div class="spyrePad--vertS">
 							{% if input['label'] is defined %}
 								{{input['label']}}:
 							{% endif %}
 							<div class="slider container">
-								<input type="text" class="slider_value" id="{{input['variable_name']}}_value" value="{{input['value']}}" onchange="inputChange( '{{input['variable_name']}}', '{{input['linked_variable_type']}}', '{{input['linked_variable_name']}}',  '{{input['linked_value']}}','{{input['action_id']}}');">
-								<input type="range" class="slider_slider" id="{{input['variable_name']}}" min="{{input['min']}}" max="{{input['max']}}" step="{{input['step']}}"  value="{{input['value']}}" onchange="inputChange( '{{input['variable_name']}}', 'id', '{{input['linked_variable_type']}}', '{{input['linked_variable_name']}}', '{{input['linked_value']}}', '{{input['action_id']}}');" />
+								<input type="text" class="slider_value" id="{{input['key']}}_value" value="{{input['value']}}" onchange="inputChange( '{{input['key']}}', '{{input['linked_type']}}', '{{input['linked_key']}}',  '{{input['linked_value']}}','{{input['action_id']}}');">
+								<input type="range" class="slider_slider" id="{{input['key']}}" min="{{input['min']}}" max="{{input['max']}}" step="{{input['step']}}"  value="{{input['value']}}" onchange="inputChange( '{{input['key']}}', 'id', '{{input['linked_type']}}', '{{input['linked_key']}}', '{{input['linked_value']}}', '{{input['action_id']}}');" />
 							</div>
 						</div>
 					{%- endif %}
@@ -391,9 +391,9 @@
 
 				<!-- buttons -->
 				{%- for control in controls %}
-					{% if control['control_type']=="button" -%}
+					{% if control['type']=="button" -%}
 						<div class="spyrePad--vertXS">
-							<div class="button" id="{{control['control_id']}}" >
+							<div class="button" id="{{control['id']}}" >
 								{{control['label']}}
 							</div>
 						</div>
@@ -432,14 +432,14 @@
 								<div id="{{tab}}" class="tab {%- if loop.index == 1 %} active {%- endif %}">
 									{%- for output in outputs %}
 										{%- if output['tab'] == tab %}
-											{%- if output['output_type'] != "d3" %}
+											{%- if output['type'] != "d3" %}
 												<!-- plots, custom html, or table -->
 												<div class="spyrePad--bottomM">
-													<div id="{{output['output_id']}}"></div>
+													<div id="{{output['id']}}"></div>
 												</div>
 											{%- endif %}
 
-											{%- if output['output_type'] == "d3" %}
+											{%- if output['type'] == "d3" %}
 												<!-- d3 figs go here -->
 												<div class="spyrePad--bottomM">
 													<div id="chart"></div>
@@ -454,14 +454,14 @@
 				{% else -%}	
 					{%- for output in outputs %}
 						<!-- plots, custom html, tables, anything not d3 -->
-						{% if output['output_type'] != "d3" -%}
+						{% if output['type'] != "d3" -%}
 							<div class="spyrePad--bottomM">
-								<div id="{{output['output_id']}}"></div>
-								<div id="{{output['output_id']}}_spinner"></div>
+								<div id="{{output['id']}}"></div>
+								<div id="{{output['id']}}_spinner"></div>
 							</div>
 						{%- endif %}
 
-						{% if output['output_type'] == "d3" -%}
+						{% if output['type'] == "d3" -%}
 							<!-- d3 figs go here -->
 							<div id="chart"></div>
 						{%- endif %}
