@@ -334,9 +334,7 @@
 							{% endif %}
 							<select id="{{input['key']}}"  onchange="inputChange( '{{input['key']}}', 'id', '{{input['linked_type']}}', '{{input['linked_key']}}', '{{input['linked_value']}}', '{{input['action_id']}}');" >
 								{% for option in input['options'] -%}
-									<option value="{{option['value']}}" {% if option['checked']==True %} selected="selected" {% endif %}>
-										{{option['label']}}
-									</option>
+									<option value="{{option['value']}}" {% if option['checked']==True %} selected="selected" {% endif %}>{{option['label']}}</option>
 								{%- endfor %}
 							</select>
 						</div>
