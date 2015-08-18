@@ -151,6 +151,7 @@ class Root(object):
 				input_value = input['value']
 			else:
 				# no value specified
+				index+=1
 				continue
 
 			# use the params passed in with the url switch out the default input values
