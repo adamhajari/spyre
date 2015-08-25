@@ -18,7 +18,7 @@ class View:
 		self.ROOT_DIR = os.path.dirname(os.path.realpath(__file__))
 		self.JS_PATH = os.path.join(self.ROOT_DIR, 'public', 'js')
 		self.CSS_PATH = os.path.join(self.ROOT_DIR, 'public', 'css')
-                self.APP_PATH = os.path.dirname(os.path.realpath(__main__.__file__))
+		self.APP_PATH = os.path.dirname(os.path.realpath(__main__.__file__))
 
 	def getHTML(self):
 		file_path = os.path.join(self.ROOT_DIR, 'view.html')
