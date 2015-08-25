@@ -52,10 +52,10 @@ class View:
 
 	def getSpinningWheel(self, spinnerFile=None):
 		buffer = io.BytesIO()
-                if spinnerFile is None:
-                        path = os.path.join(self.ROOT_DIR, 'public', 'images', "loading_wheel.gif")
-                else:
-                        path = os.path.join(self.APP_PATH, spinnerFile)
+		if spinnerFile is None:
+			path = os.path.join(self.ROOT_DIR, 'public', 'images', "loading_wheel.gif")
+		else:
+			path = os.path.join(self.APP_PATH, spinnerFile)
 		f = open( path,'rb' )
 		buffer.write(f.read())
 		f.close()
