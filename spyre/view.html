@@ -10,7 +10,7 @@
 		<style>{{custom_css}}</style>
 		{{custom_head}}
 		<title>{{title}}</title>
-
+		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<!-- load javascript -->
 		<script type='text/javascript'>{{js}}</script>
 
@@ -40,7 +40,7 @@
 				    history.pushState('','','?'+shared_params);
 				}
 				shared_params_old = shared_params;
-				return shared_params;
+				return encodeURI(shared_params);
 			}
 			// when an input value changes, executes the action id and/or updates any linked variables
 			// key/action_id is the name/action_id of variable being actively changed
@@ -289,162 +289,183 @@
 	</head>
 
 	<body>
+		<div class="container">
 
+			{% block banner %}<!-- banner -->{% endblock %}
 
-
-
-	<div class="outer">
-
-		{% block banner %}<!-- banner -->{% endblock %}
-		
-		{% if app_bar %}
-			<div class="apptabs">
-				<ul class="apptab-links">
-					{% for route, text in app_bar %}
-						<li><a href="{{route}}">{{text}}</a></li>
-					{% endfor %}
-				</ul>
-			</div>
-		{% endif %}
-
-
-
-		<!-- control panel -->
-		<div class="left-panel">
-			<h1>{{title}}</h1>
-			<hr>
-			<!-- inputs -->
-			{%- for input in inputs %}
-				{% if input['type']=="text" -%}
-					<!-- text input -->
-					<form action="javascript:inputChange( '{{input['key']}}', 'id', '{{input['linked_type']}}', '{{input['linked_key']}}', '{{input['linked_value']}}', '{{input['action_id']}}');">
-					<div class="text_input">
-					{% if input['label'] is defined %}
-						{{input['label']}}:
-					{% endif %}
-					<input type=text value="{{input['value']}}" id="{{input['key']}}" />
-					</div>
-					</form>
-					<br>
-				
-				<!-- dropdown -->
-				{% elif input['type']=="dropdown" -%}
-					<!-- dropdown menu -->
-					<div class="dropdown_input">
-					{% if input['label'] is defined %}
-						{{input['label']}}:
-					{% endif %}
-					<select id="{{input['key']}}"  onchange="inputChange( '{{input['key']}}', 'id', '{{input['linked_type']}}', '{{input['linked_key']}}', '{{input['linked_value']}}', '{{input['action_id']}}');" >
-					{% for option in input['options'] -%}
-						<option value="{{option['value']}}" {% if option['checked']==True %} selected="selected" {% endif %}>{{option['label']}} </option>
-					{%- endfor %}
-					</select><br></div>
-
-				<!-- radiobuttons -->
-				{% elif input['type']=="radiobuttons" -%}
-					<div class="radiobuttons_input" id="{{input['key']}}">
-					{% if input['label'] is defined %}
-						{{input['label']}}:
-					{% endif %}
-					{% for option in input['options'] -%}
-						<br><input type="radio" name="{{input['key']}}" value="{{option['value']}}" {% if option['checked']==True %} checked {% endif %} onclick="inputChange( '{{input['key']}}', 'name', '{{input['linked_type']}}', '{{input['linked_key']}}', '{{input['linked_value']}}', '{{input['action_id']}}');">{{option['label']}}
-					{%- endfor %}
-					</div>
-
-				<!-- checkbox group -->
-				{% elif input['type']=="checkboxgroup" -%}
-					<div class="checkboxgroup_input" id="{{input['key']}}">
-					{% if input['label'] is defined %}
-						{{input['label']}}:
-					{% endif %}
-					{% for option in input['options'] -%}
-						<br><input type="checkbox" name="{{input['key']}}" value="{{option['value']}}" {% if option['checked']==True %} checked {% endif %} onclick="inputChange( '{{input['key']}}', 'name', '{{input['linked_type']}}', '{{input['linked_key']}}', '{{input['linked_value']}}', '{{input['action_id']}}');">{{option['label']}}
-					{%- endfor %}
-					</div>
-				
-				<!-- sliders -->
-				{% elif input['type']=="slider" -%}
-					<div class="slider_input">
-					{% if input['label'] is defined %}
-						{{input['label']}}:
-					{% endif %}
-					<div class="slider">
-						<input type="text" class="slider_value" id="{{input['key']}}_value" value="{{input['value']}}" onchange="inputChange( '{{input['key']}}', '{{input['linked_type']}}', '{{input['linked_key']}}',  '{{input['linked_value']}}','{{input['action_id']}}');">
-						<input type="range" class="slider_slider" id="{{input['key']}}" min="{{input['min']}}" max="{{input['max']}}" step="{{input['step']}}"  value="{{input['value']}}" onchange="inputChange( '{{input['key']}}', 'id', '{{input['linked_type']}}', '{{input['linked_key']}}', '{{input['linked_value']}}', '{{input['action_id']}}');" />
-					</div>
-					</div>
-				{%- endif %}
-			{%- endfor %}
-
-			<!-- buttons -->
-			{%- for control in controls %}
-				{% if control['type']=="button" -%}
-					<div class="button" id="{{control['id']}}" >{{control['label']}}</div><br>
-				{%- endif %}
-			{%- endfor %}
-			{% if False -%}
-				<div class="button" id="share_url" >Generate Sharable URL</div><br>
-			{%- endif %}
-		</div>
-
-		<!-- output -->
-		<div class="right-panel">
-			<img scr="">
-			{% if tabs is defined -%}
-				<div class="tabs">
-					<ul class="tab-links">
-						{% for tab in tabs -%}
-							{% if loop.index == 1 -%}
-								<li class="active"><a href="#{{tab}}">{{tab}}</a></li>
-							{% else -%}
-								<li><a href="#{{tab}}">{{tab}}</a></li>
-							{%- endif %}
-						{%- endfor %}
+			{% if app_bar %}
+				<div class="apptabs">
+					<ul class="apptab-links">
+						{% for route, text in app_bar %}
+							<li>
+								<a href="{{route}}">{{text}}</a>
+							</li>
+						{% endfor %}
 					</ul>
+				</div>
+			{% endif %}
 
-					<div class="tab-content">
-						{% for tab in tabs -%}
-							{%- if loop.index == 1 %}
-								<div id="{{tab}}" class="tab active">
-							{%- else %}
-								<div id="{{tab}}" class="tab">
-							{%- endif %}
-							{%- for output in outputs %}
-								{%- if output['tab'] == tab %}
-									{%- if output['type'] != "d3" %}
-										<!-- plots, custom html, or table -->
-										<div id="{{output['id']}}"></div>
-									{%- endif %}
 
-									{%- if output['type'] == "d3" %}
-										<!-- d3 figs go here -->
-										<div id="chart"></div>
-									{%- endif %}
-								{%- endif %}
-							{%- endfor %}
+
+			<!-- control panel -->
+			<div class="menu">
+				<h1>{{title}}</h1>
+				<!-- inputs -->
+				{%- for input in inputs %}
+					{% if input['type']=="text" -%}
+						<div class="spyrePad--vertS">
+							<!-- text input -->
+							<form action="javascript:inputChange( '{{input['key']}}', 'id', '{{input['linked_type']}}', '{{input['linked_key']}}', '{{input['linked_value']}}', '{{input['action_id']}}');">
+								<div class="text_input">
+									{% if input['label'] is defined %}
+										{{input['label']}}:
+									{% endif %}
+									<input type="text" value="{{input['value']}}" id="{{input['key']}}" />
 								</div>
-						{%- endfor %}
+							</form>
+						</div>
 
-					</div>
-			</div>
-			{% else -%}	
+					<!-- dropdown -->
+					{% elif input['type']=="dropdown" -%}
+						<!-- dropdown menu -->
+						<div class="spyrePad--vertS">
+							{% if input['label'] is defined %}
+								{{input['label']}}:
+							{% endif %}
+							<select id="{{input['key']}}"  onchange="inputChange( '{{input['key']}}', 'id', '{{input['linked_type']}}', '{{input['linked_key']}}', '{{input['linked_value']}}', '{{input['action_id']}}');" >
+								{% for option in input['options'] -%}
+									<option value="{{option['value']}}" {% if option['checked']==True %} selected="selected" {% endif %}>{{option['label']}}</option>
+								{%- endfor %}
+							</select>
+						</div>
 
-				{%- for output in outputs %}
-					<!-- plots, custom html, tables, anything not d3 -->
-					{% if output['type'] != "d3" -%}
-						<div id="{{output['id']}}"></div>
-						<div id="{{output['id']}}_spinner"></div>
-					{%- endif %}
+					<!-- radiobuttons -->
+					{% elif input['type']=="radiobuttons" -%}
+						<div
+							class="spyrePad--vertS"
+							id="{{input['key']}}"
+						>
+							{% if input['label'] is defined %}
+								{{input['label']}}:
+							{% endif %}
+							{% for option in input['options'] -%}
+								<div>
+									<input type="radio" name="{{input['key']}}" value="{{option['value']}}" {% if option['checked']==True %} checked {% endif %} onclick="inputChange( '{{input['key']}}', 'name', '{{input['linked_type']}}', '{{input['linked_key']}}', '{{input['linked_value']}}', '{{input['action_id']}}');">
+									{{option['label']}}
+								</div>
+							{%- endfor %}
+						</div>
 
-					{% if output['type'] == "d3" -%}
-						<!-- d3 figs go here -->
-						<div id="chart"></div>
+					<!-- checkbox group -->
+					{% elif input['type']=="checkboxgroup" -%}
+						<div
+							class="spyrePad--vertS"
+							id="{{input['key']}}"
+						>
+							{% if input['label'] is defined %}
+								{{input['label']}}:
+							{% endif %}
+							{% for option in input['options'] -%}
+								<div>
+									<input type="checkbox" name="{{input['key']}}" value="{{option['value']}}" {% if option['checked']==True %} checked {% endif %} onclick="inputChange( '{{input['key']}}', 'name', '{{input['linked_type']}}', '{{input['linked_key']}}', '{{input['linked_value']}}', '{{input['action_id']}}');">
+									{{option['label']}}
+								</div>
+							{%- endfor %}
+						</div>
+
+					<!-- sliders -->
+					{% elif input['type']=="slider" -%}
+						<div class="spyrePad--vertS">
+							{% if input['label'] is defined %}
+								{{input['label']}}:
+							{% endif %}
+							<div class="slider container">
+								<input type="text" class="slider_value" id="{{input['key']}}_value" value="{{input['value']}}" onchange="inputChange( '{{input['key']}}', '{{input['linked_type']}}', '{{input['linked_key']}}',  '{{input['linked_value']}}','{{input['action_id']}}');">
+								<input type="range" class="slider_slider" id="{{input['key']}}" min="{{input['min']}}" max="{{input['max']}}" step="{{input['step']}}"  value="{{input['value']}}" onchange="inputChange( '{{input['key']}}', 'id', '{{input['linked_type']}}', '{{input['linked_key']}}', '{{input['linked_value']}}', '{{input['action_id']}}');" />
+							</div>
+						</div>
 					{%- endif %}
 				{%- endfor %}
 
-			{%- endif %}
-		</div>
+				<!-- buttons -->
+				{%- for control in controls %}
+					{% if control['type']=="button" -%}
+						<div class="spyrePad--vertXS">
+							<div class="button" id="{{control['id']}}" >
+								{{control['label']}}
+							</div>
+						</div>
+					{%- endif %}
+				{%- endfor %}
+				{% if False -%}
+					<div class="spyrePad--vertXS">
+						<div class="button" id="share_url" >
+							Generate Sharable URL
+						</div>
+					</div>
+				{%- endif %}
+			</div>
 
-	</div>
+			<!-- output -->
+			<div class="content">
+				<img scr="">
+				{% if tabs is defined -%}
+					<div class="tabs">
+						<ul class="tab-links">
+							{% for tab in tabs -%}
+								{% if loop.index == 1 -%}
+									<li class="active">
+										<a href="#{{tab}}">{{tab}}</a>
+									</li>
+								{% else -%}
+									<li>
+										<a href="#{{tab}}">{{tab}}</a>
+									</li>
+								{%- endif %}
+							{%- endfor %}
+						</ul>
+
+						<div class="tab-content">
+							{% for tab in tabs -%}
+								<div id="{{tab}}" class="tab {%- if loop.index == 1 %} active {%- endif %}">
+									{%- for output in outputs %}
+										{%- if output['tab'] == tab %}
+											{%- if output['type'] != "d3" %}
+												<!-- plots, custom html, or table -->
+												<div class="spyrePad--bottomM">
+													<div id="{{output['id']}}"></div>
+												</div>
+											{%- endif %}
+
+											{%- if output['type'] == "d3" %}
+												<!-- d3 figs go here -->
+												<div class="spyrePad--bottomM">
+													<div id="chart"></div>
+												</div>
+											{%- endif %}
+										{%- endif %}
+									{%- endfor %}
+								</div>
+							{%- endfor %}
+						</div>
+					</div>
+				{% else -%}	
+					{%- for output in outputs %}
+						<!-- plots, custom html, tables, anything not d3 -->
+						{% if output['type'] != "d3" -%}
+							<div class="spyrePad--bottomM">
+								<div id="{{output['id']}}"></div>
+								<div id="{{output['id']}}_spinner"></div>
+							</div>
+						{%- endif %}
+
+						{% if output['type'] == "d3" -%}
+							<!-- d3 figs go here -->
+							<div id="chart"></div>
+						{%- endif %}
+					{%- endfor %}
+				{%- endif %}
+			</div>
+		</div>
 	</body>
 </html>
