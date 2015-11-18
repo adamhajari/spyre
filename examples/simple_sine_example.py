@@ -8,6 +8,10 @@ class SimpleSineApp(server.App):
 	inputs = [{ "type":"slider",
 				"key":"freq",
 				"value":5, "max":10,
+				"action_id":"sine_wave_plot"},
+			{ "type":"text",
+				"key":"text",
+				"value":"hello world",
 				"action_id":"sine_wave_plot"}]
 
 	outputs = [{"type":"plot",

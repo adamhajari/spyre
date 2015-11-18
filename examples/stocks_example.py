@@ -57,18 +57,6 @@ class StockExample(server.App):
 			self.params_cache = params 	# caching layer
 		return self.data_cache
 
-	def getPlot(self, params):
-		### implements a simple caching mechanism to avoid multiple calls to the yahoo finance api ###
-		params.pop("output_id",None)
-		while self.params_cache!=params:
-			pass
-		###############################################################################################
-		df = self.getData(params)
-		plt_obj = df.set_index('Date').drop(['volume'],axis=1).plot()
-		plt_obj.set_ylabel("Price")
-		plt_obj.set_title(self.company_name)
-		fig = plt_obj.get_figure()
-		return fig
 if __name__ == '__main__':
 	app = StockExample()
 	app.launch(port=9093)
