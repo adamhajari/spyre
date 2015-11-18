@@ -47,7 +47,8 @@ class Root(object):
 		inputs=[], 
 		outputs=[], 
 		controls=[], 
-		tabs=None, 
+		tabs=None,
+		spinnerFile=None,
 		getJsonDataFunction=None, 
 		getDataFunction=None, 
 		getTableFunction=None, 
@@ -91,6 +92,8 @@ class Root(object):
 			self.templateVars['outputs'] = outputs
 			if tabs is not None:
 				self.templateVars['tabs'] = tabs
+			if spinnerFile is not None:
+				self.templateVars['spinnerFile'] = spinnerFile
 		self.defaultTemplateVars = self.templateVars
 
 		self.getJsonData = getJsonDataFunction
@@ -141,7 +144,7 @@ class Root(object):
 				input_registration[input_key] = {"type":input['type'], "action_id":input['action_id']}
 			else:
 				input_registration[input_key] = {"type":input['type'], "action_id":None}
-			
+
 
 			if input_key in args.keys():
 				# use value from request
@@ -237,7 +240,8 @@ class Root(object):
 	@cherrypy.expose
 	def spinning_wheel(self, **args):
 		v = View.View()
-		buffer = v.getSpinningWheel()
+		spinnerFile = self.templateVars.get('spinnerFile')
+		buffer = v.getSpinningWheel(spinnerFile)
 		cherrypy.response.headers['Content-Type'] = 'image/gif'
 		return buffer.getvalue()
 
@@ -266,8 +270,9 @@ class App(object):
 	inputs = []
 	controls = []
 	tabs = None
+	spinnerFile = None
 	templateVars = None
-				
+
 	def getJsonData(self, params):
 		"""turns the DataFrame returned by getData into a dictionary
 
@@ -420,8 +425,9 @@ class App(object):
 			title=self.title, 
 			inputs=self.inputs, 
 			outputs=self.outputs, 
-			controls=self.controls, 
-			tabs=self.tabs, 
+			controls=self.controls,
+			tabs=self.tabs,
+			spinnerFile=self.spinnerFile,
 			getJsonDataFunction=self.getJsonData, 
 			getDataFunction=self.getData, 
 			getTableFunction=self.getTable, 
@@ -442,7 +448,7 @@ class Site(object):
 	"""
 
 	def __init__(self, appobj):
-		self.site_app_bar = list()		
+		self.site_app_bar = list()
 		self.addIndex(appobj)
 
 	def addIndex(self, appobj):
@@ -493,7 +499,7 @@ class Site(object):
 
 class Launch(App):
 	"""Warning: This class is depricated. Use App instead"""
- 
+
 if __name__=='__main__':
 	app = App()
 	app.launch()
