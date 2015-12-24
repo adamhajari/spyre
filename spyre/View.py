@@ -44,9 +44,10 @@ class View:
 		for file in os.listdir(self.CSS_PATH):
 			if file.find('.css')>0:
 				file_path = os.path.join(self.CSS_PATH, file) 
-				f = open(file_path)
-				self.CSS += f.read()
+				f = open(file_path, 'rb')
+				content = f.read()
 				f.close()
+				self.CSS += content.decode('utf-8')
 				self.CSS += "\n"
 		return self.CSS
 
