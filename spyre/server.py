@@ -162,11 +162,11 @@ class Root(object):
 				self.templateVars['inputs'][index]['value'] = input_value
 			if input['type'] in ['radiobuttons', 'dropdown']:
 				for option in input['options']:
-					option['checked'] = (option['value'] == input_value)
+					option['checked'] = (str(option['value']) == input_value)
 			if input['type'] == 'checkboxgroup':
 				index2 = 0
 				for option in input['options']:
-					if option['value'] in input_value:
+					if str(option['value']) in input_value:
 						self.templateVars['inputs'][index]['options'][index2]['checked'] = True
 					else:
 						self.templateVars['inputs'][index]['options'][index2]['checked'] = False
