@@ -5,8 +5,8 @@ python:
   - "3.4"
 
 install: 
-  - sudo pip install conda
-  - sudo conda init
+  - pip install conda
+  - conda init
   - deps='pip numpy matplotlib pandas'
   - conda create -p $HOME/py --yes $deps "python=$TRAVIS_PYTHON_VERSION"
   - export PATH=$HOME/py/bin:$PATH
