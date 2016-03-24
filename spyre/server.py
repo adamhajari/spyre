@@ -402,11 +402,12 @@ class App(object):
 		"""
 		return ""
 
-	def launch(self,host="local",port=8080):
+	def launch(self,host="local",port=8080,prefix='/'):
 		webapp = self.getRoot()
 		if host!="local":
 			cherrypy.server.socket_host = '0.0.0.0'
 		cherrypy.server.socket_port = port
+		cherrypy.tree.mount(webapp,prefix)
 		cherrypy.quickstart(webapp)
 
 
