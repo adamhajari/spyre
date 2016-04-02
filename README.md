@@ -121,7 +121,7 @@ class StockExample(server.App):
 		# make call to yahoo finance api to get historical stock data
 		api_url = 'https://chartapi.finance.yahoo.com/instrument/1.0/{}/chartdata;type=quote;range=3m/json'.format(ticker)
 		result = urlopen(api_url).read()
-		data = json.loads(result.replace('finance_charts_json_callback( ','')[:-1])  # strip away the javascript and load json
+		data = json.loads(result.decode("utf8").replace('finance_charts_json_callback( ','')[:-1])  # strip away the javascript and load json
 		self.company_name = data['meta']['Company-Name']
 		df = pd.DataFrame.from_records(data['series'])
 		df['Date'] = pd.to_datetime(df['Date'],format='%Y%m%d')
