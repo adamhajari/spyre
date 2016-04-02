@@ -80,11 +80,14 @@ Let's look at another example to introduce controls, tabs, and a second output t
 In the example below we'll show historical stock data in a line graph and a table, each in it's own tab.  Since inputs can only have a single action_id (and we have two outputs), we'll need to introduce a button control in order to update both outputs.
 
 
+   >*Note to python 3 users:* Replace `from urllib2 import urlopen` with `from urllib.request import urlopen`
+
+
 ```python
 from spyre import server
 
 import pandas as pd
-import urllib2
+from urllib2 import urlopen
 import json
 
 class StockExample(server.App):
@@ -117,7 +120,7 @@ class StockExample(server.App):
 		ticker = params['ticker']
 		# make call to yahoo finance api to get historical stock data
 		api_url = 'https://chartapi.finance.yahoo.com/instrument/1.0/{}/chartdata;type=quote;range=3m/json'.format(ticker)
-		result = urllib2.urlopen(api_url).read()
+		result = urlopen(api_url).read()
 		data = json.loads(result.replace('finance_charts_json_callback( ','')[:-1])  # strip away the javascript and load json
 		self.company_name = data['meta']['Company-Name']
 		df = pd.DataFrame.from_records(data['series'])
