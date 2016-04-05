@@ -47,6 +47,74 @@ input[type="checkbox"] {
 	width: 10%;
 }
 
+/* Upload file input and buttons */
+input[type=submit] {
+    display: block;
+	font-size: 14px;
+	padding: 8px 5px 8px 5px;
+	margin: 0 auto;
+	text-align: center;
+	color: #ffffff;
+	background-color: #777777;
+  	width: 80%;
+  	border: 1px solid;
+	border-radius: 8px;
+	cursor: pointer;
+}
+
+.inputfile {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+}
+
+.inputfile + label {
+    display: block;
+	font-size: 14px;
+	padding: 8px 5px 8px 5px;
+	margin: 0 auto;
+	text-align: center;
+	color: #ffffff;
+	background-color: #777777;
+  	width: 80%;
+  	border: 1px solid;
+	border-radius: 8px;
+}
+
+.no-js .inputfile + label {
+    display: none;
+}
+
+.inputfile:focus + label,
+.inputfile.has-focus + label {
+    outline: 1px dotted #000;
+    outline: -webkit-focus-ring-color auto 5px;
+}
+
+.inputfile + label svg {
+    width: 1em;
+    height: 1em;
+    vertical-align: middle;
+    fill: currentColor;
+    margin-top: -0.25em;
+    margin-right: 0.25em;
+}
+
+.inputfile + label {
+	cursor: pointer; /* "hand" cursor */
+}
+
+.inputfile-1:focus + label,
+.inputfile-1.has-focus + label,
+.inputfile-1 + label:hover {
+    background-color: #989898;
+}
+
+/* END ^^upload file input and buttons^^ */
+
 select {
 	font-size: 14px;
 	display: block;

@@ -60,7 +60,9 @@ class Root(object):
 		getCustomHeadFunction=None, 
 		getHTMLFunction=None,  
 		getDownloadFunction=None, 
-		noOutputFunction=None):
+		noOutputFunction=None,
+		storeUploadFunction=None):
+
 		# populate template dictionary for creating input,controler, and output HTML and javascript
 		if templateVars is not None:
 			self.templateVars = templateVars
@@ -108,6 +110,7 @@ class Root(object):
 		self.getHTML = getHTMLFunction
 		self.noOutput = noOutputFunction
 		self.getDownload = getDownloadFunction
+		self.storeUpload = storeUploadFunction
 		d3 = self.getD3()
 		custom_js = self.getCustomJS()
 		custom_css = self.getCustomCSS()
@@ -123,6 +126,8 @@ class Root(object):
 		self.templateVars['document_ready_js'] = ""
 		self.templateVars['js'] = v.getJS()
 		self.templateVars['css'] = v.getCSS()
+
+		self.upload_file = None
 
 	@cherrypy.expose
 	def index(self, **args):
@@ -232,6 +237,25 @@ class Root(object):
 			return "error downloading file. filepath must be string of buffer"
 
 	@cherrypy.expose
+	def upload(self, xfile):
+		self.storeUpload(xfile.file)
+		out = """<html>
+		<body>
+			xfile length: %s<br />
+			xfile filename: %s<br />
+			xfile mime-type: %s
+		</body>
+		</html>"""
+		# size = 0
+		# while True:
+		# 	data = xfile.file.read(8192)
+		# 	if not data:
+		# 		break
+		# 	size += len(data)
+
+		# return out % (size, xfile.filename, xfile.content_type)
+
+	@cherrypy.expose
 	def no_output(self, **args):
 		args = self.clean_args(args)
 		self.noOutput(args)
@@ -316,6 +340,14 @@ class App(object):
 		df.to_csv(buffer, index=False, encoding='utf-8')
 		filepath = buffer
 		return filepath
+
+	def storeUpload(self, file):
+		"""Override this function
+
+		arguments: params (dict)
+		returns: path to file or buffer to be downloaded (string or buffer)
+		"""
+		pass
 
 	def getPlot(self, params):
 		"""Override this function
@@ -439,7 +471,8 @@ class App(object):
 			getCustomHeadFunction=self.getCustomHead, 
 			getHTMLFunction=self.getHTML, 
 			getDownloadFunction=self.getDownload, 
-			noOutputFunction=self.noOutput)
+			noOutputFunction=self.noOutput,
+			storeUploadFunction=self.storeUpload)
 		return webapp
 class Site(object):
 	"""Creates a 'tree' of cherrypy 'Root' objects that allow for the
