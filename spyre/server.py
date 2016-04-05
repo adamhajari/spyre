@@ -183,6 +183,8 @@ class Root(object):
 	def plot(self, **args):
 		args = self.clean_args(args)
 		p = self.getPlot(args)
+		if p is None:
+			return None
 		d = model.Plot()
 		buffer = d.getPlotPath(p)
 		cherrypy.response.headers['Content-Type'] = 'image/png'
@@ -192,6 +194,8 @@ class Root(object):
 	def image(self, **args):
 		args = self.clean_args(args)
 		img = self.getImage(args)
+		if img is None:
+			return None
 		d = model.Image()
 		buffer = d.getImagePath(img)
 		cherrypy.response.headers['Content-Type'] = 'image/jpg'
@@ -201,6 +205,8 @@ class Root(object):
 	def data(self, **args):
 		args = self.clean_args(args)
 		data = self.getJsonData(args)
+		if data is None:
+			return None
 		cherrypy.response.headers['Content-Type'] = 'application/json'
 		return json.dumps({'data':data,'args':args}).encode('utf8')
 
@@ -208,6 +214,8 @@ class Root(object):
 	def table(self, **args):
 		args = self.clean_args(args)
 		df = self.getTable(args)
+		if df is None:
+			return ""
 		html = df.to_html(index=include_df_index, escape=False)
 		i = 0
 		for col in df.columns:
@@ -222,6 +230,8 @@ class Root(object):
 	def html(self, **args):
 		args = self.clean_args(args)
 		html = self.getHTML(args)
+		if html is None:
+			return ""
 		cherrypy.response.headers['Content-Type'] = 'text/html'
 		return html
 
@@ -239,21 +249,6 @@ class Root(object):
 	@cherrypy.expose
 	def upload(self, xfile):
 		self.storeUpload(xfile.file)
-		out = """<html>
-		<body>
-			xfile length: %s<br />
-			xfile filename: %s<br />
-			xfile mime-type: %s
-		</body>
-		</html>"""
-		# size = 0
-		# while True:
-		# 	data = xfile.file.read(8192)
-		# 	if not data:
-		# 		break
-		# 	size += len(data)
-
-		# return out % (size, xfile.filename, xfile.content_type)
 
 	@cherrypy.expose
 	def no_output(self, **args):
@@ -304,6 +299,8 @@ class App(object):
 		the params passed used for table or d3 outputs are forwarded on to getData
 		"""
 		df = self.getData(params)
+		if df is None:
+			return None
 		return df.to_dict(orient='records')
 
 	def getData(self, params):
@@ -327,7 +324,10 @@ class App(object):
 		arguments: params (dict)
 		returns: html table
 		"""
-		return self.getData(params)
+		df = self.getData(params)
+		if df is None:
+			return None
+		return df
 
 	def getDownload(self, params):
 		"""Override this function
@@ -362,7 +362,10 @@ class App(object):
 			return eval("self."+str(params['output_id'])+"(params)")
 		except AttributeError:
 			try:
-				return self.getData(params).plot()
+				df = self.getData(params)
+				if df is None:
+					return None
+				return df.plot()
 			except:
 				fig = plt.figure()  # make figure object
 				splt = fig.add_subplot(1,1,1)
