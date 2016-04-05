@@ -65,15 +65,25 @@ class TestApp1(server.App):
 				"linked_type": 'text', 
 			}]
 	tabs = ["Tab1", "Tab2"]
-	controls = [{	"type" : "button",
+	controls = [{	"type" : "upload",
+					"id" : "button3",
+					"label" : "upload"
+				},
+				{	"type" : "button",
 					"id" : "refresh",
 					"label" : "refresh",
 				},
 				{	"type" : "button",
 					"id" : "button2",
 					"label" : "download",
-				}]
-	outputs = [{	"type" : "plot",
+				},
+				]
+	outputs = [{	"type" : "html",
+					"id" : "html1",
+					"control_id" : "refresh",
+					"tab" : "Tab1"
+				},
+				{	"type" : "plot",
 					"id" : "plot1",
 					"control_id" : "refresh",
 					"tab" : "Tab1"
@@ -109,6 +119,19 @@ class TestApp1(server.App):
 					"sortable" : True,
 					"tab" : "Tab2"
 				}]
+	def __init__(self):
+		self.upload_data = None
+
+	def html1(self,params):
+		text = ""
+		if self.upload_data is not None:
+			text += self.upload_data
+		return text
+
+	def storeUpload(self,file):
+		self.upload_file = file
+		self.upload_data = file.read()
+		file.close()
 
 	def getJsonData(self,params):
 		count = [1,4,3]
