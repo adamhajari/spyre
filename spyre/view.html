@@ -127,7 +127,7 @@
 				{%- if output['type']=='plot' %}
 					// load plot function
 					function {{output['id']}}(){
-						var spinning_wheel = $("<img />").attr('src', "/spinning_wheel");
+						var spinning_wheel = $("<img />").attr('src', "{{prefix}}/spinning_wheel");
 						$("#{{output['id']}}").html(spinning_wheel);
 
 						var params = updateSharedParameters();
@@ -153,7 +153,7 @@
 				{%- if output['type']=='html' %}
 					// custom html function
 					function {{output['id']}}(){
-						var spinning_wheel = $("<img />").attr('src', "/spinning_wheel");
+						var spinning_wheel = $("<img />").attr('src', "{{prefix}}/spinning_wheel");
 						$("#{{output['id']}}").html(spinning_wheel);
 
 						var params = updateSharedParameters();
@@ -170,7 +170,7 @@
 				{%- if output['type']=='table' %}
 					// table output function
 					function {{output['id']}}(){
-						var spinning_wheel = $("<img />").attr('src', "/spinning_wheel");
+						var spinning_wheel = $("<img />").attr('src', "{{prefix}}/spinning_wheel");
 						$("#{{output['id']}}").html(spinning_wheel);
 						updateSharedParameters()
 						var params = updateSharedParameters();

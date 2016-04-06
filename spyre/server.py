@@ -61,7 +61,8 @@ class Root(object):
 		getHTMLFunction=None,  
 		getDownloadFunction=None, 
 		noOutputFunction=None,
-		storeUploadFunction=None):
+		storeUploadFunction=None,
+		prefix='/'):
 
 		# populate template dictionary for creating input,controler, and output HTML and javascript
 		if templateVars is not None:
@@ -69,6 +70,7 @@ class Root(object):
 		else:
 			self.templateVars = {}
 			self.templateVars['title'] = title
+			self.templateVars['prefix'] = prefix
 			# necessary to ensure that spyre apps prior to version 0.2.0 still work
 			for input in inputs:
 				if 'input_type' in input:
@@ -291,6 +293,7 @@ class App(object):
 	tabs = None
 	spinnerFile = None
 	templateVars = None
+	prefix = '/'
 
 	def getJsonData(self, params):
 		"""turns the DataFrame returned by getData into a dictionary
@@ -437,11 +440,13 @@ class App(object):
 		"""
 		return ""
 
-	def launch(self,host="local",port=8080):
+	def launch(self,host="local",port=8080,prefix='/'):
+		self.prefix = prefix
 		webapp = self.getRoot()
 		if host!="local":
 			cherrypy.server.socket_host = '0.0.0.0'
 		cherrypy.server.socket_port = port
+		cherrypy.tree.mount(webapp,prefix)
 		cherrypy.quickstart(webapp)
 
 
@@ -475,7 +480,9 @@ class App(object):
 			getHTMLFunction=self.getHTML, 
 			getDownloadFunction=self.getDownload, 
 			noOutputFunction=self.noOutput,
-			storeUploadFunction=self.storeUpload)
+			storeUploadFunction=self.storeUpload,
+			prefix=self.prefix)
+
 		return webapp
 class Site(object):
 	"""Creates a 'tree' of cherrypy 'Root' objects that allow for the
