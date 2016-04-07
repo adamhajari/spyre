@@ -70,7 +70,10 @@ class Root(object):
 		else:
 			self.templateVars = {}
 			self.templateVars['title'] = title
-			self.templateVars['prefix'] = prefix
+			if prefix[-1] == '/':
+				self.templateVars['prefix'] = prefix[:-1]
+			else:
+				self.templateVars['prefix'] = prefix
 			# necessary to ensure that spyre apps prior to version 0.2.0 still work
 			for input in inputs:
 				if 'input_type' in input:
