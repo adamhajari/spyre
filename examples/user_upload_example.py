@@ -6,12 +6,7 @@ import json
 
 class UserUploadApp(server.App):
 
-	def __init__(self):
-		# implements a simple caching mechanism to avoid multiple calls to the yahoo finance api
-		self.data_cache = None
-		self.params_cache = None
-
-	title = "Historical Stock Prices"
+	title = "Custom File Upload Example"
 
 	controls = [{	"type" : "upload",
 					"id" : "ubutton"
@@ -42,7 +37,7 @@ class UserUploadApp(server.App):
 		self.upload_file = None
 
 	def html1(self,params):
-		text = "Upload a CSV and press refresh."
+		text = "Upload a CSV and press refresh. There's a sample csv in the examples directory that you could try."
 		if self.upload_data is not None:
 			text = self.upload_data
 		return text
