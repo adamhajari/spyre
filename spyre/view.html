@@ -100,6 +100,14 @@
 							break;
 						}
 					};
+				}else if(type=="multiple"){
+                    elements = document.getElementById(key).value=value;
+					for (var i = elements.length - 1; i >= 0; i--) {
+						if(elements[i].value==value){
+							elements[i].selected=true;
+							break;
+						}
+					};
 				}else if(type=="slider"){
 					document.getElementById(key).value=value;
 					document.getElementById(key+"_value").value=value;
@@ -338,6 +346,19 @@
 								{%- endfor %}
 							</select>
 						</div>
+
+                    <!-- select multiple -->
+                    {% elif input['type']=="multiple" -%}
+                        <!-- multiple select box -->
+                        <div class="multselect_input">
+                            {% if input['label'] is defined %}
+                                {{input['label']}}:
+                            {% endif %}
+					<select multiple style='height: 200px; width: 90%' id="{{input['key']}}"  onchange="inputChange( '{{input['key']}}', 'id', '{{input['linked_type']}}', '{{input['linked_key']}}', '{{input['linked_value']}}', '{{input['action_id']}}');" >
+					{% for option in input['options'] -%}
+						<option value="{{option['value']}}" {% if option['checked']==True %} selected="selected" {% endif %}>{{option['label']}} </option>
+					{%- endfor %}
+					</select><br></div>
 
 					<!-- radiobuttons -->
 					{% elif input['type']=="radiobuttons" -%}
