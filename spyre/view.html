@@ -325,6 +325,34 @@
 							</form>
 						</div>
 
+					<!-- searchbox -->
+					{% elif input['type']=="searchbox" -%}
+						<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+  						<link rel="stylesheet" href="//code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css">
+						<script>
+							$( function() {
+							var availableTags = [
+								{% for option in input['options'] -%}
+									"{{option}}",
+								{%- endfor %}
+							];
+							$( "#{{input['key']}}" ).autocomplete({
+							  source: availableTags
+							});
+							} );
+						</script>
+
+						<!-- searchbox -->
+						<div class="spyrePad--vertS">
+							{% if input['label'] is defined %}
+								{{input['label']}}:
+							{% endif %}
+							<input id="{{input['key']}}" 
+								onkeydown="if (event.keyCode == 13) { 
+									inputChange( '{{input['key']}}', 'id', '{{input['linked_type']}}', '{{input['linked_key']}}', '{{input['linked_value']}}', '{{input['action_id']}}'); 
+									}">
+						</div>
+
 					<!-- dropdown -->
 					{% elif input['type']=="dropdown" -%}
 						<!-- dropdown menu -->

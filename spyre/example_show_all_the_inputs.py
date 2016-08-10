@@ -20,11 +20,24 @@ class TestApp1(server.App):
 			    {"label": "Blue", "value":'b'}, 
 			    {"label": "Yellow", "value":'y'}]
 
+	states = {	"Alabama":"AL", 
+				"Arkansas":"AR",
+				"Alaska":"AK",
+				"Nevada":"NV",
+				"New York":"NY",
+				"New Jersey":"NJ",}
+
 	title = "Test App 1"
 	inputs = [{	"type":'text',
 				"label": 'Title', 
 				"value" : 'Simple Sine Wave',
 				"key": 'title', 
+				"action_id" : "refresh",
+			},
+			{	"type":'searchbox',
+				"label": 'Search', 
+				"options" : states.keys(),
+				"key": 'state', 
 				"action_id" : "refresh",
 			},
 			{	"type":'radiobuttons',
@@ -168,7 +181,7 @@ class TestApp1(server.App):
 		splt = fig.add_subplot(1,1,1)
 
 		f = float(params['freq'])
-		title = params['title']
+		title = "%s: %s" % (params['title'],params['state'])
 		axis_label = params['axis_label']
 		color = params['color']
 		func_type = params['func_type']
