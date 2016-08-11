@@ -304,10 +304,13 @@ class App(object):
 		arguments:
 		the params passed used for table or d3 outputs are forwarded on to getData
 		"""
-		df = self.getData(params)
-		if df is None:
-			return None
-		return df.to_dict(orient='records')
+		try:
+			return eval("self."+str(params['output_id'])+"(params)")
+		except AttributeError:
+			df = self.getData(params)
+			if df is None:
+				return None
+			return df.to_dict(orient='records')
 
 	def getData(self, params):
 		"""Override this function

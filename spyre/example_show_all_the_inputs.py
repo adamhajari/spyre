@@ -11,6 +11,8 @@ import numpy as np
 import pandas as pd
 from numpy import pi
 import time
+import requests
+import json
 
 from bokeh.resources import INLINE
 
@@ -35,9 +37,15 @@ class TestApp1(server.App):
 				"action_id" : "refresh",
 			},
 			{	"type":'searchbox',
-				"label": 'Search', 
+				"label": 'Frontend Search', 
 				"options" : states.keys(),
 				"key": 'state', 
+				"action_id" : "refresh",
+			},
+			{	"type":'searchbox',
+				"label": 'Backend Search', 
+				"output_id" : "backend_search",
+				"key": 'results', 
 				"action_id" : "refresh",
 			},
 			{	"type":'radiobuttons',
@@ -131,6 +139,10 @@ class TestApp1(server.App):
 					"control_id" : "refresh",
 					"sortable" : True,
 					"tab" : "Tab2"
+				},
+				{	"type" : "json",
+					"id" : "backend_search",
+					"control_id" : "refresh",
 				}]
 	def __init__(self):
 		self.upload_data = None
@@ -141,18 +153,32 @@ class TestApp1(server.App):
 			text += self.upload_data
 		return text
 
+	def backend_search(self,params):
+		# the searchbox input will automatically add the query to 'params' as q
+		q = params['q']
+
+		url="https://api.nextbigsound.com/search/v1/artists/?fields=id,name,category&limit=15&query=%s" % q
+		resp = requests.get(url)
+		data = json.loads(resp.text)
+		artists = []
+		for artist in data['artists']:
+			artists.append({'label':artist['name'], 'value':artist['id']})
+		return artists
+		
+
+
 	def storeUpload(self,file):
 		self.upload_file = file
 		self.upload_data = file.read()
 		file.close()
 
-	def getJsonData(self,params):
+	def getTable1Data(self,params):
 		count = [1,4,3]
 		name = ['<a href="http://adamhajari.com">A</a>','B','C']
 		return {'name':name, 'count':count}
 
 	def table1(self,params):
-		data = self.getJsonData(params)
+		data = self.getTable1Data(params)
 		df = pd.DataFrame(data)
 		return df
 
