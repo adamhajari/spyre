@@ -366,8 +366,7 @@
 											// data is an array of objects and must be transformed for autocomplete to use
 											var array = data.error ? [] : $.map(data.data, function(s) {
 												return {
-													label: s.label,
-													value: s.value
+													label: s.label
 												};
 											});
 											response(array);
