@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='DataSpyre',
-    version='0.2.5',
+    version='0.2.6',
     description='Spyre makes it easy to build interactive web applications, and requires no knowledge of HTML, CSS, or Javascript.',
     url='https://github.com/adamhajari/spyre',
     author='Adam Hajari',

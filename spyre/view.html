@@ -382,6 +382,7 @@
 										// prevent autocomplete from updating the textbox
 										event.preventDefault();
 										document.getElementById("{{input['key']}}").value=ui.item.label;
+										inputChange( '{{input['key']}}', 'id', '{{input['linked_type']}}', '{{input['linked_key']}}', '{{input['linked_value']}}', '{{input['action_id']}}'); 
 									}
 								});
 							{% endif %}
@@ -393,10 +394,7 @@
 							{% if input['label'] is defined %}
 								{{input['label']}}:
 							{% endif %}
-							<input type="searchbox" id="{{input['key']}}" value="{{input['value']}}" 
-								onkeydown="if (event.keyCode == 13) { 
-									inputChange( '{{input['key']}}', 'id', '{{input['linked_type']}}', '{{input['linked_key']}}', '{{input['linked_value']}}', '{{input['action_id']}}'); 
-									}">
+							<input type="searchbox" id="{{input['key']}}" value="{{input['value']}}" >
 						</div>
 
 					<!-- dropdown -->
@@ -491,12 +489,10 @@
 										if( fileName ){
 											label.querySelector( 'span' ).innerHTML = fileName;
 											//disable the default form submission
-											console.log(e);
 											var data = new FormData();
 											jQuery.each(jQuery('#file-1')[0].files, function(i, file) {
 												data.append('xfile', file);
 											});
-											console.log(data);
 
 											$.ajax({
 												url: '/upload',
