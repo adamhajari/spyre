@@ -44,6 +44,7 @@ class TestApp1(server.App):
 			},
 			{	"type":'searchbox',
 				"label": 'Backend Search', 
+				"value": 'Foo Fighters',
 				"output_id" : "backend_search",
 				"key": 'results', 
 				"action_id" : "refresh",
@@ -155,7 +156,7 @@ class TestApp1(server.App):
 
 	def backend_search(self,params):
 		# the searchbox input will automatically add the query to 'params' as q
-		q = params['q']
+		q = params.get('q', params['results'])
 
 		url="https://api.nextbigsound.com/search/v1/artists/?fields=id,name,category&limit=15&query=%s" % q
 		resp = requests.get(url)
@@ -227,9 +228,11 @@ class TestApp1(server.App):
 		return fig
 
 	def plot2(self,params):
+		title = params['results']
 		data = self.table1(params)
 		fig = plt.figure()  # make figure object
 		splt = fig.add_subplot(1,1,1)
+		splt.set_title(title)
 		ind = np.arange(len(data['name']))
 		width = 0.85  
 		splt.bar(ind,data['count'], width)

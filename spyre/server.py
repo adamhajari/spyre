@@ -168,7 +168,7 @@ class Root(object):
 				continue
 
 			# use the params passed in with the url switch out the default input values
-			if input['type'] in ['text','slider']:
+			if input['type'] in ['text','slider','searchbox']:
 				self.templateVars['inputs'][index]['value'] = input_value
 			if input['type'] in ['radiobuttons', 'dropdown']:
 				for option in input['options']:
