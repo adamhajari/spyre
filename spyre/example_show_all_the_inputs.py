@@ -38,7 +38,7 @@ class TestApp1(server.App):
 			},
 			{	"type":'searchbox',
 				"label": 'Frontend Search', 
-				"options" : states.keys(),
+				"options" : list(states.keys()),
 				"key": 'state', 
 				"action_id" : "refresh",
 			},
