@@ -2,6 +2,7 @@ import matplotlib
 matplotlib.use('Agg')
 
 import os, os.path
+import sys
 import json
 import jinja2
 import matplotlib.pyplot as plt
@@ -244,9 +245,10 @@ class Root(object):
 	def download(self, **args):
 		args = self.clean_args(args)
 		filepath = self.getDownload(args)
+		buff_type = "StringIO" if sys.version_info[0] == 3 else "instance"
 		if type(filepath).__name__=="str":
 			return serve_file(filepath, "application/x-download", "attachment", name='data.csv')
-		if type(filepath).__name__=="instance":
+		if type(filepath).__name__==buff_type:
 			return serve_fileobj(filepath.getvalue(), "application/x-download", "attachment", name='data.csv')
 		else:
 			return "error downloading file. filepath must be string of buffer"
