@@ -51,7 +51,7 @@ class StockExample(server.App):
 			result = urllib2.urlopen(api_url).read()
 			data = json.loads(result.decode('utf-8').replace('finance_charts_json_callback( ','')[:-1])  # strip away the javascript and load json
 			self.company_name = data['meta']['Company-Name']
-			df = pd.DataFrame.from_records(data['series'])
+			df = pd.DataFrame.from_records(data['series']).drop(['volume'],axis=1)
 			df['Date'] = pd.to_datetime(df['Date'],format='%Y%m%d')
 			self.data_cache = df 		# caching layer
 			self.params_cache = params 	# caching layer
