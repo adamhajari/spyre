@@ -350,7 +350,7 @@
 									"{{option}}",
 								{%- endfor %}
 							];
-							{% if not input.has_key('output_id') -%}
+							{% if not 'output_id' in input -%}
 								// if there's not output_id specified, this is a frontend search and should use
 								// values specified in the options dict
 								$( "#{{input['key']}}" ).autocomplete({
