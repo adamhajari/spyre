@@ -36,16 +36,25 @@ input {
 input[type="radio"] {
 	display: inline-block;
 	padding: 5px;
-	margin: 0 0 10px 5px;
+	margin: 5px 0 10px 5px;
 	width: 10%;
 }
 
 input[type="checkbox"] {
 	display: inline-block;
 	padding: 5px;
-	margin: 0 0 10px 5px;
+	margin: 5px 0 0;
 	width: 10%;
 }
+
+select[multiple] {
+    height: auto;
+    display: inline-block;
+	padding: 5px;
+	margin: 5px 0 2px 2px;
+	width: 95%;
+}
+
 
 /* Upload file input and buttons */
 input[type=submit] {
