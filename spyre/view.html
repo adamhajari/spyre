@@ -29,6 +29,12 @@
 						$.each($('input[name="{{input['key']}}"]:checked'), function() {
 							{{input['key']}}.push($(this).val());
 						});
+					{% elif input['type']=="multiple" -%}
+						var {{input['key']}} = new Array();
+						{{input['key']}}.push("__list__");
+						$.each($("#{{input['key']}}").val(), function() {
+							{{input['key']}}.push($(this)[0]);
+						});
 					{% elif input['type']=="slider" -%}
 						var {{input['key']}} = "__float__".concat($("#{{input['key']}}").val());
 					{% else %}
@@ -93,16 +99,16 @@
 							}
 						};
 					};
-				}else if(type=="dropdown"){
-					elements = document.getElementById(key).value=value;
+				}else if(type=="multiple"){
+                    elements = document.getElementById(key).value=value;
 					for (var i = elements.length - 1; i >= 0; i--) {
 						if(elements[i].value==value){
 							elements[i].selected=true;
 							break;
 						}
 					};
-				}else if(type=="multiple"){
-                    elements = document.getElementById(key).value=value;
+				}else if(type=="dropdown"){
+					elements = document.getElementById(key).value=value;
 					for (var i = elements.length - 1; i >= 0; i--) {
 						if(elements[i].value==value){
 							elements[i].selected=true;
@@ -419,19 +425,6 @@
 							</select>
 						</div>
 
-                    <!-- select multiple -->
-                    {% elif input['type']=="multiple" -%}
-                        <!-- multiple select box -->
-                        <div class="multselect_input">
-                            {% if input['label'] is defined %}
-                                {{input['label']}}:
-                            {% endif %}
-					<select multiple style='height: 200px; width: 90%' id="{{input['key']}}"  onchange="inputChange( '{{input['key']}}', 'id', '{{input['linked_type']}}', '{{input['linked_key']}}', '{{input['linked_value']}}', '{{input['action_id']}}');" >
-					{% for option in input['options'] -%}
-						<option value="{{option['value']}}" {% if option['checked']==True %} selected="selected" {% endif %}>{{option['label']}} </option>
-					{%- endfor %}
-					</select><br></div>
-
 					<!-- radiobuttons -->
 					{% elif input['type']=="radiobuttons" -%}
 						<div
@@ -460,10 +453,49 @@
 							{% endif %}
 							{% for option in input['options'] -%}
 								<div>
-									<input type="checkbox" name="{{input['key']}}" value="{{option['value']}}" {% if option['checked']==True %} checked {% endif %} onclick="inputChange( '{{input['key']}}', 'name', '{{input['linked_type']}}', '{{input['linked_key']}}', '{{input['linked_value']}}', '{{input['action_id']}}');">
+									<input 
+										type="checkbox" 
+										name="{{input['key']}}" 
+										value="{{option['value']}}" 
+										{% if option['checked']==True %} 
+											checked 
+										{% endif %} 
+										onclick="inputChange( 
+											'{{input['key']}}', 
+											'name', 
+											'{{input['linked_type']}}', 
+											'{{input['linked_key']}}', 
+											'{{input['linked_value']}}', 
+											'{{input['action_id']}}'
+											);"
+									>
 									{{option['label']}}
 								</div>
 							{%- endfor %}
+						</div>
+
+					<!-- select multiple -->
+					{% elif input['type']=="multiple" -%}
+						<!-- multiple select box -->
+						<div class="multselect_input">
+							{% if input['label'] is defined %}
+								{{input['label']}}:
+							{% endif %}
+							<select multiple 
+								id="{{input['key']}}"  
+								onchange="inputChange( 
+									'{{input['key']}}', 
+									'id', 
+									'{{input['linked_type']}}', 
+									'{{input['linked_key']}}', 
+									'{{input['linked_value']}}', 
+									'{{input['action_id']}}'
+									);" 
+							>
+							{% for option in input['options'] -%}
+								<option value="{{option['value']}}" {% if option['checked']==True %} selected="selected" {% endif %}>{{option['label']}} </option>
+							{%- endfor %}
+							</select>
 						</div>
 
 					<!-- sliders -->
