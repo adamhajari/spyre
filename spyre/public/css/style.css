@@ -290,6 +290,8 @@ img {
 	padding: 10px;
 	width: 280px;
 	box-sizing: border-box;
+	overflow: auto;
+	height: 100%;
 }
 
 .content {		
