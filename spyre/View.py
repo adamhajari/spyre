@@ -1,6 +1,7 @@
 import __main__
 import os
 import codecs
+import matplotlib.image as mpimg
 import sys
 import io
 from imp import reload

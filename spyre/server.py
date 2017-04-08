@@ -1,4 +1,5 @@
 import matplotlib
+matplotlib.use('Agg')
 
 import os
 import os.path
@@ -12,8 +13,6 @@ import copy
 import cherrypy
 from cherrypy.lib.static import serve_file
 from cherrypy.lib.static import serve_fileobj
-
-matplotlib.use('Agg')
 
 try:
     import StringIO as io  # python2
