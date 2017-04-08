@@ -12,6 +12,7 @@ install:
     else
       wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
     fi
+  - pip install flake8
   - bash miniconda.sh -b -p $HOME/miniconda
   - export PATH="$HOME/miniconda/bin:$PATH"
   - hash -r
@@ -21,6 +22,9 @@ install:
   - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION numpy matplotlib pandas
   - source activate test-environment
   - python setup.py install
+
+before_script: 
+  - python nbslint --all
 
 script:
   - python -m unittest discover tests
