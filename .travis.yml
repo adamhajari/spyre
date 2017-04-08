@@ -23,7 +23,7 @@ install:
   - python setup.py install
 
 before_script: 
-  - python nbslint --all
+  - ./nbslint --all
 
 script:
   - python -m unittest discover tests
