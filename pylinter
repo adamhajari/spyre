@@ -1,0 +1,153 @@
+#!/usr/bin/env python
+
+"""
+Lint python files before commit with flake8 lint tool.
+
+INSTALL:
+1. sudo pip install flake8
+2. to setup up pre-commit hook run "./nbslint --setup"
+
+To run on the entire repo run
+$ ./nbslint --all
+"""
+import sys
+import subprocess
+import argparse
+import os
+try:
+    import flake8
+except Exception:
+    print('you need to install flake8. Run "pip install flake8" and try again.')
+    raise
+
+LINTER = 'flake8'
+
+# available settings list
+AVAILABLE_SETTINGS = (
+    'exclude', 'filename', 'select', 'ignore', 'max-line-length', 'count',
+    'quiet', 'show-pep8', 'show-source', 'statistics', 'verbose'
+)
+SETTINGS_WITH_PARAMS = (
+    'exclude', 'filename', 'select', 'ignore', 'max-line-length', 'format'
+)
+
+FILES_TO_IGNORE = [
+    '.tox/',
+    'build/',
+    'docs/source/conf.py'
+]
+
+CONFIG = {
+    'max-line-length': 100,
+    'exclude': ','.join(FILES_TO_IGNORE),
+    'ignore': 'F401,E402,W503,E711'
+}
+
+
+def parse_settings():
+    """
+    Get lint settings
+    """
+    settings = list()
+
+    for key, value in CONFIG.items():
+        if key in SETTINGS_WITH_PARAMS:
+            settings.append("--%s=%s" % (key, value))
+        else:
+            settings.append("--%s" % key)
+
+    return settings
+
+
+def system(*args, **kwargs):
+    """
+    Run system command.
+    """
+    kwargs.setdefault('stdout', subprocess.PIPE)
+    proc = subprocess.Popen(args, **kwargs)
+    out, err = proc.communicate()
+    return out
+
+
+def get_changed_files():
+    """
+    Get python files from 'files to commit' git cache list.
+    """
+    files = []
+    filelist = system('git', 'diff', '--cached', '--name-status').strip()
+    for line in filelist.split('\n'):
+        try:
+            action, filename = line.strip().split()
+            if filename.endswith('.py') and action != 'D':
+                files.append(filename)
+        except Exception:
+            pass
+    return files
+
+
+def lint(files, settings):
+    """
+    Run linter.
+    """
+    args = settings[:]
+    args.insert(0, LINTER)
+    args.extend(files)
+    out = system(*args)
+    return filter(None, out.decode('utf8').strip().split('\n'))
+
+
+def setup():
+    src = '../../nbslint'
+    dst = '.git/hooks/pre-commit'
+    if os.path.exists(dst):
+        print('%s already exists' % dst)
+        return
+    print("creating sym link from %s to %s" % (src, dst))
+    os.symlink(src, dst)
+    return
+
+
+def main(args):
+    """
+    Do work
+    """
+    if args.setup:
+        setup()
+        return
+    settings = parse_settings()
+
+    errors = list()
+
+    if args.all:
+        files = ['.']
+    else:
+        files = get_changed_files()
+
+    if len(files) == 0:
+        print("No files are staged for commit. Run with the --all flag to run on all files")
+        return
+
+    for err in lint(files, settings):
+        divider = err.find(' ', err.find(' ') + 1)
+        pep8_error = err[0:divider]
+        if not any(error[0:divider] == pep8_error for error in errors):
+            errors.append(err)
+
+    if not errors:
+        print("Python lint: OK")
+        return
+
+    print("Python lint: FAIL")
+    print
+    print("\n".join(sorted(errors)))
+    print
+    print("Aborting commit due to python lint errors.")
+    sys.exit(1)
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description="Process Config Location")
+    parser.add_argument('--all', action='store_true')
+    parser.add_argument('--setup', action='store_true')
+    args = parser.parse_args()
+    main(args)

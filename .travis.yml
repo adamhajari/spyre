@@ -1,7 +1,6 @@
 language: python
 python:
   - "2.7"
-  - "3.3"
   - "3.4"
 install:
   - sudo apt-get update
@@ -20,7 +19,11 @@ install:
   - conda info -a
   - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION numpy matplotlib pandas
   - source activate test-environment
+  - pip install flake8
   - python setup.py install
+
+before_script: 
+  - python pylinter --all
 
 script:
   - python -m unittest discover tests
@@ -31,4 +34,3 @@ notifications:
       - adamjdanger+kdx@gmail.com
     on_success: always
     on_failure: always
-

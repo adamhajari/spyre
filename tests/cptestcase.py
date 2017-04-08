@@ -24,6 +24,7 @@ remote = cherrypy.lib.httputil.Host('127.0.0.1', 50001, "")
 
 __all__ = ['BaseCherryPyTestCase']
 
+
 class BaseCherryPyTestCase(unittest.TestCase):
     def request(self, path='/', method='GET', app_path='', scheme='http',
                 proto='HTTP/1.1', data=None, headers=None, **kwargs):
@@ -50,7 +51,8 @@ class BaseCherryPyTestCase(unittest.TestCase):
         the `headers` parameter to a dictionary of headers,
         the request's `scheme` or `protocol`.
 
-        .. seealso: http://docs.cherrypy.org/stable/refman/_cprequest.html#cherrypy._cprequest.Response
+        .. seealso:
+        http://docs.cherrypy.org/stable/refman/_cprequest.html#cherrypy._cprequest.Response
         """
         # This is a required header when running HTTP/1.1
         h = {'Host': '127.0.0.1'}
@@ -99,7 +101,7 @@ class BaseCherryPyTestCase(unittest.TestCase):
                 fd.close()
                 fd = None
 
-        if response.output_status.decode('utf8').find('500')==0:
+        if response.output_status.decode('utf8').find('500') == 0:
             raise AssertionError("Unexpected error")
 
         # collapse the response into a bytestring

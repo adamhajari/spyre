@@ -8,13 +8,10 @@ from stocks_example import StockExample
 from image_editor import ImageEditor
 
 
-
 class Index(App):
     def getHTML(self, params):
         return "Title Page Here"
 
-
-#site = Site(Index)
 
 site = Site(SlidersApp)
 
@@ -23,9 +20,3 @@ site.addApp(ImageEditor, '/app2/app3')
 
 
 site.launch()
-
-
-
-
-
-
