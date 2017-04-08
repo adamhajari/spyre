@@ -50,7 +50,7 @@ def parse_settings():
     """
     settings = list()
 
-    for key, value in CONFIG.iteritems():
+    for key, value in CONFIG.items():
         if key in SETTINGS_WITH_PARAMS:
             settings.append("--%s=%s" % (key, value))
         else:
