@@ -17,7 +17,7 @@ import os
 try:
     import flake8
 except Exception:
-    print 'you need to install flake8. Run "pip install flake8" and try again.'
+    print('you need to install flake8. Run "pip install flake8" and try again.')
     raise
 
 LINTER = 'flake8'
@@ -99,9 +99,9 @@ def setup():
     src = '../../nbslint'
     dst = '.git/hooks/pre-commit'
     if os.path.exists(dst):
-        print '%s already exists' % dst
+        print('%s already exists' % dst)
         return
-    print "creating sym link from %s to %s" % (src, dst)
+    print("creating sym link from %s to %s" % (src, dst))
     os.symlink(src, dst)
     return
 
@@ -123,7 +123,7 @@ def main(args):
         files = get_changed_files()
 
     if len(files) == 0:
-        print "No files are staged for commit. Run with the --all flag to run on all files"
+        print("No files are staged for commit. Run with the --all flag to run on all files")
         return
 
     for err in lint(files, settings):
@@ -133,14 +133,14 @@ def main(args):
             errors.append(err)
 
     if not errors:
-        print "Python lint: OK"
+        print("Python lint: OK")
         return
 
-    print "Python lint: FAIL"
+    print("Python lint: FAIL")
     print
-    print "\n".join(sorted(errors))
+    print("\n".join(sorted(errors)))
     print
-    print "Aborting commit due to python lint errors."
+    print("Aborting commit due to python lint errors.")
     sys.exit(1)
 
 
