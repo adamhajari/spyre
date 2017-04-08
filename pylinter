@@ -92,7 +92,8 @@ def lint(files, settings):
     args = settings[:]
     args.insert(0, LINTER)
     args.extend(files)
-    return filter(None, system(*args).strip().split('\n'))
+    out = system(*args)
+    return filter(None, out.decode('utf8').strip().split('\n'))
 
 
 def setup():
