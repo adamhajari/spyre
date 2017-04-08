@@ -40,7 +40,7 @@ FILES_TO_IGNORE = [
 CONFIG = {
     'max-line-length': 100,
     'exclude': ','.join(FILES_TO_IGNORE),
-    'ignore': 'F401,W503,E711'
+    'ignore': 'F401,E402,W503,E711'
 }
 
 
