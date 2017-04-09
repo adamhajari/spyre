@@ -24,14 +24,18 @@ from spyre import server
 
 class SimpleApp(server.App):
 	title = "Simple App"
-	inputs = [{ "type":"text",
-				"key":"words",
-				"label":"write words here",
-				"value":"hello world", 
-				"action_id":"simple_html_output"}]
+	inputs = [{
+		"type":"text",
+		"key":"words",
+		"label":"write words here",
+		"value":"hello world", 
+		"action_id":"simple_html_output"
+	}]
 
-	outputs = [{"type":"html",
-				"id":"simple_html_output"}]
+	outputs = [{
+		"type":"html",
+		"id":"simple_html_output"
+	}]
 
 	def getHTML(self, params):
 		words = params["words"]
@@ -93,28 +97,39 @@ import json
 class StockExample(server.App):
 	title = "Historical Stock Prices"
 
-	inputs = [{		"type":'dropdown',
-					"label": 'Company', 
-					"options" : [ {"label": "Google", "value":"GOOG"},
-								  {"label": "Yahoo", "value":"YHOO"},
-								  {"label": "Apple", "value":"AAPL"}],
-					"key": 'ticker', 
-					"action_id": "update_data"}]
+	inputs = [{
+		"type":'dropdown',
+		"label": 'Company', 
+		"options" : [
+			{"label": "Google", "value":"GOOG"},
+			{"label": "Yahoo", "value":"YHOO"},
+			{"label": "Apple", "value":"AAPL"}
+		],
+		"key": 'ticker', 
+		"action_id": "update_data"
+	}]
 
-	controls = [{	"type" : "hidden",
-					"id" : "update_data"}]
+	controls = [{
+		"type" : "hidden",
+		"id" : "update_data"
+	}]
 
 	tabs = ["Plot", "Table"]
 
-	outputs = [{ "type" : "plot",
-					"id" : "plot",
-					"control_id" : "update_data",
-					"tab" : "Plot"},
-				{ "type" : "table",
-					"id" : "table_id",
-					"control_id" : "update_data",
-					"tab" : "Table",
-					"on_page_load" : True }]
+	outputs = [
+		{
+			"type" : "plot",
+			"id" : "plot",
+			"control_id" : "update_data",
+			"tab" : "Plot"
+		}, { 
+			"type" : "table",
+			"id" : "table_id",
+			"control_id" : "update_data",
+			"tab" : "Table",
+			"on_page_load" : True
+		}
+	]
 
 	def getData(self, params):
 		ticker = params['ticker']
