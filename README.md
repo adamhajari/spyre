@@ -67,15 +67,17 @@ Let's get back to our getHTML method. Notice that it takes a single argument: pa
 With the exception of the input type "checkboxgroup", the value of each of the params elements is a string. The string returned by getHTML will be displayed in the right panel of our Spyre app.
 
 ### launching the app ###
-To launch our app we just need to create an instance of our SimpleApp class and call the launch method. Assuming you name this file "simple_sine_example.py" you can launch this app from the command line with:
+To launch our app we just need to create an instance of our SimpleApp class and call the launch method. Assuming you name this file "simple_app_example.py" you can launch this app from the command line with:
 ```bash
-    $ python simple_sine_example.py
+    $ python simple_app_example.py
 ```
 The output will indicate where the app is being served (http://127.0.0.1:8080 by default)
 
 If all goes smoothly your spyre app should look like this:
 
-![simple sine example screenshot](https://raw.githubusercontent.com/adamhajari/spyre/master/examples/screenshots/simple_sine_screenshot.png)
+![simple app example screenshot](https://raw.githubusercontent.com/adamhajari/spyre/master/examples/screenshots/simple_app_screenshot.png)
+
+
 
 Example 2: Tabs and Tables
 ----
