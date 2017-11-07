@@ -30,6 +30,7 @@ setup(
         'public': ['js/*.js', 'css/*.css'],
     },
     install_requires=[
+        "six>=1.11.0",
         "numpy",
         "pandas",
         "cherrypy",
