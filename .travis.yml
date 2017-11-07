@@ -21,6 +21,7 @@ install:
   - source activate test-environment
   - pip install flake8
   - python setup.py install
+  - pip install --upgrade six
 
 before_script: 
   - python pylinter --all
