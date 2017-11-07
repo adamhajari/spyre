@@ -28,7 +28,8 @@ class SimpleApp(server.App):
     def getCustomCSS(self):
         css = (
             "body { background-image: "
-            "url('http://i95.photobucket.com/albums/l141/adamjdanger/indonesia_bg.jpg');}"
+            "url('https://github.com/adamhajari/spyre/blob/master/"
+            "examples/screenshots/jungle-cruise-gallery06.jpg?raw=true');}"
         )
         return css
 

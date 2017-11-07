@@ -1,13 +1,13 @@
+# you must run bokeh.sampledata.download() from a python shell before
+# the import on line 18 will work
 # tested with python2.7 and 3.4
 from spyre import server
 
 import pandas as pd
 import numpy as np
-
 from bokeh.resources import INLINE
 from bokeh.resources import CDN
 from bokeh.embed import components
-from bokeh.sampledata import us_counties, unemployment
 from bokeh import plotting
 from collections import OrderedDict
 try:
@@ -15,6 +15,7 @@ try:
 except ImportError:
     from bokeh.models import HoverTool
 
+from bokeh.sampledata import us_counties, unemployment
 
 class UnemploymentApp(server.App):
     def __init__(self):
