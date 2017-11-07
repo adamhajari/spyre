@@ -30,8 +30,8 @@ git config --global credential.helper gcloud.sh
 git clone https://github.com/adamhajari/spyre.git /opt/app
 
 # Install app dependencies
-virtualenv /opt/app/spyre/tutorial/google_cloud/env
-/opt/app/spyre/tutorial/google_cloud/env/bin/pip install -r /opt/app/spyre/tutorial/google_cloud/requirements.txt
+virtualenv /opt/app/tutorial/google_cloud/env
+/opt/app/tutorial/google_cloud/env/bin/pip install -r /opt/app/tutorial/google_cloud/requirements.txt
 
 # Make sure the pythonapp user owns the application code
 chown -R pythonapp:pythonapp /opt/app
@@ -40,14 +40,14 @@ chown -R pythonapp:pythonapp /opt/app
 # application.
 cat >/etc/supervisor/conf.d/python-app.conf << EOF
 [program:spyreexample]
-directory=/opt/app/spyre/tutorial/google_cloud
-command=/opt/app/spyre/tutorial/google_cloud/env/bin/python2.7 /opt/app/spyre/tutorial/google_cloud/app.py
+directory=/opt/app/tutorial/google_cloud
+command=/opt/app/tutorial/google_cloud/env/bin/python2.7 /opt/app/tutorial/google_cloud/app.py
 autostart=true
 autorestart=true
 user=pythonapp
 # Environment variables ensure that the application runs inside of the
 # configured virtualenv.
-environment=VIRTUAL_ENV="/opt/app/spyre/tutorial/google_cloud/env/",PATH="/opt/app/spyre/tutorial/google_cloud/env/bin",\
+environment=VIRTUAL_ENV="/opt/app/tutorial/google_cloud/env/",PATH="/opt/app/tutorial/google_cloud/env/bin",\
     HOME="/home/pythonapp",USER="pythonapp"
 stdout_logfile=syslog
 stderr_logfile=syslog
