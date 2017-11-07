@@ -17,6 +17,7 @@ except ImportError:
 
 from bokeh.sampledata import us_counties, unemployment
 
+
 class UnemploymentApp(server.App):
     def __init__(self):
         colors = ["#F1EEF6", "#D4B9DA", "#C994C7", "#DF65B0", "#DD1C77", "#980043"]
