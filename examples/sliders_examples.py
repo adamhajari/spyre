@@ -4,6 +4,7 @@ from spyre import server
 import matplotlib.pyplot as plt
 import numpy as np
 from numpy import pi
+import sys
 
 
 class SlidersApp(server.App):
@@ -34,21 +35,34 @@ class SlidersApp(server.App):
         f = float(params['freq'])
         d = float(params['decay'])
         x = np.arange(0, 6 * pi, pi / 50)
-        y1 = np.sin(f * x / (2 * pi))
-        y2 = np.exp(-x * d)
-        y3 = np.sin(f * x / (2 * pi)) * np.exp(-x * d)
         fig = plt.figure()
+
+        # sine wave
         splt1 = fig.add_subplot(3, 1, 1)
-        splt1.plot(x, y1)  # sine wave
+        y1 = np.sin(f * x / (2 * pi))
+        splt1.plot(x, y1)
         splt1.axes.get_xaxis().set_visible(False)
+
+        # exponential decay
         splt2 = fig.add_subplot(3, 1, 2)
-        splt2.plot(x, y2)  # exponential decay
+        y2 = np.exp(-x * d)
+        splt2.plot(x, y2)
         splt2.axes.get_xaxis().set_visible(False)
+
+        # sine wave decay
         splt3 = fig.add_subplot(3, 1, 3)
-        splt3.plot(x, y3)  # sine wave decay
+        y3 = np.sin(f * x / (2 * pi)) * np.exp(-x * d)
+        splt3.plot(x, y3)
         return fig
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     app = SlidersApp()
-    app.launch(port=9094)
+    args = sys.argv[1:]
+    if len(args) == 1:
+        app.launch(host=args[0])
+    elif len(args) == 2:
+        print args
+        app.launch(host=args[0], port=int(args[1]))
+    else:
+        app.launch()
