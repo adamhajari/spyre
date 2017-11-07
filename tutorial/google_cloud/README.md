@@ -16,10 +16,20 @@ Steps:
 
 ```
 gcloud compute instances create spyre-on-gcloud \
-    --image=debian-8 \
+    --image-family=ubuntu-1404 \
     --machine-type=f1-micro \
     --metadata-from-file startup-script=startup-script.sh \
     --zone us-east1-b \
     --tags http-server \
     --project=spyre-example
 ```
+
+gcloud compute instances create spyre-on-gcloud2 \
+    --image=ubuntu-1404-trusty-v20171101 \
+    --machine-type=f1-micro \
+    --metadata-from-file startup-script=startup-script.sh \
+    --zone us-east1-b \
+    --tags http-server \
+    --project=spyre-example
+
+ubuntu-1404-trusty-v20171101

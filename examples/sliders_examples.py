@@ -62,7 +62,6 @@ if __name__ == "__main__":
     if len(args) == 1:
         app.launch(host=args[0])
     elif len(args) == 2:
-        print args
         app.launch(host=args[0], port=int(args[1]))
     else:
         app.launch()

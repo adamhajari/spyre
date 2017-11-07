@@ -56,5 +56,12 @@ class SlidersApp(server.App):
         return fig
 
 
-app = SlidersApp()
-app.launch(host='0.0.0.0', port=8082)
+if __name__ == "__main__":
+    app = SlidersApp()
+    args = sys.argv[1:]
+    if len(args) == 1:
+        app.launch(host=args[0])
+    elif len(args) == 2:
+        app.launch(host=args[0], port=int(args[1]))
+    else:
+        app.launch()
