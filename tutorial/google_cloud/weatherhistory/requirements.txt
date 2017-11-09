@@ -1,0 +1,7 @@
+google-api-python-client
+google-cloud-bigquery
+pandas-gbq
+numpy
+pandas
+matplotlib
+DataSpyre==0.2.6
