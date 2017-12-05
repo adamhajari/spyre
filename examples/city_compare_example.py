@@ -22,7 +22,9 @@ cities = [
     {'label': 'Huntsville', 'value': '124'},
 ]
 
-con = sqlite3.connect('city_weather.db')
+DB_PATH = 'city_weather.db'
+
+con = sqlite3.connect(DB_PATH)
 query = """
     select c.* from cities c
 """
@@ -85,7 +87,7 @@ class WeatherCompareApp(server.App):
             extra_id = all_cities_df.loc[all_cities_df['city'] == city, 'id'].tolist()[0]
             city_ids.append(extra_id)
 
-        con = sqlite3.connect('/Users/ahajari/Projects/python/scratch/data/city_weather.db')
+        con = sqlite3.connect(DB_PATH)
         query = """
             select c.city, w.* from weather w
             inner join cities c
