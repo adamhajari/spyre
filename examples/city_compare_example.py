@@ -8,7 +8,8 @@ cities = [
     {'label': 'San Francisco', 'value': '13', 'checked': True},
     {'label': 'Portland, OR', 'value': '26', 'checked': True},
     {'label': 'Miami', 'value': '42', 'checked': True},
-    {'label': 'DC', 'value': '21'},
+    {'label': 'New Orleans', 'value': '49', 'checked': True},
+    {'label': 'Washington D.C.', 'value': '21'},
     {'label': 'Raleigh, NC', 'value': '41'},
     {'label': 'St. Louis', 'value': '61'},
     {'label': 'Chicago', 'value': '3'},
@@ -25,10 +26,11 @@ cities = [
 DB_PATH = 'city_weather.db'
 
 con = sqlite3.connect(DB_PATH)
-query = """
-    select c.* from cities c
-"""
+query = """select c.* from cities c"""
 all_cities_df = pd.read_sql(query, con)
+
+query = """select * from qol"""
+qol_df = pd.read_sql(query, con)
 con.close()
 
 
@@ -70,6 +72,11 @@ class WeatherCompareApp(server.App):
         'id': 'size',
         'control_id': 'update_all',
         'tab': 'size'
+    }, {
+        'type': 'plot',
+        'id': 'qol',
+        'control_id': 'update_all',
+        'tab': 'quality-of-life'
     }]
 
     controls = [{
@@ -78,7 +85,7 @@ class WeatherCompareApp(server.App):
         'id': 'update_all'
     }]
 
-    tabs = ['weather', 'size']
+    tabs = ['quality-of-life', 'weather', 'size']
 
     def weather(self, params):
         city_ids = params['city_ids']
@@ -97,12 +104,7 @@ class WeatherCompareApp(server.App):
         df = pd.read_sql(query, con)
         con.close()
 
-        f = plt.figure(figsize=(7, 15))
-        ax1 = plt.subplot(511)
-        ax2 = plt.subplot(512)
-        ax3 = plt.subplot(513)
-        ax4 = plt.subplot(514)
-        ax5 = plt.subplot(515)
+        f, (ax1, ax2, ax3, ax4, ax5) = plt.subplots(5, figsize=(7, 18))
 
         df_avghigh = df[['city', 'month', 'average_high']]\
             .pivot_table(index='month', columns='city', values='average_high')
@@ -138,7 +140,6 @@ class WeatherCompareApp(server.App):
         ax5.set_ylabel('avg snowfall (in)')
         df_sun.plot(ax=ax5)
         ax5.legend(loc='upper right', bbox_to_anchor=(1.3, 1.0), fancybox=True)
-        plt.tight_layout()
         return f
 
     def size(self, params):
@@ -147,9 +148,7 @@ class WeatherCompareApp(server.App):
         if len(all_cities_df.loc[all_cities_df['city'] == city, 'id'].tolist()) > 0:
             extra_id = all_cities_df.loc[all_cities_df['city'] == city, 'id'].tolist()[0]
             city_ids.append(extra_id)
-        f = plt.figure(figsize=(7, 10))
-        ax1 = plt.subplot(211)
-        ax2 = plt.subplot(212)
+        f, (ax1, ax2) = plt.subplots(2, figsize=(7, 10))
         df = all_cities_df.loc[all_cities_df['id'].isin(city_ids), :]
 
         df['density'] = df['density'] / 1000
@@ -159,6 +158,53 @@ class WeatherCompareApp(server.App):
         ax2.set_xlabel('population (x 100k)')
         df['population'] = df['population'] / 100000
         df[['city', 'population']].set_index('city').plot(ax=ax2, kind='barh', legend=False)
+        return f
+
+    def qol(self, params):
+        city_ids = params['city_ids']
+        city = params['city']
+        if len(all_cities_df.loc[all_cities_df['city'] == city, 'id'].tolist()) > 0:
+            extra_id = all_cities_df.loc[all_cities_df['city'] == city, 'id'].tolist()[0]
+            city_ids.append(extra_id)
+        f, (ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9) = plt.subplots(9, figsize=(7, 26))
+        df = qol_df.loc[qol_df['id'].isin(city_ids), :]
+
+        ax1.set_title('Quality of Life Index', fontsize=10)
+        df[['city', 'Quality of Life Index']].set_index('city')\
+            .plot(ax=ax1, kind='barh', legend=False)
+
+        ax2.set_title('Property Price to Income Ratio', fontsize=10)
+        df[['city', 'Property Price to Income Ratio']].set_index('city')\
+            .plot(ax=ax2, kind='barh', legend=False)
+
+        ax3.set_title('Traffic Commute Time Index', fontsize=10)
+        df[['city', 'Traffic Commute Time Index']].set_index('city')\
+            .plot(ax=ax3, kind='barh', legend=False)
+
+        ax4.set_title('Cost of Living Index', fontsize=10)
+        df[['city', 'Cost of Living Index']].set_index('city')\
+            .plot(ax=ax4, kind='barh', legend=False)
+
+        ax5.set_title('Climate Index', fontsize=10)
+        df[['city', 'Climate Index']].set_index('city')\
+            .plot(ax=ax5, kind='barh', legend=False)
+
+        ax6.set_title('Safety Index', fontsize=10)
+        df[['city', 'Safety Index']].set_index('city')\
+            .plot(ax=ax6, kind='barh', legend=False)
+
+        ax7.set_title('Pollution Index', fontsize=10)
+        df[['city', 'Pollution Index']].set_index('city')\
+            .plot(ax=ax7, kind='barh', legend=False)
+
+        ax8.set_title('Purchasing Power Index', fontsize=10)
+        df[['city', 'Purchasing Power Index']].set_index('city')\
+            .plot(ax=ax8, kind='barh', legend=False)
+
+        ax9.set_title('Health Care Index', fontsize=10)
+        df[['city', 'Health Care Index']].set_index('city')\
+            .plot(ax=ax9, kind='barh', legend=False)
+        f.tight_layout()
         return f
 
 
