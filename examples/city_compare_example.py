@@ -31,6 +31,9 @@ all_cities_df = pd.read_sql(query, con)
 
 query = """select * from qol"""
 qol_df = pd.read_sql(query, con)
+
+query = """select * from prop_prices"""
+prop_price_df = pd.read_sql(query, con)
 con.close()
 
 
@@ -74,6 +77,11 @@ class WeatherCompareApp(server.App):
         'tab': 'size'
     }, {
         'type': 'plot',
+        'id': 'prop_prices',
+        'control_id': 'update_all',
+        'tab': 'property-prices'
+    }, {
+        'type': 'plot',
         'id': 'qol',
         'control_id': 'update_all',
         'tab': 'quality-of-life'
@@ -85,7 +93,7 @@ class WeatherCompareApp(server.App):
         'id': 'update_all'
     }]
 
-    tabs = ['quality-of-life', 'weather', 'size']
+    tabs = ['quality-of-life', 'property-prices', 'weather', 'size']
 
     def weather(self, params):
         city_ids = params['city_ids']
@@ -204,6 +212,46 @@ class WeatherCompareApp(server.App):
         ax9.set_title('Health Care Index', fontsize=10)
         df[['city', 'Health Care Index']].set_index('city')\
             .plot(ax=ax9, kind='barh', legend=False)
+        f.tight_layout()
+        return f
+
+    def prop_prices(self, params):
+        city_ids = params['city_ids']
+        city = params['city']
+        if len(all_cities_df.loc[all_cities_df['city'] == city, 'id'].tolist()) > 0:
+            extra_id = all_cities_df.loc[all_cities_df['city'] == city, 'id'].tolist()[0]
+            city_ids.append(extra_id)
+        f, (ax1, ax2, ax3, ax4, ax5, ax6, ax7) = plt.subplots(7, figsize=(7, 23))
+        df = prop_price_df.loc[prop_price_df['id'].isin(city_ids), :]
+
+        ax1.set_title('Price per Square Feet to Buy Apartment', fontsize=10)
+        df[['city', 'Price per Square Feet to Buy Apartment']].set_index('city')\
+            .plot(ax=ax1, kind='barh', legend=False)
+
+        ax2.set_title('Apartment (1 bedroom)', fontsize=10)
+        df[['city', 'Apartment (1 bedroom)']].set_index('city')\
+            .plot(ax=ax2, kind='barh', legend=False)
+
+        ax3.set_title('Apartment (3 bedrooms)', fontsize=10)
+        df[['city', 'Apartment (3 bedrooms)']].set_index('city')\
+            .plot(ax=ax3, kind='barh', legend=False)
+
+        ax4.set_title('Apartment (1 bedroom) Outside of Centre', fontsize=10)
+        df[['city', 'Apartment (1 bedroom) Outside of Centre']].set_index('city')\
+            .plot(ax=ax4, kind='barh', legend=False)
+
+        ax5.set_title('Apartment (3 bedrooms) Outside of Centre', fontsize=10)
+        df[['city', 'Apartment (3 bedrooms) Outside of Centre']].set_index('city')\
+            .plot(ax=ax5, kind='barh', legend=False)
+
+        ax6.set_title('Price per Square Feet to Buy Apartment Outside of Centre', fontsize=10)
+        df[['city', 'Price per Square Feet to Buy Apartment Outside of Centre']].set_index('city')\
+            .plot(ax=ax6, kind='barh', legend=False)
+
+        ax7.set_title('Mortgage as Percentange of Income', fontsize=10)
+        df[['city', 'Mortgage as Percentange of Income:']].set_index('city')\
+            .plot(ax=ax7, kind='barh', legend=False)
+
         f.tight_layout()
         return f
 
