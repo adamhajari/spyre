@@ -1,4 +1,4 @@
-Spyre
+Secure Spyre
 =========
 
 Spyre is a Web Application Framework for providing a simple user interface for Python data projects.
