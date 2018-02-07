@@ -16,7 +16,7 @@ Installation
 ```
 
 
-The Simplest of Examples
+The Simplest of Examples, with User Authentication (Login)
 ----
 Here's a very simple spyre example that shows the primary components of a spyre app
 ```python
