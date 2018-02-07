@@ -12,7 +12,7 @@ Spyre runs on the minimalist python web framework, **[cherrypy]**, with **[jinja
 Installation
 ----
 ```bash
-    $ pip install dataspyre
+    $ pip install git+https://github.com/Dana-Farber/spyre
 ```
 
 
@@ -28,7 +28,7 @@ class SimpleApp(server.App):
 		"type": "text",
 		"key": "words",
 		"label": "write words here",
-		"value": "hello world", 
+		"value": "hello world",
 		"action_id": "simple_html_output"
 	}]
 
@@ -41,8 +41,17 @@ class SimpleApp(server.App):
 		words = params["words"]
 		return "Here's what you wrote in the textbox: <b>%s</b>" % words
 
+USERS={"alice":"secret"}
+
+from cherrypy.lib import auth_digest #must import this to compute ha1 digest
+digest_auth = {'/': {'tools.auth_digest.on': True,
+               'tools.auth_digest.realm': 'wonderland',
+               'tools.auth_digest.get_ha1': auth_digest.get_ha1_dict_plain(USERS),
+               'tools.auth_digest.key': 'a565c27146791cfb',
+}}
+
 app = SimpleApp()
-app.launch()
+app.launch(config=digest_auth)
 ```
 
 The SimpleApp class inherits server.App which includes a few methods that you can override to generate outputs. In this case we want our app to display HTML (just text for now) so we'll overide the getHTML method. This method should return a string.
