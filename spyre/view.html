@@ -8,7 +8,6 @@
 		<style>{{d3css}}</style>
 		<style>{{css}}</style>
 		<style>{{custom_css}}</style>
-		{{custom_head}}
 		<title>{{title}}</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<!-- load javascript -->
@@ -16,7 +15,6 @@
 
 		<script type='text/javascript'>
 			{{d3js}}
-			{{custom_js}}
 
 			function updateSharedParameters(){
 				var shared_params = "";
@@ -313,6 +311,10 @@
 					{%- endif %}
 				{%- endfor %}
 			});
+		</script>
+		{{custom_head}}
+		<script type='text/javascript'>
+			{{custom_js}}
 		</script>
 	</head>
 
