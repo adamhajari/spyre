@@ -14,6 +14,8 @@ import cherrypy
 from cherrypy.lib.static import serve_file
 from cherrypy.lib.static import serve_fileobj
 
+from cherrypy.lib import auth_digest
+
 try:
     import StringIO as io  # python2
 except Exception:
@@ -478,14 +480,15 @@ class App(object):
         """
         return ""
 
-    def launch(self, host="local", port=8080, prefix='/'):
+    def launch(self, host="local", port=8080, prefix='/', config=None):
+        """launch"""
         self.prefix = prefix
         webapp = self.getRoot()
         if host != "local":
             cherrypy.server.socket_host = '0.0.0.0'
         cherrypy.server.socket_port = port
         cherrypy.tree.mount(webapp, prefix)
-        cherrypy.quickstart(webapp)
+        cherrypy.quickstart(webapp, config=config)
 
     def launch_in_notebook(self, port=9095, width=900, height=600):
         """launch the app within an iframe in ipython notebook"""
