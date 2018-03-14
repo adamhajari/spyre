@@ -14,7 +14,6 @@ import cherrypy
 from cherrypy.lib.static import serve_file
 from cherrypy.lib.static import serve_fileobj
 
-#password auth
 from cherrypy.lib import auth_digest
 
 try:
@@ -482,6 +481,7 @@ class App(object):
         return ""
 
     def launch(self, host="local", port=8080, prefix='/', config=None):
+        """launch"""
         self.prefix = prefix
         webapp = self.getRoot()
         if host != "local":
