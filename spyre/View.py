@@ -6,12 +6,13 @@ import sys
 import io
 from imp import reload
 reload(sys)
+import logging
 
 ENCODING = 'utf-8'
 try:
     sys.setdefaultencoding(ENCODING)
 except Exception:
-    print("Warning: unable to set defaultencoding to utf-8")
+    logging.warn("Warning: unable to set defaultencoding to utf-8")
 
 
 class View:
