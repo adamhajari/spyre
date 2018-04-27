@@ -86,71 +86,75 @@ Let's look at another example to introduce controls, tabs, and a second output t
 In the example below we'll show historical stock data in a line graph and a table, each in it's own tab.  Since inputs can only have a single action_id (and we have two outputs), we'll need to introduce a button control in order to update both outputs.
 
 
-   >*Note to python 3 users:* Replace `from urllib2 import urlopen` with `from urllib.request import urlopen`
-
-
 ```python
+# tested with python2.7
 from spyre import server
+from googlefinance.client import get_price_data
 
-import pandas as pd
-from urllib2 import urlopen
-import json
+server.include_df_index = True
+
 
 class StockExample(server.App):
-	title = "Historical Stock Prices"
+    title = "Historical Stock Prices"
 
-	inputs = [{
-		"type": 'dropdown',
-		"label": 'Company', 
-		"options": [
-			{"label": "Google", "value": "GOOG"},
-			{"label": "Yahoo", "value": "YHOO"},
-			{"label": "Apple", "value": "AAPL"}
-		],
-		"key": 'ticker', 
-		"action_id": "update_data"
-	}]
+    inputs = [{
+        "type": 'dropdown',
+        "label": 'Company',
+        "options": [
+            {"label": "Google", "value": "GOOG"},
+            {"label": "Amazon", "value": "AMZN"},
+            {"label": "Apple", "value": "AAPL"}],
+        "value": 'GOOG',
+        "key": 'ticker',
+        "action_id": "update_data"
+    }]
 
-	controls = [{
-		"type": "hidden",
-		"id": "update_data"
-	}]
+    controls = [{
+        "type": "button",
+        "id": "update_data",
+        "label": "get historical stock prices"
+    }]
 
-	tabs = ["Plot", "Table"]
+    tabs = ["Plot", "Table"]
 
-	outputs = [
-		{
-			"type": "plot",
-			"id": "plot",
-			"control_id": "update_data",
-			"tab": "Plot"
-		}, { 
-			"type": "table",
-			"id": "table_id",
-			"control_id": "update_data",
-			"tab": "Table",
-			"on_page_load": True
-		}
-	]
+    outputs = [
+        {
+            "type": "plot",
+            "id": "plot",
+            "control_id": "update_data",
+            "tab": "Plot"},
+        {
+            "type": "table",
+            "id": "table_id",
+            "control_id": "update_data",
+            "tab": "Table",
+            "on_page_load": True
+        }
+    ]
 
-	def getData(self, params):
-		ticker = params['ticker']
-		# make call to yahoo finance api to get historical stock data
-		api_url = 'https://chartapi.finance.yahoo.com/instrument/1.0/{}/chartdata;type=quote;range=3m/json'.format(ticker)
-		result = urlopen(api_url).read()
-		data = json.loads(result.decode("utf8").replace('finance_charts_json_callback( ','')[:-1])  # strip away the javascript and load json
-		self.company_name = data['meta']['Company-Name']
-		df = pd.DataFrame.from_records(data['series'])
-		df['Date'] = pd.to_datetime(df['Date'],format='%Y%m%d')
-		return df
+    def getData(self, params):
+        ticker = params['ticker']
+        if ticker == 'empty':
+            ticker = params['custom_ticker'].upper()
 
-	def getPlot(self, params):
-		df = self.getData(params).set_index('Date').drop(['volume'],axis=1)
-		plt_obj = df.plot()
-		plt_obj.set_ylabel("Price")
-		plt_obj.set_title(self.company_name)
-		fig = plt_obj.get_figure()
-		return fig
+        xchng = "NASD"
+        param = {
+            'q': ticker,  # Stock symbol (ex: "AAPL")
+            'i': "86400",  # Interval size in seconds ("86400" = 1 day intervals)
+            'x': xchng,  # Stock exchange symbol on which stock is traded (ex: "NASD")
+            'p': "3M"  # Period (Ex: "1Y" = 1 year)
+        }
+        df = get_price_data(param)
+        return df
+
+    def getPlot(self, params):
+        df = self.getData(params).drop(['Volume'], axis=1)
+        plt_obj = df.plot()
+        plt_obj.set_ylabel("Price")
+        plt_obj.set_xlabel("Date")
+        plt_obj.set_title(params['ticker'])
+        return plt_obj.get_figure()
+
 
 app = StockExample()
 app.launch(port=9093)

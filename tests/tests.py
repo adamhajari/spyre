@@ -56,10 +56,6 @@ class TestCherryPyApp(BaseCherryPyTestCase):
         )
         self.assertEqual(response.output_status.decode('utf8'), '200 OK')
 
-    def test_image(self):
-        response = self.request('/image', ex_first='__float__0', output_id='image')
-        self.assertEqual(response.output_status.decode('utf8'), '200 OK')
-
     def test_download(self):
         response = self.request('/download', ex_first='__float__0')
         self.assertEqual(response.output_status.decode('utf8'), '200 OK')

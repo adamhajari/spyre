@@ -83,7 +83,7 @@ class TestApp(server.App):
     outputs = [
         {
             "output_type": "html",
-            "output_id": "html_id",
+            "output_id": "html1",
             "control_id": "button1",
             "on_page_load": True,
         }, {
@@ -170,3 +170,7 @@ class TestApp(server.App):
 
     def noOutput(self, input_params):
         return 0
+
+
+# app = TestApp()
+# app.launch()

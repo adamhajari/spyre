@@ -350,13 +350,7 @@ class App(object):
         returns:
         DataFrame
         """
-        try:
-            return eval("self." + str(params['output_id']) + "(params)")
-        except AttributeError:
-            return pd.DataFrame({
-                'name': ['Override', 'getData() method', 'to generate tables'],
-                'count': [1, 4, 3]
-            })
+        return eval("self." + str(params['output_id']) + "(params)")
 
     def getTable(self, params):
         """Used to create html table. Uses dataframe returned by getData by default
@@ -402,16 +396,10 @@ class App(object):
         try:
             return eval("self." + str(params['output_id']) + "(params)")
         except AttributeError:
-            try:
-                df = self.getData(params)
-                if df is None:
-                    return None
-                return df.plot()
-            except Exception:
-                fig = plt.figure()  # make figure object
-                splt = fig.add_subplot(1, 1, 1)
-                splt.set_title("Override getPlot() method to generate figures")
-                return fig
+            df = self.getData(params)
+            if df is None:
+                return None
+            return df.plot()
 
     def getImage(self, params):
         """Override this function
@@ -419,10 +407,7 @@ class App(object):
         arguments: params (dict)
         returns: matplotlib.image (figure)
         """
-        try:
-            return eval("self." + str(params['output_id']) + "(params)")
-        except AttributeError:
-            return np.array([[0, 0, 0]])
+        return eval("self." + str(params['output_id']) + "(params)")
 
     def getHTML(self, params):
         """Override this function
@@ -430,10 +415,7 @@ class App(object):
         arguments: params (dict)
         returns: html (string)
         """
-        try:
-            return eval("self." + str(params['output_id']) + "(params)")
-        except AttributeError:
-            return "<b>Override</b> the getHTML method to insert your own HTML <i>here</i>"
+        return eval("self." + str(params['output_id']) + "(params)")
 
     def noOutput(self, params):
         """Override this function
@@ -443,10 +425,7 @@ class App(object):
         arguments:
         params (dict)
         """
-        try:
-            return eval("self." + str(params['output_id']) + "(params)")
-        except AttributeError:
-            pass
+        return eval("self." + str(params['output_id']) + "(params)")
 
     def getD3(self):
         d3 = {}
