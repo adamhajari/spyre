@@ -3,6 +3,7 @@ import matplotlib.image as mpimg
 import matplotlib
 # from StringIO import StringIO
 import io
+import logging
 
 
 class Plot:
@@ -13,7 +14,8 @@ class Plot:
         if isinstance(plt_obj, matplotlib.axes.Axes):
             plt_obj.get_figure().savefig(buffer, format='png', bbox_inches='tight')
         else:
-            print("Error: getPlot method must return an pyplot figure or matplotlib Axes object")
+            logging.error("Error: getPlot method must return an pyplot figure "
+                          "or matplotlib Axes object")
         plt.close('all')
         return(buffer)
 
@@ -25,5 +27,5 @@ class Image:
         try:
             mpimg.imsave(buffer, img_obj)
         except Exception:
-            print("Error: getImage method must return an image object")
+            logging.error("Error: getImage method must return an image object")
         return(buffer)
