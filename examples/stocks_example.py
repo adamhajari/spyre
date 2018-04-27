@@ -1,9 +1,8 @@
 # tested with python2.7
 from spyre import server
-
-import pandas as pd
-
 from googlefinance.client import get_price_data
+
+server.include_df_index = True
 
 
 class StockExample(server.App):
@@ -66,9 +65,8 @@ class StockExample(server.App):
             }
             # get price data (return pandas dataframe)
             df = get_price_data(param)
-
-            df['Date'] = pd.to_datetime(df.index, format='%Y-%m-%d %H:%M:%s')
             df = df.drop(['Volume'], axis=1)
+
             self.data_cache = df        # caching layer
             self.params_cache = params  # caching layer
         return self.data_cache

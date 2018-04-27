@@ -9,6 +9,8 @@ from bokeh.resources import CDN
 from bokeh.embed import components
 from bokeh import plotting
 
+server.include_df_index = True
+
 
 class StocksWithBokeh(server.App):
     title = "Historical Stock Prices"
@@ -76,8 +78,6 @@ class StocksWithBokeh(server.App):
         }
         # get price data (return pandas dataframe)
         df = get_price_data(param)
-
-        df['Date'] = pd.to_datetime(df.index, format='%Y-%m-%d %H:%M:%s')
         return df
 
     def getPlot(self, params):
@@ -85,7 +85,7 @@ class StocksWithBokeh(server.App):
         if ticker == 'empty':
             ticker = params['custom_ticker'].upper()
         df = self.getData(params)
-        plt_obj = df.set_index('Date').drop(['Volume'], axis=1).plot()
+        plt_obj = df.drop(['Volume'], axis=1).plot()
         plt_obj.set_ylabel("Price")
         plt_obj.set_title(ticker)
         fig = plt_obj.get_figure()
@@ -98,14 +98,14 @@ class StocksWithBokeh(server.App):
         df = self.getData(params)  # get data
         try:
             bokeh_plot = plotting.line(
-                df['Date'], df['Close'], color='#1c2980',
+                df.index, df['Close'], color='#1c2980',
                 legend="Close", x_axis_type="datetime", title=ticker
             )
         except AttributeError:
             bokeh_plot = plotting.figure(x_axis_type='datetime', title=ticker)
-            bokeh_plot.line(df['Date'], df['Close'], color='#1c2980', legend="Close")
-        bokeh_plot.line(df['Date'], df['High'], color='#80641c', legend="High")
-        bokeh_plot.line(df['Date'], df['Low'], color='#80321c', legend="Low")
+            bokeh_plot.line(df.index, df['Close'], color='#1c2980', legend="Close")
+        bokeh_plot.line(df.index, df['High'], color='#80641c', legend="High")
+        bokeh_plot.line(df.index, df['Low'], color='#80321c', legend="Low")
 
         script, div = components(bokeh_plot, CDN)
         html = "%s\n%s" % (script, div)
