@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='DataSpyre',
-    version='0.2.8',
+    version='0.2.9',
     description=(
         'Spyre makes it easy to build interactive web applications,'
         'and requires no knowledge of HTML, CSS, or Javascript.'
