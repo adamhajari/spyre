@@ -19,7 +19,7 @@ stations = {
 
 station_options = [
     {'label': k, 'value': v}
-    for k, v in stations.iteritems()
+    for k, v in stations.items()
 ]
 station_options[0]['checked'] = True
 station_options[1]['checked'] = True

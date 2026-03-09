@@ -4,15 +4,15 @@ import codecs
 import matplotlib.image as mpimg
 import sys
 import io
-from imp import reload
-reload(sys)
+import importlib
+importlib.reload(sys)
 import logging
 
 ENCODING = 'utf-8'
 try:
     sys.setdefaultencoding(ENCODING)
 except Exception:
-    logging.warn("Warning: unable to set defaultencoding to utf-8")
+    logging.warning("Warning: unable to set defaultencoding to utf-8")
 
 
 class View:
@@ -24,20 +24,16 @@ class View:
 
     def getHTML(self):
         file_path = os.path.join(self.ROOT_DIR, 'view.html')
-        f = codecs.open(file_path, 'r', ENCODING)
-        html = f.read()
-        f.close()
-        return html
+        with codecs.open(file_path, 'r', ENCODING) as f:
+            return f.read()
 
     def getJS(self):
         self.JS = ""
         for file in os.listdir(self.JS_PATH):
             if file.find('.js') > 0:
                 file_path = os.path.join(self.JS_PATH, file)
-                f = codecs.open(file_path, 'rb')
-                content = f.read()
-                f.close()
-                self.JS += content.decode('utf-8')
+                with codecs.open(file_path, 'rb') as f:
+                    self.JS += f.read().decode('utf-8')
                 self.JS += "\n"
         return self.JS
 
@@ -46,10 +42,8 @@ class View:
         for file in os.listdir(self.CSS_PATH):
             if file.find('.css') > 0:
                 file_path = os.path.join(self.CSS_PATH, file)
-                f = open(file_path, 'rb')
-                content = f.read()
-                f.close()
-                self.CSS += content.decode('utf-8')
+                with open(file_path, 'rb') as f:
+                    self.CSS += f.read().decode('utf-8')
                 self.CSS += "\n"
         return self.CSS
 
@@ -59,7 +53,6 @@ class View:
             path = os.path.join(self.ROOT_DIR, 'public', 'images', "loading_wheel.gif")
         else:
             path = os.path.join(self.APP_PATH, spinnerFile)
-        f = open(path, 'rb')
-        buffer.write(f.read())
-        f.close()
-        return(buffer)
+        with open(path, 'rb') as f:
+            buffer.write(f.read())
+        return buffer

@@ -1,7 +1,6 @@
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 import matplotlib
-# from StringIO import StringIO
 import io
 import logging
 
@@ -23,9 +22,8 @@ class Plot:
 class Image:
     def getImagePath(self, img_obj):
         buffer = io.BytesIO()
-        mpimg.imsave(buffer, img_obj)
         try:
             mpimg.imsave(buffer, img_obj)
         except Exception:
             logging.error("Error: getImage method must return an image object")
-        return(buffer)
+        return buffer

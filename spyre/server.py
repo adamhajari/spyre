@@ -259,26 +259,23 @@ class Root(object):
         args = self.clean_args(args)
         filepath = self.getDownload(args)
 
-        if type(filepath).__name__ == "str":
+        if isinstance(filepath, str):
             return serve_file(filepath, "application/x-download", "attachment", name='data.csv')
-        if type(filepath).__name__ == "instance":
-            file_obj = serve_fileobj(
+        if isinstance(filepath, io.BytesIO):
+            return serve_fileobj(
                 filepath.getvalue(),
                 "application/x-download",
                 "attachment",
                 name='data.csv'
             )
-            return file_obj
-        if type(filepath).__name__ == "StringIO":
-            file_obj = serve_fileobj(
+        if isinstance(filepath, io.StringIO):
+            return serve_fileobj(
                 filepath.getvalue().encode('utf-8'),
                 "application/x-download",
                 "attachment",
                 name='data.csv'
             )
-            return file_obj
-        else:
-            return "error downloading file. filepath must be string of buffer"
+        return "error downloading file. filepath must be string or buffer"
 
     @cherrypy.expose
     def upload(self, xfile):
