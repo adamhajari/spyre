@@ -324,6 +324,20 @@ class App(object):
     templateVars = None
     prefix = '/'
 
+    def _call_output_method(self, params):
+        """Safely dispatch to the method named by params['output_id'].
+
+        Raises ValueError if the name is not a valid Python identifier or
+        does not correspond to a callable attribute on this instance.
+        """
+        method_name = str(params['output_id'])
+        if not method_name.isidentifier():
+            raise ValueError("Invalid output_id: {!r}".format(method_name))
+        method = getattr(self, method_name)
+        if not callable(method):
+            raise ValueError("output_id {!r} is not callable".format(method_name))
+        return method(params)
+
     def getJsonData(self, params):
         """turns the DataFrame returned by getData into a dictionary
 
@@ -331,7 +345,7 @@ class App(object):
         the params passed used for table or d3 outputs are forwarded on to getData
         """
         try:
-            return eval("self." + str(params['output_id']) + "(params)")
+            return self._call_output_method(params)
         except AttributeError:
             df = self.getData(params)
             if df is None:
@@ -347,7 +361,7 @@ class App(object):
         returns:
         DataFrame
         """
-        return eval("self." + str(params['output_id']) + "(params)")
+        return self._call_output_method(params)
 
     def getTable(self, params):
         """Used to create html table. Uses dataframe returned by getData by default
@@ -391,7 +405,7 @@ class App(object):
         matplotlib.pyplot figure
         """
         try:
-            return eval("self." + str(params['output_id']) + "(params)")
+            return self._call_output_method(params)
         except AttributeError:
             df = self.getData(params)
             if df is None:
@@ -404,7 +418,7 @@ class App(object):
         arguments: params (dict)
         returns: matplotlib.image (figure)
         """
-        return eval("self." + str(params['output_id']) + "(params)")
+        return self._call_output_method(params)
 
     def getHTML(self, params):
         """Override this function
@@ -412,7 +426,7 @@ class App(object):
         arguments: params (dict)
         returns: html (string)
         """
-        return eval("self." + str(params['output_id']) + "(params)")
+        return self._call_output_method(params)
 
     def noOutput(self, params):
         """Override this function
@@ -422,7 +436,7 @@ class App(object):
         arguments:
         params (dict)
         """
-        return eval("self." + str(params['output_id']) + "(params)")
+        return self._call_output_method(params)
 
     def getD3(self):
         d3 = {}
