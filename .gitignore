@@ -17,3 +17,7 @@ DataSpyre.egg-info/
 /notebooks*
 tutorial/SpyrePresentation_demo*
 .tox/*
+.venv/
+.claude/
+city_weather.db
+.coverage

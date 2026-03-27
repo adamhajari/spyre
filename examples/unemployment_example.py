@@ -66,9 +66,19 @@ class UnemploymentApp(server.App):
 
         TOOLS = "pan,wheel_zoom,box_zoom,reset,hover,save"
 
+        all_lats = [lat for lats in data['lats'] for lat in lats]
+        all_lons = [lon for lons in data['lons'] for lon in lons]
+        x_pad = (max(all_lons) - min(all_lons)) * 0.05
+        y_pad = (max(all_lats) - min(all_lats)) * 0.05
+        x_range = (min(all_lons) - x_pad, max(all_lons) + x_pad)
+        y_range = (min(all_lats) - y_pad, max(all_lats) + y_pad)
+
+        aspect = (x_range[1] - x_range[0]) / (y_range[1] - y_range[0])
+        height = int(800 / aspect)
+
         fig = plotting.figure(title=state.upper() + " Unemployment 2009", tools=TOOLS,
-                              match_aspect=True, width=900,
-                              y_range=(25, 50))
+                              width=800, height=height, sizing_mode="scale_both",
+                              x_range=x_range, y_range=y_range)
         fig.patches(
             list(data['lons']), list(data['lats']), fill_color=list(data['color']),
             fill_alpha=0.7, line_color="white", line_width=0.5
