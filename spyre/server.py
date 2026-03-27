@@ -14,23 +14,9 @@ import cherrypy
 from cherrypy.lib.static import serve_file
 from cherrypy.lib.static import serve_fileobj
 
-try:
-    import StringIO as io  # python2
-except Exception:
-    import io  # python3
-
-try:
-    from . import model
-except Exception:
-    import model
-
-try:
-    from . import View
-except Exception:
-    try:
-        import View
-    except Exception:
-        from . import view as View
+import io
+from . import model
+from . import View
 
 # Settings
 include_df_index = False
@@ -46,9 +32,9 @@ class Root(object):
         self,
         templateVars=None,
         title="",
-        inputs=[],
-        outputs=[],
-        controls=[],
+        inputs=None,
+        outputs=None,
+        controls=None,
         tabs=None,
         spinnerFile=None,
         getJsonDataFunction=None,
@@ -77,6 +63,12 @@ class Root(object):
                 self.templateVars['prefix'] = prefix[:-1]
             else:
                 self.templateVars['prefix'] = prefix
+            if inputs is None:
+                inputs = []
+            if outputs is None:
+                outputs = []
+            if controls is None:
+                controls = []
             # necessary to ensure that spyre apps prior to version 0.2.0 still work
             for input in inputs:
                 if 'input_type' in input:
@@ -316,9 +308,9 @@ class App(object):
 
     # Will be used when there are more than one app in a site
     app_bar_html = None
-    outputs = []
-    inputs = []
-    controls = []
+    outputs = None
+    inputs = None
+    controls = None
     tabs = None
     spinnerFile = None
     templateVars = None

@@ -1,18 +1,8 @@
 import __main__
 import os
 import codecs
-import matplotlib.image as mpimg
-import sys
 import io
-import importlib
-importlib.reload(sys)
-import logging
-
 ENCODING = 'utf-8'
-try:
-    sys.setdefaultencoding(ENCODING)
-except Exception:
-    logging.warning("Warning: unable to set defaultencoding to utf-8")
 
 
 class View:

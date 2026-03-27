@@ -8,9 +8,9 @@
 
 ## Code Quality
 
-- [ ] **4. Mutable default arguments** — `inputs=[], outputs=[], controls=[]` as default params in `Root.__init__()` and as class variables on `App`. Replace with `None` and assign empty list in body.
-- [ ] **5. Deprecated `sys.setdefaultencoding()` hack** — `View.py:8-14` does `importlib.reload(sys)` then calls `sys.setdefaultencoding()`. Remove entirely; unnecessary in Python 3.
-- [ ] **6. Broad `except Exception` swallowing errors** — generic try/except around dispatch calls hides actual failures. Narrow to specific exceptions or re-raise.
+- [x] **4. Mutable default arguments** — `inputs=[], outputs=[], controls=[]` as default params in `Root.__init__()` and as class variables on `App`. Replace with `None` and assign empty list in body.
+- [x] **5. Deprecated `sys.setdefaultencoding()` hack** — `View.py:8-14` does `importlib.reload(sys)` then calls `sys.setdefaultencoding()`. Remove entirely; unnecessary in Python 3.
+- [x] **6. Broad `except Exception` swallowing errors** — generic try/except around dispatch calls hides actual failures. Narrow to specific exceptions or re-raise.
 
 ## Dependencies & Packaging
 
