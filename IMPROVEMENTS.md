@@ -24,5 +24,5 @@
 
 ## Misc
 
-- [ ] **11. Deprecated `Site` class** — marked deprecated in `server.py` but never removed.
+- [x] **11. Deprecated `Launch` class** (not `Site` — corrected from original analysis) — marked deprecated in `server.py` but never removed.
 - [ ] **12. Path traversal risk** — `View.py:55` joins `spinnerFile` to `APP_PATH` without validating the path stays within the directory.

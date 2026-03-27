@@ -10,6 +10,7 @@ import pandas as pd
 import numpy as np
 import copy
 
+import warnings
 import cherrypy
 from cherrypy.lib.static import serve_file
 from cherrypy.lib.static import serve_fileobj
@@ -575,7 +576,15 @@ class Site(object):
 
 
 class Launch(App):
-    """Warning: This class is depricated. Use App instead"""
+    """Deprecated. Use App instead."""
+
+    def __init__(self, *args, **kwargs):
+        warnings.warn(
+            "Launch is deprecated, use App instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        super().__init__(*args, **kwargs)
 
 
 if __name__ == '__main__':
