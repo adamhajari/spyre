@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 import cherrypy
+import unittest
 
 from cptestcase import BaseCherryPyTestCase
 from test_app import TestApp
+from spyre import server
 import json
 
 
@@ -106,6 +108,50 @@ class TestCherryPyApp(BaseCherryPyTestCase):
         self.failUnless('<optionvalue="a"selected="selected">AppleMusic</option>' in body)
 
 
+class TestCallOutputMethod(unittest.TestCase):
+    """Unit tests for the _call_output_method security validation."""
+
+    def setUp(self):
+        self.app = TestApp()
+
+    def test_valid_method_is_called(self):
+        result = self.app._call_output_method({'output_id': 'html1'})
+        self.assertEqual(result, "hello world")
+
+    def test_non_identifier_output_id_rejected(self):
+        # Attempts to inject code via output_id should raise ValueError
+        with self.assertRaises(ValueError):
+            self.app._call_output_method({'output_id': '__import__("os").system("id")'})
+
+    def test_dunder_attribute_callable(self):
+        # Dunder names are valid identifiers — but should not be callable in a
+        # harmful way; this just confirms isidentifier() passes for them.
+        # The real guard is that getattr raises AttributeError for missing names.
+        with self.assertRaises((AttributeError, TypeError)):
+            self.app._call_output_method({'output_id': '__nonexistent__'})
+
+    def test_nonexistent_method_raises(self):
+        with self.assertRaises(AttributeError):
+            self.app._call_output_method({'output_id': 'no_such_method'})
+
+    def test_non_callable_attribute_rejected(self):
+        # A plain data attribute (e.g. 'title') should be rejected as not callable
+        with self.assertRaises(ValueError):
+            self.app._call_output_method({'output_id': 'title'})
+
+
+class TestTableXSSEscaping(BaseCherryPyTestCase):
+    """Table output must escape HTML in DataFrame cell values."""
+
+    def test_html_in_cell_is_escaped(self):
+        # TestApp.getJsonData returns a cell containing a raw <a> tag.
+        # With escape=True the tag must not appear verbatim in the response.
+        response = self.request('/table', ex_first='__float__0', output_id='table_id')
+        self.assertEqual(response.output_status.decode('utf8'), '200 OK')
+        body = response.body[0].decode('utf8')
+        self.assertNotIn('<a href=', body)
+        self.assertIn('&lt;a', body)
+
+
 if __name__ == '__main__':
-    import unittest
     unittest.main()

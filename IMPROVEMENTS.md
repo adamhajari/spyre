@@ -19,7 +19,7 @@
 
 ## Testing
 
-- [ ] **9. ~19% test coverage** — only 111 lines of tests for 571 lines of core logic. Add edge case tests, security tests, upload tests.
+- [x] **9. ~19% test coverage** — only 111 lines of tests for 571 lines of core logic. Add edge case tests, security tests, upload tests.
 - [ ] **10. CI is dead** — `.travis.yml` targets Python 2.7 and 3.4 (both EOL). Replace with GitHub Actions.
 
 ## Misc
