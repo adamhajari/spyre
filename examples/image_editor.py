@@ -1,4 +1,3 @@
-# tested with python2.7 and 3.4
 from spyre import server
 
 from skimage import data, filters
@@ -52,7 +51,7 @@ class ImageEditor(server.App):
         g = float(params['green'])
         b = float(params['blue'])
         image = data.coffee()
-        new_image = filters.gaussian_filter(image, sigma=sigma, multichannel=True)
+        new_image = filters.gaussian(image, sigma=sigma, channel_axis=-1)
         new_image[:, :, 0] = r * new_image[:, :, 0]
         new_image[:, :, 1] = g * new_image[:, :, 1]
         new_image[:, :, 2] = b * new_image[:, :, 2]

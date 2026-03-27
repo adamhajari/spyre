@@ -182,6 +182,39 @@ Launch the app just as you did in the previous example. The app now has two tabs
 
 
 
+Running the Examples
+----
+
+To run any of the examples in the `examples/` directory, first install spyre:
+
+```bash
+$ pip install -e .
+```
+
+Then run an example directly:
+
+```bash
+$ python examples/simple_sine_example.py
+```
+
+The app will be served at http://127.0.0.1:8080 by default.
+
+### Additional requirements for specific examples
+
+Some examples require libraries beyond spyre's core dependencies:
+
+```bash
+$ pip install bokeh bokeh_sampledata scikit-image yfinance
+```
+
+| Library | Used by |
+|---------|---------|
+| `bokeh` | bokeh examples |
+| `bokeh_sampledata` | bokeh choropleth/map examples |
+| `scikit-image` | image editor example |
+| `yfinance` | stocks example |
+
+
 License
 ----
 

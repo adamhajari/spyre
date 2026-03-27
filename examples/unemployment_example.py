@@ -1,6 +1,3 @@
-# you must run bokeh.sampledata.download() from a python shell before
-# the import on line 18 will work
-# tested with python2.7 and 3.4
 from spyre import server
 
 import pandas as pd
@@ -15,7 +12,12 @@ try:
 except ImportError:
     from bokeh.models import HoverTool
 
-from bokeh.sampledata import us_counties, unemployment
+try:
+    from bokeh.sampledata import us_counties, unemployment
+except Exception:
+    import bokeh.sampledata
+    bokeh.sampledata.download()
+    from bokeh.sampledata import us_counties, unemployment
 
 
 class UnemploymentApp(server.App):
@@ -27,11 +29,11 @@ class UnemploymentApp(server.App):
         shapes = pd.DataFrame(stuff, index=us_counties.data.keys())
         unemp = pd.DataFrame(
             list(unemployment.data.values()),
-            index=list(unemployment.data.keys()),
+            index=pd.MultiIndex.from_tuples(list(unemployment.data.keys())),
             columns=['rate']
         )
         unemp['idx'] = (unemp['rate'] // 2).astype('i8')
-        unemp[unemp['idx'] > 5] = 5
+        unemp.loc[unemp['idx'] > 5, 'idx'] = 5
         unemp['color'] = [colors[idx] for idx in unemp['idx'].tolist()]
         data = unemp.join(shapes)
         data['mlong'] = list(map(np.mean, data['lons']))
@@ -62,19 +64,15 @@ class UnemploymentApp(server.App):
         else:
             data = self.data[self.data['state'] == state]
 
-        TOOLS = "pan,wheel_zoom,box_zoom,reset,hover,previewsave"
+        TOOLS = "pan,wheel_zoom,box_zoom,reset,hover,save"
 
-        try:
-            fig = plotting.patches(
-                data['lons'], data['lats'], fill_color=data['color'], fill_alpha=0.7, tools=TOOLS,
-                line_color="white", line_width=0.5, title=state.upper() + " Unemployment 2009"
-            )
-        except Exception:
-            fig = plotting.figure(title=state.upper() + " Unemployment 2009", tools=TOOLS)
-            fig.patches(
-                data['lons'], data['lats'], fill_color=data['color'],
-                fill_alpha=0.7, line_color="white", line_width=0.5
-            )
+        fig = plotting.figure(title=state.upper() + " Unemployment 2009", tools=TOOLS,
+                              match_aspect=True, width=900,
+                              y_range=(25, 50))
+        fig.patches(
+            list(data['lons']), list(data['lats']), fill_color=list(data['color']),
+            fill_alpha=0.7, line_color="white", line_width=0.5
+        )
 
         hover = fig.select(dict(type=HoverTool))
         hover.tooltips = OrderedDict([
@@ -89,14 +87,13 @@ class UnemploymentApp(server.App):
         return INLINE.js_raw[0]
 
     def getCustomCSS(self):
-        return INLINE.css_raw[0]
+        return INLINE.css_raw[0] if INLINE.css_raw else ""
 
 
 if __name__ == '__main__':
     app = UnemploymentApp()
 
-    states = pd.unique(app.data['state'].dropna())
-    states.sort()
+    states = np.sort(pd.unique(app.data['state'].dropna()).astype(str))
     options = [{"label": "all", "value": "all"}]
     states_opts = [{"label": x.upper(), "value": x} for x in states.tolist()]
     options.extend(states_opts)

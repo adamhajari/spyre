@@ -1,8 +1,6 @@
-# tested with python2.7
 from spyre import server
 
-import pandas as pd
-from googlefinance.client import get_price_data
+import yfinance as yf
 
 from bokeh.resources import INLINE
 from bokeh.resources import CDN
@@ -67,17 +65,7 @@ class StocksWithBokeh(server.App):
         ticker = params['ticker']
         if ticker == 'empty':
             ticker = params['custom_ticker'].upper()
-
-        xchng = "NASD"
-
-        param = {
-            'q': ticker,  # Stock symbol (ex: "AAPL")
-            'i': "86400",  # Interval size in seconds ("86400" = 1 day intervals)
-            'x': xchng,  # Stock exchange symbol on which stock is traded (ex: "NASD")
-            'p': "3M"  # Period (Ex: "1Y" = 1 year)
-        }
-        # get price data (return pandas dataframe)
-        df = get_price_data(param)
+        df = yf.download(ticker, period="3mo", interval="1d", auto_adjust=True)
         return df
 
     def getPlot(self, params):
@@ -85,37 +73,28 @@ class StocksWithBokeh(server.App):
         if ticker == 'empty':
             ticker = params['custom_ticker'].upper()
         df = self.getData(params)
-        plt_obj = df.drop(['Volume'], axis=1).plot()
+        plt_obj = df.drop(columns=['Volume']).plot()
         plt_obj.set_ylabel("Price")
         plt_obj.set_title(ticker)
-        fig = plt_obj.get_figure()
-        return fig
+        return plt_obj.get_figure()
 
     def getHTML(self, params):
         ticker = params['ticker']
         if ticker == 'empty':
             ticker = params['custom_ticker'].upper()
-        df = self.getData(params)  # get data
-        try:
-            bokeh_plot = plotting.line(
-                df.index, df['Close'], color='#1c2980',
-                legend="Close", x_axis_type="datetime", title=ticker
-            )
-        except AttributeError:
-            bokeh_plot = plotting.figure(x_axis_type='datetime', title=ticker)
-            bokeh_plot.line(df.index, df['Close'], color='#1c2980', legend="Close")
-        bokeh_plot.line(df.index, df['High'], color='#80641c', legend="High")
-        bokeh_plot.line(df.index, df['Low'], color='#80321c', legend="Low")
-
+        df = self.getData(params)
+        bokeh_plot = plotting.figure(x_axis_type='datetime', title=ticker)
+        bokeh_plot.line(df.index, df['Close'], color='#1c2980', legend_label="Close")
+        bokeh_plot.line(df.index, df['High'], color='#80641c', legend_label="High")
+        bokeh_plot.line(df.index, df['Low'], color='#80321c', legend_label="Low")
         script, div = components(bokeh_plot, CDN)
-        html = "%s\n%s" % (script, div)
-        return html
+        return "%s\n%s" % (script, div)
 
     def getCustomJS(self):
         return INLINE.js_raw[0]
 
     def getCustomCSS(self):
-        return INLINE.css_raw[0]
+        return INLINE.css_raw[0] if INLINE.css_raw else ""
 
 
 if __name__ == '__main__':

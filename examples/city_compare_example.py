@@ -1,4 +1,5 @@
 from spyre import server
+import os
 import pandas as pd
 import sqlite3
 import matplotlib.pyplot as plt
@@ -23,7 +24,7 @@ cities = [
     {'label': 'Huntsville', 'value': '124'},
 ]
 
-DB_PATH = 'city_weather.db'
+DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'city_weather.db')
 
 con = sqlite3.connect(DB_PATH)
 query = """select c.* from cities c"""

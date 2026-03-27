@@ -1,6 +1,5 @@
-# tested with python2.7
 from spyre import server
-from googlefinance.client import get_price_data
+import yfinance as yf
 
 server.include_df_index = True
 
@@ -8,7 +7,7 @@ server.include_df_index = True
 class StockExample(server.App):
 
     def __init__(self):
-        # implements a simple caching mechanism to avoid multiple calls to the yahoo finance api
+        # simple caching to avoid redundant API calls
         self.data_cache = None
         self.params_cache = None
 
@@ -49,26 +48,13 @@ class StockExample(server.App):
     ]
 
     def getData(self, params):
-        params.pop("output_id", None)    # caching layer
-        if self.params_cache != params:   # caching layer
+        params.pop("output_id", None)
+        if self.params_cache != params:
             ticker = params['ticker']
-            if ticker == 'empty':
-                ticker = params['custom_ticker'].upper()
-
-            xchng = "NASD"
-
-            param = {
-                'q': ticker,  # Stock symbol (ex: "AAPL")
-                'i': "86400",  # Interval size in seconds ("86400" = 1 day intervals)
-                'x': xchng,  # Stock exchange symbol on which stock is traded (ex: "NASD")
-                'p': "3M"  # Period (Ex: "1Y" = 1 year)
-            }
-            # get price data (return pandas dataframe)
-            df = get_price_data(param)
-            df = df.drop(['Volume'], axis=1)
-
-            self.data_cache = df        # caching layer
-            self.params_cache = params  # caching layer
+            df = yf.download(ticker, period="3mo", interval="1d", auto_adjust=True)
+            df = df.drop(columns=['Volume'])
+            self.data_cache = df
+            self.params_cache = params
         return self.data_cache
 
 
