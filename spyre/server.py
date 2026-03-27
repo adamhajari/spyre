@@ -229,7 +229,7 @@ class Root(object):
         df = self.getTable(args)
         if df is None:
             return ""
-        html = df.to_html(index=include_df_index, escape=False)
+        html = df.to_html(index=include_df_index, escape=True)
         i = 0
         for col in df.columns:
             html = html.replace(
@@ -422,6 +422,12 @@ class App(object):
 
     def getHTML(self, params):
         """Override this function
+
+        WARNING: the string returned by this method is rendered as raw HTML in
+        the browser. Never include unsanitized user input in the return value —
+        doing so will create a cross-site scripting (XSS) vulnerability. Use
+        markupsafe.escape() or equivalent to sanitize any user-supplied values
+        before embedding them in the returned HTML.
 
         arguments: params (dict)
         returns: html (string)
