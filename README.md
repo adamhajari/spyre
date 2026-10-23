@@ -221,7 +221,7 @@ License
 MIT
 
 
-Acknowledgements
+Acknowledgements 
 ----
 
 Much of the work that went into creating Spyre happened during hack weeks at **[Next Big Sound]**. If you're a talented engineer or data scientist looking for a great place to work, check out their about page for job openings!
